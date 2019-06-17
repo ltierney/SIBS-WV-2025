@@ -1,0 +1,12 @@
+# adapted from https://github.com/STAT545-UBC/STAT545-UBC.github.io
+
+html_document:
+  css:
+    - css/main.css
+    - css/nav.css
+    - //netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css
+  self_contained: false
+  lib_dir: libs
+  includes:
+    before_body: include/nav.html
+    after_body: include/license-footer.html

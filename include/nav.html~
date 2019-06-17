@@ -1,0 +1,41 @@
+<!-- adapted from https://github.com/STAT545-UBC/STAT545-UBC.github.io -->
+
+<header>
+  <div class="nav">
+    <table width=100% cols=2 border=0 cellpadding=0 cellspacing=0 align=center
+	   style="background-color:black;">
+      <tr valign=bottom>
+	<td width=50% align=left>
+	  <a href="http://www.uiowa.edu"
+	     style="font-variant:small-caps;color:lightgray;">
+	    University of Iowa</a>
+	</td>
+	<td width=50% align=right>
+	  <a href="http://www.clas.uiowa.edu"
+	     style="font-variant:small-caps;color:lightgray;">
+	    College of Liberal Arts and Sciences</a>
+	</td>
+      </tr>
+    </table>
+
+    <a href="http://www.stat.uiowa.edu">
+      <img src="img/stats.png" width=1000px>
+    </a>
+    <!--
+    <a class="nav-logo" href="index.html">
+      <img src="img/domeword_3lines_GLD_SML.png" width="70px" height="70px"/>
+    </a>-->
+
+    <ul>
+      <li class="home"><a href="index.html">STAT:4580</a></li>
+      <li class="syllabus"><a href="syllabus.pdf">Syllabus</a></li>
+      <li class="lectures"><a href="outline.html">Outline</a></li>
+      <li class="homework"><a href="homework.html">Homework</a></li>
+      <li class="notes"><a href="notes.html">Notes</a></li>
+      <!-- <li class="topics"><a href="topics.html">Topics</a></li> -->
+      <li class="resources"><a href="resources.html">Resources</a></li>
+      -->
+    </ul>
+    
+  </div>
+</header>
