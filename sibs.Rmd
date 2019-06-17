@@ -773,7 +773,6 @@ intended to be written and read by a computer.
 
 This CSV file is unusual in that it includes header and footer
 information that complicate machine reading a bit.
-</div>
 
 One issue is that a comma isn't a good separator in countries where it
 is the decimal separator!
