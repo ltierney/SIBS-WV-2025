@@ -78,7 +78,7 @@ R is widely used in the field of statistics and beyond, especially in
 
 - R has become the primary framework for developing and making available
   new statistical methodology.
-- Many (now over 13,000) extension packages are available through CRAN or
+- Many (now over 14,000) extension packages are available through CRAN or
   similar repositories.
 
 ### Working with R
@@ -265,7 +265,7 @@ First, add a `type` variable:
 geyser <- mutate(geyser, type = ifelse(duration < 3, "short", "long"))
 ```
 
-The summaries can then me computed as
+The summaries can then be computed as
 
 ```{r}
 sgd <- summarize(group_by(geyser, type),
@@ -628,7 +628,7 @@ infrequently used visual chunks may become lost.
   points. bars, etc.
 
 - _Aesthetics_ or _visual channels_ are the visual features of marks
-  that can me used to encode attributes.
+  that can be used to encode attributes.
 
 The `aes(...)` expressions establish the mapping between attributes
 and visual channels.
