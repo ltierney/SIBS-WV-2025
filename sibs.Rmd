@@ -184,10 +184,9 @@ dim(geyser)
 head(geyser)
 ```
 
-<div class="alert alert-info">
-`head` and `tail` return the first and last few rows of a data
-frame. They are useful for quick sanity checks.
-</div>
+<div class="alert alert-info"> `head` and `tail` return the first and
+last few rows of a data frame. They are useful for quick sanity
+checks.  </div>
 
 The rows represent measurements recorded for eruptions of the _Old
 Faithful_ geyser in Yellowstone National Park, Wyoming. The variables
@@ -203,8 +202,8 @@ ggplot(geyser) +
     geom_histogram(aes(x = duration), bins = 15, color = "black", fill = "grey")
 ```
 
-<div class="alert alert-info">
-A basic template for creating a plot with `ggplot`:
+<div class="alert alert-info"> A basic template for creating a plot
+with `ggplot`:
 
 ```r
 ggplot(data = <DATA>) + <GEOM>(mapping = aes(<MAPPINGS>))
@@ -234,10 +233,8 @@ p <- ggplot(geyser) +
 p
 ```
 
-<div class="alert alert-info">
-`ggplot` produces a plot object. Drawing only happens when the object
-is printed.
-</div>
+<div class="alert alert-info"> `ggplot` produces a plot
+object. Drawing only happens when the object is printed.  </div>
 
 Does this rounding matter?
 
@@ -291,9 +288,8 @@ p <- p +
 p
 ```
 
-<div class="alert alert-info">
-A `ggplot` can consist of several _layers_.
-</div>
+<div class="alert alert-info"> A `ggplot` can consist of several
+_layers_.  </div>
 
 The means and standard deviations are affected by the
 rounding. Summaries that omit values equal to 2 or 4 minutes can be
@@ -308,10 +304,9 @@ sgd2 <- summarize(group_by(geyser2, type),
 (sgd2 <- mutate(sgd2, prop = n / sum(n)))
 ```
 
-<div class="alert alert-info">
-`summarize, `group_by`, and `mutate` are from the `dplyr` package that
-implements a _grammar of data manipulation_`.
-</div>
+<div class="alert alert-info"> `summarize`, `group_by`, and `mutate`
+are from the `dplyr` package that implements a _grammar of data
+manipulation_.  </div>
 
 A plot showing curves computed both ways:
 
@@ -507,17 +502,14 @@ The axis and grid are not helpful; a _theme_ adjustment can remove them:
 (pp <- pp + theme_void())
 ```
 
-<div class="alert alert-info">
-
-Themes are a way to customize the non-data components of plots:
-i.e. titles, labels, fonts, background, gridlines, and
-legends. Themes can be used to give plots a consistent customized
-look.
+<div class="alert alert-info"> Themes are a way to customize the
+non-data components of plots: i.e. titles, labels, fonts, background,
+gridlines, and legends. Themes can be used to give plots a consistent
+customized look.
 
 The `ggthemes` package provides a number of themes to emulate the
 style of different publications, for example `theme_wsj` and
-`theme_economist`.
-</div>
+`theme_economist`.  </div>
 
 How well do bar charts and pie charts work?
 
@@ -550,8 +542,7 @@ p2 <- ggplot(eye_hairsex) +
 cowplot::plot_grid(p1, p2)
 ```
 
-<div class="alert alert-info">
-A more complete `ggplot` template:
+<div class="alert alert-info"> A more complete `ggplot` template:
 
 ```r
 ggplot(data = <DATA>) +
@@ -615,8 +606,7 @@ Meaningful visual chunks are moved from iconic memory to short term memory.
 Long term visual memory is built up over a lifetime, though
 infrequently used visual chunks may become lost.
 
-<div class="alert alert-info">
-**Visual Design Implications**
+<div class="alert alert-info">**Visual Design Implications**
 
 * Try to make as much use of preattentive features as possible.
 
@@ -680,8 +670,7 @@ Curvature, volume (3D size)
 Line width is another channel; not sure there is agreement on its
 accuracy, but it is not high.
 
-<div class="alert alert-info">
-**Visual Design Implications**
+<div class="alert alert-info">**Visual Design Implications**
 
 Try to map the most important variables to the strongest channels.
 </div>
@@ -765,8 +754,7 @@ cancer incidence for a number of different cancers in Iowa
 The data for lung and bronchus cancer in 2011 are available
 in a [csv file](data/Invasive-Cancer-Incidence-Rates-by-County-in-Iowa-Lung-and-Bronchus-2011.csv) in the project.
 
-<div class="alert alert-info">
-[_CSV_ (comma-separated
+<div class="alert alert-info"> [_CSV_ (comma-separated
 values)](https://en.wikipedia.org/wiki/Comma-separated_values) are a
 common form of data exchange. They are simple text files that are
 intended to be written and read by a computer.
@@ -775,8 +763,7 @@ This CSV file is unusual in that it includes header and footer
 information that complicate machine reading a bit.
 
 One issue is that a comma isn't a good separator in countries where it
-is the decimal separator!
-</div>
+is the decimal separator!  </div>
 
 We can read the file with `read_csv` from the `readr` package.
 
@@ -936,12 +923,11 @@ monthly unemployment data for a 14-month window. The file for November
 <http://www.stat.uiowa.edu/~luke/data/laus/laucntycur14-2017.txt>
 and in the project data folder.
 
-<div class="alert alert-info">
-This file is a text file but uses a non-standard separator. It is
-designed for human readability and uses a comma as a _thousands
-separator_ or _grouping mark_.  It also includes header and footer
-information. It is still reasonably easy to read in.
-</div>
+<div class="alert alert-info"> This file is a text file but uses a
+non-standard separator. It is designed for human readability and uses
+a comma as a _thousands separator_ or _grouping mark_.  It also
+includes header and footer information. It is still reasonably easy to
+read in.  </div>
 
 One way to read the data into R is:
 
@@ -1089,17 +1075,15 @@ are [available](http://www.gapminder.org/data/).
 - The numbers represent number of deaths within the first five years
   per 1000 births.
 
-<div class="alert alert-info">
-
-Many researchers like to manage their data in a spreadsheet. Being able to read
-such a sheet directly greatly helps keeping the workflow reproducible.
+<div class="alert alert-info"> Many researchers like to manage their
+data in a spreadsheet. Being able to read such a sheet directly
+greatly helps keeping the workflow reproducible.
 
 Many spreadsheets contain header, footers, and other annotations to
 aid a human viewer.
 
 As long as the data are in a rectangular region it is usually not hard
-to extract them programmatically.
-</div>
+to extract them programmatically.  </div>
 
 Loading the data:
 
