@@ -1,2 +1,2 @@
-# SIBS-WV-2019
-Data Wrangling and Data Visualization for SIBS 2019
+# SIBS-WV-2021
+Data Wrangling and Data Visualization for SIBS 2021
