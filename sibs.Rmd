@@ -1,7 +1,7 @@
 ---
 title: "Basic Data Wrangling and Data Visualization in R"
 author: "Luke Tierney"
-date: "17 June, 2019"
+date: "21 June, 2021"
 output:
   html_document:
     toc: yes
@@ -21,25 +21,25 @@ In this class I will
   and visualize data in R.
  
 Materials for this class are available on GitHub at
-<https://github.com/ltierney/SIBS-WV-2019.git>.
+<https://github.com/ltierney/SIBS-WV-2021.git>.
 
-- You can access it as an RStudio project by following the menu selection
-  **File > New Project > Version Control > Git** and specifying this url.
-- You ca use the `git` command line client with
+* You can access it as an RStudio project by following the menu selection
+  **File > New Project > Version Control > Git** and specifying this URL.
+* You can use the `git` command line client with
     ```shell
-git clone https://github.com/ltierney/SIBS-WV-2019.git
+git clone https://github.com/ltierney/SIBS-WV-2021.git
     ```
 
 Materials for our _Data Visualization and Data
 Technologies_ course are available at
- <http://www.stat.uiowa.edu/~luke/classes/STAT4580/>
+ <http://www.stat.uiowa.edu/~luke/classes/STAT4580-2021/>
 
 Some tools I will be using:
 
-- The [RStudio](https://www.rstudion.com) IDE.
-- Many features from the basic [R](https://www.r-project.org) distribution.
-- Some tools from the [_tidyverse_](https://www.tidyverse.org/).
-- The [`ggplot`](https://ggplot2.tidyverse.org/) package based on
+* The [RStudio](https://www.rstudion.com) IDE.
+* Many features from the basic [R](https://www.r-project.org) distribution.
+* Some tools from the [_tidyverse_](https://www.tidyverse.org/).
+* The [`ggplot`](https://ggplot2.tidyverse.org/) package based on
   the _Grammar of Graphics_ framework.
 
 Most of the packages are loaded by loading the `tidyverse` package
@@ -63,42 +63,43 @@ Ask questions any time!
 
 R is a language for data analysis and graphics.
 
-- R was originally developed by Robert Gentleman and Ross Ihaka in the
+* R was originally developed by Robert Gentleman and Ross Ihaka in the
   early 1990's for a Macintosh computer lab at U. of Auckland, New Zealand.
-- R is based on the S language developed by John Chambers and
+* R is based on the S language developed by John Chambers and
   others at Bell Labs.
 
 R is an Open Source project.
 
-- Since 1997 R is developed and maintained by the R-core group,
+* Since 1997 R is developed and maintained by the R-core group,
   with around 20 members located in maor than 10 different countries.
 
-R is widely used in the field of statistics and beyond, especially in
+* R is widely used in the field of statistics and beyond, especially in
   university environments.
 
-- R has become the primary framework for developing and making available
+* R has become the primary framework for developing and making available
   new statistical methodology.
-- Many (now over 14,000) extension packages are available through CRAN or
+
+* Many (now over 17,000) extension packages are available through CRAN or
   similar repositories.
 
 ### Working with R
 
 R is designed for interactive data exploration.
 
-- Interaction is through a _read-eval-print loop (REPL)_.
-- This is also called a _command line interface (CLI)_.
+* Interaction is through a _read-eval-print loop (REPL)_.
+* This is also called a _command line interface (CLI)_.
 
 All computations are specified in the R language.
 
-- Even for simple tasks you need to know a little of the language.
-- After learning to do simple tasks you know some of the language.
+* Even for simple tasks you need to know a little of the language.
+* After learning to do simple tasks you know some of the language.
 
 The language is used to
     
-- prepare data for analysis;
-- specify individual analyses;
-- program repeated or similar analyses;
-- program new methods of analysis.
+* prepare data for analysis;
+* specify individual analyses;
+* program repeated or similar analyses;
+* program new methods of analysis.
 
 Specifying these tasks in a language supports _reproducible research_.
 
@@ -106,10 +107,10 @@ The R language operates on vectors and arrays.
 
 Commonly used data types are:
 
-- integer and numeric vectors;
-- logical vectors;
-- character vectors;
-- factors.
+* integer and numeric vectors;
+* logical vectors;
+* character vectors;
+* factors.
 
 All basic vector types support missing (`NA`) values.
 
@@ -168,9 +169,9 @@ made available in R packages.
 
 Data sets available in R packages include:
 
-- many classic data sets;
-- newer, often larger, data sets useful for learning;
-- current data obtained by querying web APIs.
+* many classic data sets;
+* newer, often larger, data sets useful for learning;
+* current data obtained by querying web APIs.
 
 
 ### Old Faithful Eruptions
@@ -192,8 +193,8 @@ The rows represent measurements recorded for eruptions of the _Old
 Faithful_ geyser in Yellowstone National Park, Wyoming. The variables
 are:
 
-- `waiting`: the time in minutes since the precious eruption;
-- `duration`: the duration of the eruption.
+* `waiting`: the time in minutes since the precious eruption;
+* `duration`: the duration of the eruption.
 
 The durations have a bimodal distribution:
 
@@ -228,7 +229,7 @@ This can also be seen in a histogram with many small bins:
 
 ```{r}
 p <- ggplot(geyser) +
-    geom_histogram(aes(x = duration, y = ..density..),
+    geom_histogram(aes(x = duration, y = stat(density)),
                    fill = "grey", color = "black", bins = 50)
 p
 ```
@@ -238,9 +239,8 @@ object. Drawing only happens when the object is printed.  </div>
 
 Does this rounding matter?
 
-- For many analyses it probably doesn't.
-- It might if you wanted to fit normal distributions to the two groups.
-
+* For many analyses it probably doesn't.
+* It might if you wanted to fit normal distributions to the two groups.
 
 Taking 3 minutes as the divide between short and long durations we can
 compute the means and standard deviations as
@@ -327,7 +327,7 @@ p
 ## Fancier version that gets a color legend.
 ## Could also get a line type legend.
 p <- ggplot(geyser) +
-    geom_histogram(aes(x = duration, y = ..density..),
+    geom_histogram(aes(x = duration, y = stat(density)),
                    fill = "grey", color = "black", bins = 50)
 p <- p + 
     stat_function(aes(color = type),
@@ -395,8 +395,8 @@ There is a lot of _interference_ between shape and color.
 
 Possible improvements:
 
-- jittering;
-- larger points.
+* jittering;
+* larger points.
 
 ```{r}
 ggplot(barley) +
@@ -519,11 +519,11 @@ cowplot::plot_grid(pb, pp)
 
 Some questions:
      
-- Which plot makes it easier to tell whether the proportion of
+* Which plot makes it easier to tell whether the proportion of
   brown-eyed students is larger or smaller that the proportion of
   blue-eyed students.
 
-- Which plot makes it easier to tell whether these proportions are
+* Which plot makes it easier to tell whether these proportions are
   larger or smaller than 1/2 or 1/4 or 1/3?
 
 Looking at the proportions within hair color and sex:
@@ -621,13 +621,13 @@ infrequently used visual chunks may become lost.
 - Data to be visualized contains _variables_ or _attributes_ measured
   on individual _items_ or _cases_.
 
-- _Links_ are relationships that may exist among items, e.g. months
+* _Links_ are relationships that may exist among items, e.g. months
   within a year or countries within a continent.
 
-- _Marks_ are individual geometric entities used to represent items:
+* _Marks_ are individual geometric entities used to represent items:
   points. bars, etc.
 
-- _Aesthetics_ or _visual channels_ are the visual features of marks
+* _Aesthetics_ or _visual channels_ are the visual features of marks
   that can be used to encode attributes.
 
 The `aes(...)` expressions establish the mapping between attributes
@@ -646,10 +646,10 @@ as implemented in `ggplot`.
 ### Channels and their Accuracy
 A useful distinction among channels:
 
-- _Magnitude channels_ can reflect order and numeric values,
+* _Magnitude channels_ can reflect order and numeric values,
   e.g. position on an axis, length, area, brightness.
 
-- _Identity channels_ can distinguish different values but not reflect
+* _Identity channels_ can distinguish different values but not reflect
   order, e.g. hue, shape, grouping.
 
 Some channels are better at conveying information than others.
@@ -684,19 +684,19 @@ But using color well is not easy.
 
 Some of the issues:
 
-- Perception depends on context.
+* Perception depends on context.
 
-- Simple color assignments may not separate equally well.
+* Simple color assignments may not separate equally well.
 
-- Effectiveness may vary with the medium (screen, projector, print).
+* Effectiveness may vary with the medium (screen, projector, print).
 
-- Some people do not perceive the full specturm of colors.
+* Some people do not perceive the full specturm of colors.
 
-- Grey scale printing.
+* Grey scale printing.
 
-- Some colors have cultural significance.
+* Some colors have cultural significance.
 
-- Cultural significance may vary among cultures and with time.
+* Cultural significance may vary among cultures and with time.
 
 Color perception is relative:
 
@@ -707,10 +707,10 @@ https://eeecon.uibk.ac.at/~zeileis/news/endrainbow/).
 
 Some tools for selecting palettes include:
 
-- [ColorBrewer](http://colorbrewer2.org); available in the
+* [ColorBrewer](http://colorbrewer2.org); available in the
   `RColorBrewer` package.
 
-- [HCL Wizard](http://www.hclwizard.org/); also available as `hclwizard`
+* [HCL Wizard](http://www.hclwizard.org/); also available as `hclwizard`
   in the `colorspace` package.
 
 
@@ -732,8 +732,8 @@ The most commonly used verbs operate on a single data frame:
 There are also a number of `join` verbs that merge several data frames
 into one.
 
-The `tidyr` package provides additional verbs, such as `gather` and
-`spread` for reshaping data frames.
+The `tidyr` package provides additional verbs, such as `pivot_longer`
+and `pivot_wider` for reshaping data frames.
 
 The single table verbs can also be used with `group_by` to work a
 group at a time instead of applying to the entire data frame.
@@ -744,7 +744,7 @@ The design of `dplyr` is strongly motivated by SQL.
 ## More Examples
 
 These examples start with raw data as you might receive it from a
-researcher and involve reading and cleaning the data.
+researcher, and involve reading and cleaning the data.
 
 
 ### Cancer Map

@@ -53,7 +53,7 @@ ggplot(geyser) + geom_point(aes(x = lag(duration), y = waiting))
 
 ## -----------------------------------------------------------------------------
 p <- ggplot(geyser) +
-    geom_histogram(aes(x = duration, y = ..density..),
+    geom_histogram(aes(x = duration, y = stat(density)),
                    fill = "grey", color = "black", bins = 50)
 p
 
@@ -118,7 +118,7 @@ p
 ## ## Fancier version that gets a color legend.
 ## ## Could also get a line type legend.
 ## p <- ggplot(geyser) +
-##     geom_histogram(aes(x = duration, y = ..density..),
+##     geom_histogram(aes(x = duration, y = stat(density)),
 ##                    fill = "grey", color = "black", bins = 50)
 ## p <- p +
 ##     stat_function(aes(color = type),
