@@ -1,0 +1,1414 @@
+---
+title: "Basic Data Wrangling and Data Visualization in R"
+author: "Luke Tierney"
+institute: "University of Iowa"
+date: "21 June, 2021"
+output:
+  xaringan::moon_reader:
+    includes:
+      after_body: "collapsecode.js"
+    lib_dir: libs
+    nature:
+      ratio: '16:9'
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: true
+      titleSlideClass: [center, middle]
+---
+
+```{r setup, include = FALSE}
+options(htmltools.dir.version = FALSE)
+library(ggplot2)
+knitr::opts_chunk$set(collapse = TRUE, fig.height = 5, fig.width = 6)
+library(lattice)
+library(tidyverse)
+library(gridExtra)
+library(forecast)
+theme_set(theme_minimal() +
+          theme(text = element_text(size = 16)) +
+          theme(panel.border = element_rect(color = "grey30", fill = NA)))
+set.seed(12345)
+```
+```{r xaringanExtra-clipboard, echo=FALSE}
+xaringanExtra::use_clipboard()
+```
+
+## Introduction
+
+In this class I will
+
+* Briefly outline the history of R.
+
+--
+
+* Using some examples briefly show how to do data wrangling
+  and visualize data in R.
+ 
+--
+
+Materials for this class are available on GitHub at
+<https://github.com/ltierney/SIBS-WV-2021.git>.
+
+--
+
+* You can access it as an RStudio project by following the menu selection
+  **File > New Project > Version Control > Git** and specifying this url.
+
+--
+
+* You ca use the `git` command line client with
+    ```shell
+git clone https://github.com/ltierney/SIBS-WV-2021.git
+    ```
+
+--
+
+Materials for our _Data Visualization and Data
+Technologies_ course are available at
+
+<http://www.stat.uiowa.edu/~luke/classes/STAT4580-2021/>
+
+
+---
+
+## Introduction: Tools
+
+Some tools I will be using:
+
+--
+
+* The [RStudio](https://www.rstudion.com) IDE.
+
+--
+
+* Many features from the basic [R](https://www.r-project.org) distribution.
+
+--
+
+* Some tools from the [_tidyverse_](https://www.tidyverse.org/).
+
+--
+
+* The [`ggplot`](https://ggplot2.tidyverse.org/) package based on
+  the _Grammar of Graphics_ framework.
+
+--
+
+Most of the packages are loaded by loading the `tidyverse` package
+
+```{r, message = FALSE}
+library(tidyverse)
+```
+
+---
+## Introduction: References
+
+Useful references:
+
+--
+
+> Hadley Wickham and Garrett Grolemund (2016), [_R for Data
+> Science_](http://r4ds.had.co.nz/), O'Reilly.
+
+--
+
+> Claus O. Wilke (2019), [_Fundamentals of Data
+>  Visualization_](https://serialmentor.com/dataviz/), O'Reilly.
+
+--
+
+> Kieran Healy (2018) [_Data Visualization: A practical
+> introduction_](http://socviz.co/), Princeton
+
+--
+
+> Rafael A. Irizarry (2019), [Introduction to Data Science: _Data
+> Analysis and Prediction Algorithms with
+> R_](https://rafalab.github.io/dsbook/), Chapman & Hall/CRC. ([Book
+> source on GitHub](https://github.com/rafalab/dsbook))
+
+
+--
+
+**Ask questions any time!**
+
+---
+## The R Language
+
+R is a language for data analysis and graphics.
+
+--
+
+* R was originally developed by Robert Gentleman and Ross Ihaka in the
+  early 1990's for a Macintosh computer lab at U. of Auckland, New Zealand.
+
+--
+
+* R is based on the S language developed by John Chambers and
+  others at Bell Labs.
+
+--
+
+R is an Open Source project.
+
+--
+
+* Since 1997 R is developed and maintained by the R-core group,
+  with around 20 members located in maor than 10 different countries.
+
+--
+
+* R is widely used in the field of statistics and beyond, especially in
+  university environments.
+
+--
+
+* R has become the primary framework for developing and making available
+  new statistical methodology.
+
+--
+
+* Many (now over 17,000) extension packages are available through CRAN or
+  similar repositories.
+
+---
+## Working with R
+
+R is designed for interactive data exploration.
+
+--
+
+* Interaction is through a _read-eval-print loop (REPL)_.
+
+--
+
+* This is also called a _command line interface (CLI)_.
+
+--
+
+All computations are specified in the R language.
+
+--
+
+* Even for simple tasks you need to know a little of the language.
+
+--
+
+* After learning to do simple tasks you know some of the language.
+
+--
+
+The language is used to
+    
+--
+
+* prepare data for analysis;
+
+--
+
+* specify individual analyses;
+
+--
+
+* program repeated or similar analyses;
+
+--
+
+* program new methods of analysis.
+
+--
+
+Specifying these tasks in a language supports _reproducible research_.
+
+---
+## Working with R
+
+The R language operates on vectors and arrays.
+
+--
+
+Commonly used data types are:
+
+--
+
+* integer and numeric vectors;
+
+--
+
+* logical vectors;
+
+--
+
+* character vectors;
+
+--
+
+* factors.
+
+--
+
+All basic vector types support missing (`NA`) values.
+
+--
+
+Arithmetic operations are vectorized to operate element-wise on vectors.
+
+--
+
+Data vectors are usually combined into table-like objects called _data
+frames_.
+
+
+---
+### The Data Analysis Process
+
+A figure that shows the steps usually involved in a data analysis
+project:
+
+```{r, include = FALSE}
+library(nomnoml)
+```
+<center>
+```{nomnoml, echo = FALSE, fig.height = 4}
+#padding: 25
+#fontsize: 18
+#fill: #E1DAFF; #D4A9FF
+#stroke: #8515C7
+#linewidth: 2
+
+[Import] -> [Understand]
+[Understand |
+  [Wrangle] -> [Visualize]
+  [Visualize] -> [Model]
+  [Model] -> [Wrangle]
+]
+[Understand] -> [Communicate]
+```
+</center>
+
+--
+
+These steps are often repeated many times, so it is important to make
+your work reproducible.
+
+---
+## Reproducible Data Analysis
+
+Making your work reproducible:
+
+--
+
+* Save you work in a text file or notebook.
+
+--
+
+* Track changes to your files with a version control system like
+  [`git`](https://git-scm.com/).
+
+--
+
+* Using a system like [Rmarkdown](https://rmarkdown.rstudio.com) to
+  prepare your reports.
+
+--
+
+This allows you to re-create your report when data changes (as it
+often will!)
+
+--
+
+A good resource for setting up your tools to support this is [_Happy
+Git and GitHub for the useR_](https://happygitwithr.com/).
+
+
+---
+class: center, middle
+
+# Some Examples
+
+---
+## Some Examples
+
+Working with research data a first step is usually to read and clean
+the data.
+
+--
+
+We'll put that off for a little while and work with some data sets
+made available in R packages.
+
+--
+
+Data sets available in R packages include:
+
+--
+
+* many classic data sets;
+
+--
+
+* newer, often larger, data sets useful for learning;
+
+--
+
+* current data obtained by querying web APIs.
+
+
+---
+## Old Faithful Eruptions
+
+A simple classic data set is the `geyser` data frame available in
+package `MASS`.
+
+--
+
+.pull-left[
+```{r}
+data(geyser, package = "MASS")
+dim(geyser)
+head(geyser, 4)
+```
+]
+--
+.pull-right[
+`head` and `tail` return the first and last few rows of a data frame.
+
+They are useful for quick sanity checks.
+]
+
+--
+
+The rows represent measurements recorded for eruptions of the _Old
+Faithful_ geyser in Yellowstone National Park, Wyoming.
+
+--
+
+The variables are:
+
+* `waiting`: the time in minutes since the precious eruption;
+
+--
+
+* `duration`: the duration of the eruption.
+
+
+---
+## Old Faithful Eruptions
+
+The durations have a bimodal distribution:
+
+.pull-left[
+```{r geyser-hist, echo = FALSE}
+ggplot(geyser) +
+    geom_histogram(aes(x = duration),
+                   bins = 15,
+                   color = "black",
+                   fill = "grey")
+```
+]
+--
+.pull-right-foo[
+```{r geyser-hist, eval = FALSE}
+```
+]
+--
+.pull-right-foo[
+A basic template for creating a plot with `ggplot`:
+
+```r
+ggplot(data = <DATA>) +
+    <GEOM>(mapping = aes(<MAPPINGS>))
+```
+]
+
+---
+## Old Faithful Eruptions
+
+An interesting question is whether the duration can be used to predict
+when the _next_ eruption will occur.
+
+--
+
+A plot of the _previous_ duration against the waiting time to the
+current eruption:
+
+--
+
+.pull-left[
+```{r geyser-scatter, echo = FALSE, warning = FALSE}
+ggplot(geyser) +
+    geom_point(aes(x = lag(duration),
+                   y = waiting))
+```
+]
+--
+.pull-right-foo[
+```{r geyser-scatter, eval = FALSE}
+```
+]
+--
+.pull-right-foo[
+It looks like a useful rule would be to expect a shorter waiting time
+after a shorter eruption.
+]
+
+---
+## Old Faithful Eruptions
+
+An interesting feature:
+
+--
+
+Many durations are recorded as 2 or 4 minutes.
+
+--
+
+This can also be seen in a histogram with many small bins:
+
+.pull-left[
+```{r geyser-hist-narrow, echo = FALSE}
+p <- ggplot(geyser) +
+    geom_histogram(aes(x = duration,
+                       y = stat(density)),
+                   fill = "grey",
+                   color = "black",
+                   bins = 50) #<<
+p
+```
+]
+--
+.pull-right-foo[
+```{r geyser-hist-narrow, eval = FALSE}
+```
+]
+--
+.pull-right-foo[
+`ggplot` produces a plot object.
+]
+--
+.pull-right-foo[
+Drawing only happens when the object
+is printed.
+]
+
+
+---
+## Old Faithful Eruptions
+
+Does this rounding matter?
+
+--
+
+* For many analyses it probably doesn't.
+
+--
+
+* It might if you wanted to fit normal distributions to the two groups.
+
+--
+
+.pull-left[
+Taking 3 minutes as the divide between short and long durations we can
+first pick out the short and long durations:
+
+```{r}
+d <- geyser$duration
+d_short <- d[d < 3]
+d_long <- d[d >= 3]
+```
+]
+--
+.pull-right[
+Then compute the means and standard deviations as
+
+```{r}
+mean(d_short)
+sd(d_short)
+mean(d_long)
+sd(d_long)
+mean(d >= 3)
+```
+]
+
+---
+## Old Faithful Eruptions
+
+An approach that scales better:
+
+--
+
+Compute group summaries using tools from the `dplyr` tidyverse
+package.
+
+--
+
+First, add a `type` variable:
+
+```{r}
+geyser <- mutate(geyser, type = ifelse(duration < 3, "short", "long"))
+```
+
+--
+
+The summaries can then be computed as
+
+```{r}
+sgd <- summarize(group_by(geyser, type),
+                 mean = mean(duration),
+                 sd = sd(duration),
+                 n = n())
+(sgd <- mutate(sgd, prop = n / sum(n)))
+```
+
+---
+## Old Faithful Eruptions
+
+One way to show the superimposed normal densities:
+
+.pull-left[
+```{r geyser-hist-dens, echo = FALSE}
+f1 <- function(x)
+    sgd$prop[1] * dnorm(x, sgd$mean[1], sgd$sd[1])
+f2 <- function(x)
+    sgd$prop[2] * dnorm(x, sgd$mean[2], sgd$sd[2])
+p <- p +
+    stat_function(color = "red", fun = f1) +
+    stat_function(color = "blue", fun = f2)
+p
+```
+]
+--
+.pull-right-foo[
+```{r geyser-hist-dens, eval = FALSE}
+```
+]
+--
+.pull-right-foo[
+A `ggplot` can consist of several _layers_.
+]
+
+
+---
+## Old Faithful Eruptions
+
+The means and standard deviations are affected by the rounding.
+
+--
+
+Summaries that omit values equal to 2 or 4 minutes can be computed as
+
+```{r}
+geyser2 <- filter(geyser, duration != 2, duration != 4)
+sgd2 <- summarize(group_by(geyser2, type),
+                  mean = mean(duration),
+                  sd = sd(duration),
+                  n = n())
+(sgd2 <- mutate(sgd2, prop = n / sum(n)))
+```
+
+--
+
+`summarize`, `group_by`, and `mutate` are from the `dplyr` package
+that implements a _grammar of data manipulation_.
+
+
+---
+## Old Faithful Eruptions
+
+A plot showing curves computed both ways:
+
+--
+.pull-left[
+```{r geyser-hist-dens-2, echo = FALSE}
+f1_2 <- function(x)
+    sgd2$prop[1] * dnorm(x, sgd2$mean[1], sgd2$sd[1])
+f2_2 <- function(x)
+    sgd2$prop[2] * dnorm(x, sgd2$mean[2], sgd2$sd[2])
+p <- p +
+    stat_function(color = "red",
+                  linetype = 2,
+                  fun = f1_2) +
+    stat_function(color = "blue",
+                  linetype = 2,
+                  fun = f2_2)
+p
+```
+]
+--
+.pull-right-foo[
+```{r geyser-hist-dens-2, eval = FALSE}
+```
+]
+
+---
+## Minnesota Barley Yields
+
+A classic data set:
+
+--
+
+Total yield in bushels per acre for 10 varieties at 6 sites in
+Minnesota in each of two years, 1931 and 1932.
+
+--
+
+The raw data:
+
+```{r}
+data(barley, package = "lattice")
+head(barley)
+```
+
+---
+## Minnesota Barley Yields
+
+Some initial plots:
+
+```{r, fig.width = 10}
+p1 <- ggplot(barley) + geom_point(aes(x = yield, y = variety))
+p2 <- ggplot(barley) + geom_point(aes(x = yield, y = site))
+cowplot::plot_grid(p1, p2)
+```
+
+---
+## Minnesota Barley Yields
+
+Using color to separate yields in the two years:
+
+```{r, fig.width = 12}
+p1 <- ggplot(barley) + geom_point(aes(x = yield, y = variety, color = year))
+p2 <- ggplot(barley) + geom_point(aes(x = yield, y = site, color = year))
+cowplot::plot_grid(p1, p2)
+
+```
+
+---
+## Minnesota Barley Yields
+
+Can we also show `site` using symbol shape?
+
+--
+
+.pull-left[
+```{r barley-color-sym, echo = FALSE, fig.width = 7}
+ggplot(barley) +
+    geom_point(aes(x = yield,
+                   y = variety,
+                   color = year,
+                   shape = site)) #<<
+```
+]
+--
+.pull-right-foo[
+```{r barley-color-sym, eval = FALSE}
+```
+]
+--
+.pull-right-foo[
+There is a lot of _interference_ between shape and color.
+]
+
+
+---
+## Minnesota Barley Yields
+
+Can we also show `site` using symbol shape?
+
+.pull-left[
+```{r barley-color-sym-2, echo = FALSE, fig.width = 7}
+ggplot(barley) +
+    geom_point(aes(x = yield,
+                   y = variety,
+                   color = year,
+                   shape = site),
+               size = 2.5) #<<
+```
+]
+.pull-right[
+```{r barley-color-sym-2, eval = FALSE}
+```
+
+Possible improvements:
+
+* larger points
+]
+
+
+---
+## Minnesota Barley Yields
+
+Can we also show `site` using symbol shape?
+
+
+.pull-left[
+```{r barley-color-sym-3, echo = FALSE, fig.width = 7}
+ggplot(barley) +
+    geom_point(aes(x = yield,
+                   y = variety,
+                   color = year,
+                   shape = site),
+               size = 2.5,
+               position = position_jitter(height = 0.15, width = 0)) #<<
+```
+]
+.pull-right[
+```{r barley-color-sym-3, eval = FALSE}
+```
+
+Possible improvements:
+
+* larger points
+* jittering
+]
+
+
+---
+## Minnesota Barley Yields
+
+Another approach: _faceting_ to produce _small multiples_.
+
+```{r, fig.width = 10}
+ggplot(barley) +
+    geom_point(aes(x = yield, y = variety, color = year)) +
+    facet_wrap(~site)
+```
+
+---
+## Minnesota Barley Yields
+
+Focusing on summaries can help. 
+
+--
+A _dot plot_:
+
+.pull-left[
+```{r barley-avg-dot, echo = FALSE, message = FALSE, fig.width = 7}
+barley_site_year <-
+    summarize(group_by(barley, site, year),
+              yield = mean(yield))
+ggplot(barley_site_year) +
+    geom_point(aes(y = site,
+                   x = yield,
+                   color = year),
+               size = 3)
+```
+]
+--
+.pull-right[
+```{r barley-avg-dot, eval = FALSE}
+```
+]
+
+
+---
+## Minnesota Barley Yields
+
+_Bar charts_ are sometimes used for summaries, but dot plots are
+usually a better choice.
+.pull-left[
+```{r barley-avg-bar, echo = FALSE, message = FALSE, fig.width = 7}
+barley_site_year <-
+    summarize(group_by(barley, site, year),
+              yield = mean(yield))
+ggplot(barley_site_year) +
+    geom_col(aes(x = yield,
+                 y = site,
+                 fill = year),
+             size = 3,
+             position = "dodge",
+             width = .4)
+```
+]
+.pull-right[
+```{r barley-avg-bar, eval = FALSE}
+```
+]
+
+---
+## Bar Charts and the Zero Base Line
+
+Because of the way we perceive bars, it is important to use a [zero
+base line for bar
+charts](https://flowingdata.com/2015/08/31/bar-chart-baselines-start-at-zero/).
+
+--
+
+![](../img/viz3-520x294.jpg)
+--
+![](../img/viz5-520x280.jpg)
+
+---
+## Hair and Eye Color Data
+
+A data set recording the distribution of hair and eye color and sex in
+592 statistics students.
+
+
+.pull-left[
+```{r}
+HairEyeDF <- as.data.frame(HairEyeColor)
+head(HairEyeDF)
+```
+]
+--
+.pull-right[
+The data set is available as a _cross-tabulation_.
+
+`as.data.frame` converts it to a data frame.
+]
+
+---
+## Hair and Eye Color Data
+
+Looking at the distribution of eye color:
+
+--
+.pull-left[
+```{r eye-bar, echo = FALSE}
+eye <- summarize(group_by(HairEyeDF, Eye),
+                 Freq = sum(Freq))
+ggplot(eye) +
+    geom_col(aes(x = Eye,
+                 y = Freq),
+             position = "dodge")
+```
+]
+--
+.pull-right[
+```{r eye-bar, eval = FALSE}
+```
+]
+
+---
+## Hair and Eye Color Data
+
+Mapping eye color to color in addition to the horizontal axis can help:
+
+.pull-left[
+```{r eye-bar-2, echo = FALSE}
+eye <- summarize(group_by(HairEyeDF, Eye),
+                 Freq = sum(Freq))
+ggplot(eye) +
+    geom_col(aes(x = Eye,
+                 y = Freq,
+                 fill = Eye), #<<
+             position = "dodge")
+```
+]
+.pull-right[
+```{r eye-bar-2, eval = FALSE}
+```
+]
+
+---
+## Hair and Eye Color Data
+
+More sensible colors would be nice but require a bit of work:
+
+.pull-left[
+```{r eye-bar-3, echo = FALSE}
+hazel_rgb <-
+    col2rgb("brown") * 0.75 + col2rgb("green") * 0.25
+hazel <-
+    do.call(rgb, as.list(hazel_rgb / 255))
+
+cols <-
+    c(Blue = colorspace::lighten(colorspace::desaturate("blue", 0.3), 0.3),
+      Green = colorspace::lighten("forestgreen", 0.1),
+      Brown = colorspace::lighten("brown", 0.0001), ## 0.3?
+      Hazel = colorspace::lighten(hazel, 0.3))
+
+pb <- ggplot(eye) +
+    geom_col(aes(x = Eye,
+                 y = Freq,
+                 fill = Eye),
+             position = "dodge") +
+    scale_fill_manual(values = cols)
+pb
+```
+]
+.pull-right[
+```{r eye-bar-3, eval = FALSE}
+```
+]
+
+---
+## Hair and Eye Color Data
+
+A _stacked bar chart_ can also be useful:
+
+.pull-left[
+```{r eye-bar-stacked, echo = FALSE}
+psb <- ggplot(eye) +
+    geom_col(aes(x = "", y = Freq, fill = Eye), color = "lightgrey") +
+    scale_fill_manual(values = cols)
+psb
+```
+]
+.pull-right[
+```{r eye-bar-stacked, echo = FALSE}
+```
+]
+
+---
+## Hair and Eye Color Data
+
+A _pie chart_ can be seen as a stacked bar chart in polar coordinates:
+
+.pull-left[
+```{r eye-pie, echo = FALSE}
+(pp <- psb + coord_polar("y"))
+```
+]
+.pull-right[
+```{r eye-pie, eval = FALSE}
+```
+]
+
+---
+## Hair and Eye Color Data
+
+The axis and grid are not helpful; a _theme_ adjustment can remove them:
+
+.pull-left[
+```{r eye-pie-2, echo = FALSE}
+(pp <- pp + theme_void())
+```
+]
+.pull-right[
+```{r eye-pie-2, eval = FALSE}
+```
+
+Themes provide a way to customize the non-data components of plots:
+i.e. titles, labels, fonts, background, grid lines, and legends.
+
+Themes can be used to give plots a consistent customized look.
+
+The `ggthemes` package provides a number of themes to emulate the
+style of different publications, for example `theme_wsj` and
+`theme_economist`.
+]
+
+---
+## Hair and Eye Color Data
+
+How well do bar charts and pie charts work?
+
+--
+
+.pull-left[
+```{r, echo = FALSE, fig.width = 8}
+cowplot::plot_grid(pb, pp)
+```
+]
+--
+.pull-right[
+Some questions:
+
+* Which plot makes it easier to tell whether the proportion of
+  brown-eyed students is larger or smaller that the proportion of
+  blue-eyed students.
+
+* Which plot makes it easier to tell whether these proportions are
+  larger or smaller than 1/2 or 1/4 or 1/3?
+]
+
+---
+## Hair and Eye Color Data
+
+Looking at the proportions within hair color and sex:
+
+.hide-code[
+```{r, fig.width = 14, fig.height = 6}
+eye_hairsex <- mutate(group_by(HairEyeDF, Hair, Sex), Prop = Freq / sum(Freq))
+p1 <- ggplot(eye_hairsex) +
+    geom_col(aes(x = Eye, y = Prop, fill = Eye)) +
+    scale_fill_manual(values = cols) +
+    facet_grid(Hair~Sex)
+p2 <- ggplot(eye_hairsex) +
+    geom_col(aes(x = "", y = Prop, fill = Eye)) +
+    scale_fill_manual(values = cols) +
+    coord_polar("y")+facet_grid(Hair~Sex) +
+    theme_void()
+cowplot::plot_grid(p1, p2)
+```
+]
+
+---
+## Hair and Eye Color Data
+
+A more complete `ggplot` template:
+
+```r
+ggplot(data = <DATA>) +
+    <GEOM>(mapping = aes(<MAPPINGS>),
+           stat = <STAT>,
+           position = <POSITION>) +
+    < ... MORE GEOMS ... > +
+    <COORDINATE_ADJUSTMENT> +
+    <SCALE_ADJUSTMENT> +
+    <FACETING> +
+    <THEME_ADJUSTMENT>
+```
+
+
+---
+class: center, middle
+# Visual Perception and the Grammar of Graphics
+
+---
+## Monthly River Flows
+
+Monthly flow volumes recorded for a river in the pacific north-west.
+
+An initial plot using default settings:
+
+.hide-code[
+```{r, fig.width = 8}
+river <- scan("../data/river.dat")
+rd <- data.frame(flow = river, month = seq_along(river))
+(pp <- ggplot(rd) + geom_point(aes(x = month, y = flow)))
+```
+]
+
+---
+## Monthly River Flows
+
+Monthly flow volumes recorded for a river in the pacific north-west.
+
+Changing the _aspect ratio_:
+
+.hide-code[
+```{r, fig.width = 12, fig.height = 4}
+pp + coord_fixed(3.5)
+```
+]
+
+---
+## Monthly River Flows
+
+Monthly flow volumes recorded for a river in the pacific north-west.
+
+Time series are often visualized with a line plot:
+
+.hide-code[
+```{r, fig.width = 12, fig.height = 4}
+pl <- ggplot(rd) + geom_line(aes(x = month, y = flow))
+pl + coord_fixed(3.5)
+```
+]
+
+---
+## Monthly River Flows
+
+Monthly flow volumes recorded for a river in the pacific north-west:
+
+The seasonal variation can be seen with a line plot in the original
+aspect ratio:
+
+.hide-code[
+```{r, fig.width = 8}
+pl
+```
+]
+
+---
+## A Simple Model of Visual Perception
+
+The eyes acquire an image, which is processed through three stages of
+memory:
+
+--
+
+* Iconic memory
+
+--
+
+* Working memory, or short-term memory
+
+--
+
+* Long-term memory
+
+--
+
+The first processing stage of an image happens in iconic memory.
+
+--
+
+* Images remain in iconic memory for less than a second.
+
+--
+
+* Processing in iconic memory is massively parallel and automatic.
+
+--
+
+* This is called _preattentive processing_.
+
+--
+
+Preattentive processing is a fast recognition process.
+
+---
+## A Simple Model of Visual Perception
+
+Meaningful visual chunks are moved from iconic memory to short term memory.
+
+--
+
+* These chunks are used by conscious, or attentive, processing.
+
+--
+
+* Attentive processing often involves conscious comparisons or search.
+
+--
+
+* Short term memory is limited;
+
+    * information is retained for only a few seconds;
+    * only three or fours chunks can be held at a time.
+
+--
+
+Long term visual memory is built up over a lifetime, though
+infrequently used visual chunks may become lost.
+
+---
+## Visual Design Implications
+
+Try to make as much use of preattentive features as possible.
+
+--
+
+Recognize when preattentive features might mislead.
+
+--
+
+For features that require attentive processing keep in mind that
+working memory is limited.
+
+
+---
+## Some Terms for Describing Visualizations
+
+Data to be visualized contains _variables_ or _attributes_ measured on
+individual _items_ or _cases_.
+
+--
+
+_Links_ are relationships that may exist among items, e.g. months
+within a year or countries within a continent.
+
+--
+
+_Marks_ are individual geometric entities used to represent items:
+points. bars, etc.
+
+--
+
+_Aesthetics_ or _visual channels_ are the visual features of marks
+that can be used to encode attributes.
+
+--
+
+The `aes(...)` expressions establish the mapping between attributes
+and visual channels.
+
+--
+
+These ideas closely mirror the structure of the _grammar of graphics_
+as implemented in `ggplot`.
+
+--
+
+> Munzner, T. (2014), [_Visualization Analysis and
+>  Design_](http://www.cs.ubc.ca/~tmm/vadbook/), CRC Press.
+
+> Wilkinson, L. (2005), _The Grammar of Graphics_, 2nd ed, Springer.
+
+
+---
+## Channels and their Accuracy
+
+A useful distinction among channels:
+
+--
+
+* _Magnitude channels_ can reflect order and numeric values,
+  e.g. position on an axis, length, area, brightness.
+
+--
+
+* _Identity channels_ can distinguish different values but not reflect
+  order, e.g. hue, shape, grouping.
+
+--
+
+Some channels are better at conveying information than others.
+
+---
+## Channels and their Accuracy
+
+Munzner's ordering by accuracy:
+
+--
+
+| Magnitude Channels (Ordered, Numerical) | Identity Channels (Categorical) |
+|-----------------------------------------|---------------------------------|
+| Position on common scale                | Spatial grouping                |
+| Position on unaligned scale             | Color hue                       |
+| Length (1D size)                        | Shape                           |
+| Tilt, angle                             |                                 |
+| Area (2D size)                          |                                 |
+| Depth (3D position)                     |                                 |
+| Color luminance, saturation             |                                 |
+| Curvature, volume (3D size)             |                                 |
+--
+
+Line width is another channel; not sure there is agreement on its
+accuracy, but it is not high.
+
+---
+## Visual Design Implications
+
+Try to map the most important variables to the strongest channels.
+
+
+---
+## Color
+
+Color is very effective when used well.
+
+--
+
+But using color well is not easy.
+
+--
+
+Some of the issues:
+
+--
+
+* Perception depends on context.
+
+--
+
+* Simple color assignments may not separate equally well.
+
+--
+
+* Effectiveness may vary with the medium (screen, projector, print).
+
+--
+
+* Some people do not perceive the full specturm of colors.
+
+--
+
+* Grey scale printing.
+
+--
+
+* Some colors have cultural significance.
+
+--
+
+* Cultural significance may vary among cultures and with time.
+
+---
+## Color
+
+Color perception is relative:
+
+--
+
+![](../img/chess1.png)
+--
+![](../img/chess2.png)
+
+--
+
+A note on [rainbow colors](
+https://eeecon.uibk.ac.at/~zeileis/news/endrainbow/).
+
+--
+
+Some tools for selecting palettes include:
+
+--
+
+* [ColorBrewer](http://colorbrewer2.org); available in the
+  `RColorBrewer` package.
+
+--
+
+* [HCL Wizard](http://www.hclwizard.org/); also available as `hclwizard`
+  in the `colorspace` package.
+
+---
+class: center, middle
+
+# A Grammar of Data Manipulation
+
+---
+## A Grammar of Data Manipulation
+
+The `dplyr` package provides a language, or grammar, for data
+manipulation.
+
+--
+
+The language contains a number of _verbs_ that operate on tables.
+
+--
+
+The most commonly used verbs operate on a single data frame:
+
+--
+
+* `select`: pick variables by their names
+
+--
+
+* `filter`: choose rows that satisfy some criteria
+
+--
+
+* `mutate`: create transformed or derived variables
+
+--
+
+* `arrange`: reorder the rows
+
+--
+
+* `summarize`: collapse rows down to summaries
+
+--
+
+There are also a number of `join` verbs that merge several data frames
+into one.
+
+--
+
+Package `tidyr` provides more verbs, such as `pivot_longer` and
+`pivot_wider` for reshaping data frames.
+
+The single table verbs can also be used with `group_by` to work
+separately on groups of rows.
+
+The design of `dplyr` is strongly motivated by SQL.
+
+---
+class: center, middle
+
+# More Examples
+
+
+---
+# More Examples
+
+These examples start with raw data as you might receive it from a
+researcher, and involve reading and cleaning the data.

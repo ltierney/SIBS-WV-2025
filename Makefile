@@ -4,6 +4,7 @@ RMDHTML ::= $(patsubst %.Rmd, %.html, $(wildcard *.Rmd))
 RMDR ::= $(patsubst %.Rmd, %.R, $(wildcard *.Rmd))
 
 all: $(RMDHTML) $(RMDR)
+	cd slides; $(MAKE)
 
 # Patterns
 
