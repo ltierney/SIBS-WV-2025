@@ -1412,3 +1412,208 @@ class: center, middle
 
 These examples start with raw data as you might receive it from a
 researcher, and involve reading and cleaning the data.
+
+--
+
+Common data formats you might encounter include
+
+--
+
+* [_CSV_ (comma-separated
+  values)](https://en.wikipedia.org/wiki/Comma-separated_values) files.
+
+--
+
+* Text files using other delimiters, such as tabs or `|` characters.
+
+--
+
+* [JSON(JavaScript Object
+  Notation)](https://en.wikipedia.org/wiki/JSON) files.
+  
+--
+
+* [XML (Extensible Markup
+  Language)](https://en.wikipedia.org/wiki/XML) files.
+
+--
+
+* Excel spreadsheets.
+
+--
+
+Tools are available for reading the data formats into R.
+
+---
+## Wind Turbines in Iowa
+
+There are many wind turbines in Iowa.
+
+--
+
+Data is available from the [U.S. Wind Turbine
+Database](https://eerscmap.usgs.gov/uswtdb/).
+
+--
+
+A snapshot is available is [here](../data/us_wind.csv) as a CSV file.
+
+--
+
+* CSV files are a common form of data exchange.
+
+--
+
+* They are simple text files that are intended to be written and read
+  by a computer.
+
+--
+
+* Some CSV files include a header and a footer that need to he handled.
+
+--
+
+* One issue is that a comma isn't a good separator in countries where
+  it is the decimal separator!
+
+--
+
+* A CSV file can be read using `read.csv` or `readr::read_csv`.
+
+--
+
+Reading the wind turbine data:
+
+```{r}
+wind_turbines <- read.csv("../data/us_wind.csv", comment = "#")
+```
+
+---
+## Wind Turbines in Iowa
+
+Some data cleaning is needed.
+
+--
+
+Focus on the wind turbines in IOWA (19 is the [FIPS county
+code](https://en.wikipedia.org/wiki/FIPS_county_code) for Iowa):
+
+```{r}
+wt_IA <- filter(wind_turbines, t_fips %/% 1000 == 19)
+```
+--
+
+Drop entries with missing longitude or latitude values:
+
+```{r}
+wt_IA <- filter(wt_IA, ! is.na(xlong), ! is.na(ylat))
+```
+--
+
+Some missing year values are encoded as -9999; replace these with `NA`:
+
+```{r}
+wt_IA <- mutate(wt_IA, p_year = replace(p_year, p_year < 0, NA))
+```
+
+---
+## Wind Turbines in Iowa
+
+To show the locations of wind turbines on a map, load some map data:
+
+.pull-left[
+```{r, eval = FALSE}
+iowa_sf <-
+    sf::st_as_sf(maps::map("county", "iowa",
+                           plot = FALSE,
+                           fill = TRUE))
+```
+]
+.pull-right[]
+
+---
+## Wind Turbines in Iowa
+
+To show the locations of wind turbines on a map, load some map data:
+
+.pull-left[
+```{r iowa_sf_map, eval = FALSE}
+iowa_sf <-
+    sf::st_as_sf(maps::map("county", "iowa",
+                           plot = FALSE,
+                           fill = TRUE))
+
+p <- ggplot() +
+    geom_sf(data = iowa_sf) +
+    ggthemes::theme_map()
+p
+```
+]
+.pull-right[
+```{r iowa_sf_map, echo = FALSE, fig.width = 8}
+```
+]
+
+---
+## Wind Turbines in Iowa
+
+Locations for all wind turbines in iowa:
+
+.pull-left[
+```{r wt-IA-all, eval = FALSE}
+p + geom_point(aes(xlong, ylat),
+               data = wt_IA)
+```
+]
+.pull-right[
+```{r wt-IA-all, echo = FALSE, fig.width = 8}
+```
+]
+
+---
+## Wind Turbines in Iowa
+
+Using color to show when the wind turbines were  built:
+
+.pull-left[
+```{r wt-IA-color, eval = FALSE}
+year_brk <-c(0, 2005, 2010, 2015, 2020)
+year_lab <- c("before 2005",
+              "2005-2009",
+              "2010-2014",
+              "2015-2020")
+wt_IA <-
+    mutate(wt_IA,
+           year = cut(p_year,
+                      breaks = year_brk,
+                      labels = year_lab,
+                      right = FALSE))
+p + geom_point(aes(xlong,
+                   ylat,
+                   color = year),
+               data = wt_IA,
+               size = 3)
+```
+]
+.pull-right[
+```{r wt-IA-color, echo = FALSE, fig.width = 8}
+```
+]
+
+
+```{r eval = FALSE, echo = FALSE}
+library(tidyverse)
+p <- ggplot() + geom_sf(data = iowa_sf) + ggthemes::theme_map()
+p + geom_point(aes(xlong, ylat), data = wt_IA)
+
+wt_IA_sf <- sf::st_as_sf(wt_IA, coords = c("xlong", "ylat"), crs = 4326)
+
+p + geom_sf(data = filter(wt_IA_sf, year <= 2020))
+
+library(gganimate)
+pa <- p + geom_sf(data = wt_IA_sf) +
+    transition_manual(year, cumulative = TRUE) +
+    labs(title = "Wind turbines in Iowa",
+         subtitle = "Year = {current_frame}")
+anim_save("foo.gif", animate(pa, fps = 10, nframes = 100))
+```
