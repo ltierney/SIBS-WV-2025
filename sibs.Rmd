@@ -861,9 +861,9 @@ We can read the file with `read_csv` from the `readr` package.
 
 Looking at the file shows some things that need to be cleaned up:
 
-- Two header lines at the beginning
-- Some footer lines.
-- Some values codes as `~`.
+* Two header lines at the beginning
+* Some footer lines.
+* Some values codes as `~`.
 
 The header can be handled by using `skip = 2` in the `read_csv` call:
 
