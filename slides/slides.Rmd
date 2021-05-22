@@ -1617,3 +1617,267 @@ pa <- p + geom_sf(data = wt_IA_sf) +
          subtitle = "Year = {current_frame}")
 anim_save("foo.gif", animate(pa, fps = 10, nframes = 100))
 ```
+
+---
+## Cancer Map
+
+The website <http://www.cancer-rates.info/ia> provides data on
+cancer incidence for a number of different cancers in Iowa.
+
+--
+
+The data for lung and bronchus cancer in 2011 are available in a [csv
+file](../data/Invasive-Cancer-Incidence-Rates-by-County-in-Iowa-Lung-and-Bronchus-2011.csv)
+in the project.
+
+--
+
+We can read the file with `read_csv` from the `readr` package.
+
+--
+
+Looking at the file shows some things that need to be cleaned up:
+
+--
+
+* Two header lines at the beginning
+
+--
+
+* Some footer lines.
+
+--
+
+* Some values codes as `~`.
+
+
+---
+## Cancer Map
+
+The header can be handled by using `skip = 2` in the `read_csv` call:
+
+```{r, message = FALSE}
+fname <- "../data/Invasive-Cancer-Incidence-Rates-by-County-in-Iowa-Lung-and-Bronchus-2011.csv"
+d <- read_csv(fname, skip = 2)
+head(d)
+```
+
+---
+## Cancer Map
+
+Let's focus on a few variables and give them more convenient names:
+
+```{r}
+d <- select(d, county = 1, population = 2, count = 3)
+```
+
+--
+
+The footer needs to be removed:
+
+```{r}
+tail(d)
+```
+
+--
+
+One way to remove the footer:
+
+```{r}
+d <- filter(d, ! is.na(population))
+d <- filter(d, county != "STATE")
+```
+
+---
+## Cancer Map
+
+Changing `count` to numeric changes the `~` entries to missing values
+(`NA`) values:
+
+```{r}
+d <- mutate(d, count = as.numeric(count))
+```
+
+--
+
+In this case there are no zero case values; two ways to check:
+
+```{r}
+count(d, count == 0)
+any(d$count == 0, na.rm = TRUE)
+```
+
+--
+
+It _might_ be reasonable to assume these values where zero, so replace
+them with zeros:
+
+```{r}
+d <- replace_na(d, list(count = 0))
+```
+
+---
+## Cancer Map
+
+A _choropleth map_ uses color or shading to represent values measured
+for different geographic regions.
+
+--
+
+We will need to merge, or _left join_, the cancer data with the map
+date we loaded for the wind turbine map.
+
+--
+
+This requires a _key_ on which to match the records in the cancer data
+and the map data.
+
+--
+
+For Iowa this can be done with the county name, but some care is needed:
+
+```{r}
+d$county[1]
+iowa_sf$ID[1]
+```
+
+--
+
+Fixing case differences and dropping the `iowa,` prefix:
+
+
+```{r}
+d <- mutate(d, cname = county, county = tolower(county))
+iowa_sf <- mutate(iowa_sf, ID = sub("iowa,", "", ID))
+iowa_sf <- rename(iowa_sf, county = ID)
+```
+
+---
+## Cancer Map
+
+Still not quite there:
+
+```{r}
+setdiff(d$county, iowa_sf$county)
+setdiff(iowa_sf$county, d$county)
+```
+
+Drop the apostrophe in O'Brien:
+
+```{r}
+d <- mutate(d, county = sub("'", "", county))
+
+setdiff(d$county, iowa_sf$county)
+setdiff(iowa_sf$county, d$county)
+```
+
+
+---
+## Cancer Map
+
+Define `rate1K` variable as the number of cases per 1000 inhabitants
+and left join the cancer data to the map data:
+
+```{r}
+d <- mutate(d, rate1K = 1000 * (count / population))
+md <- left_join(iowa_sf, d, "county")
+head(md)
+```
+
+---
+## Cancer Map
+
+A simple map:
+
+.pull-left[
+```{r cancer-map-1, eval = FALSE}
+ggplot(md) +
+    geom_sf(aes(fill = rate1K))
+```
+]
+--
+.pull-right[
+```{r cancer-map-1, echo = FALSE, fig.width = 8}
+```
+]
+
+---
+## Cancer Map
+
+An improved version:
+
+.pull-left[
+```{r cancer-map-2, eval = FALSE}
+library(ggthemes)
+library(viridis)
+ggplot(md) +
+    geom_sf(aes(fill = rate1K),
+            color = "grey") +
+    scale_fill_viridis(name = "Rate per 1000") +
+    theme_map()
+```
+]
+--
+.pull-right[
+```{r cancer-map-2, echo = FALSE, fig.width = 8, message = FALSE}
+```
+]
+
+---
+## Cancer Map
+
+A simple interactive version using [`plotly`](https://plot.ly/r/):
+
+.pull-left[
+```{r cancer-map-plotly, eval = FALSE}
+mdl <- mutate(md,
+              label = paste(cname,
+                            round(rate1K, 1),
+                            population,
+                            sep = "\n"))
+p <- ggplot(mdl) +
+    geom_sf(aes(fill = rate1K,
+                text = label), 
+            color = "grey") +
+    scale_fill_viridis(name = "Rate per 1000") +
+    theme_map()
+
+plotly::ggplotly(p, tooltip = "text")
+```
+]
+--
+.pull-right[
+```{r cancer-map-plotly, echo = FALSE, warning = FALSE, fig.width = 8}
+```
+]
+
+---
+## Cancer Map
+
+The [`leaflet`](https://rstudio.github.io/leaflet/) package supports
+more sophisticated interactive maps:
+
+<!-- http://rstudio.github.io/leaflet/legends.html-->
+.hide-code[
+```{r, fig.height = 7, fig.width = 10}
+library(leaflet)
+pal <- colorNumeric(palette = "viridis", domain = md$rate1K)
+lab <- lapply(paste0(md$cname, "<BR>",
+                     "Rate: ", round(md$rate1K, 1), "<BR>",
+                     "Pop: ", scales::comma(md$population,
+                                            accuracy = 1)),
+              htmltools::HTML)
+leaflet(sf::st_transform(md, 4326)) %>%
+    addPolygons(weight = 2,
+                color = "grey",
+                fillColor = ~ pal(rate1K),
+                fillOpacity = 1,
+                highlightOptions = highlightOptions(color = "white",
+                                                    weight = 2,
+                                                    bringToFront = TRUE),
+                label = lab) %>%
+    addLegend(pal = pal, values = ~ rate1K, opacity = 1)
+```
+]
+
+
