@@ -747,23 +747,115 @@ These examples start with raw data as you might receive it from a
 researcher, and involve reading and cleaning the data.
 
 
+### Wind Turbines in Iowa
+
+There are many wind turbines in Iowa.  Data is available from the
+[U.S. Wind Turbine Database](https://eerscmap.usgs.gov/uswtdb/).  A
+snapshot is available is [here](data/us_wind.csv) as a CSV file.
+
+CSV files are a common form of data exchange.
+
+* They are simple text files that are intended to be written and read
+  by a computer.
+
+* Some CSV files include a header and a footer that need to he handled.
+
+* One issue is that a comma isn't a good separator in countries where
+  it is the decimal separator!
+
+* A CSV file can be read using `read.csv` or `readr::read_csv`.
+
+Reading the wind turbine data:
+
+```{r}
+wind_turbines <- read.csv("data/us_wind.csv", comment = "#")
+```
+Some data cleaning is needed.
+
+Focus on the wind turbines in IOWA (19 is the [FIPS county
+code](https://en.wikipedia.org/wiki/FIPS_county_code) for Iowa):
+
+```{r}
+wt_IA <- filter(wind_turbines, t_fips %/% 1000 == 19)
+```
+Drop entries with missing longitude or latitude values:
+
+```{r}
+wt_IA <- filter(wt_IA, ! is.na(xlong), ! is.na(ylat))
+```
+Some missing year values are encoded as -9999; replace these with `NA`:
+
+```{r}
+wt_IA <- mutate(wt_IA, p_year = replace(p_year, p_year < 0, NA))
+```
+To show the locations of wind turbines on a map, load some map data:
+
+```{r, eval = FALSE}
+iowa_sf <- sf::st_as_sf(maps::map("county", "iowa", plot = FALSE, fill = TRUE))
+```
+To show the locations of wind turbines on a map, load some map data:
+
+```{r, fig.width = 8}
+iowa_sf <-
+    sf::st_as_sf(maps::map("county", "iowa",
+                           plot = FALSE,
+                           fill = TRUE))
+p <- ggplot() +
+    geom_sf(data = iowa_sf) +
+    ggthemes::theme_map()
+p
+```
+
+Locations for all wind turbines in iowa:
+
+```{r, fig.width = 8}
+p + geom_point(aes(xlong, ylat), data = wt_IA)
+```
+
+Using color to show when the wind turbines were  built:
+
+```{r, fig.width = 8}
+year_brk <-c(0, 2005, 2010, 2015, 2020)
+year_lab <- c("before 2005",
+              "2005-2009",
+              "2010-2014",
+              "2015-2020")
+wt_IA <-
+    mutate(wt_IA,
+           year = cut(p_year,
+                      breaks = year_brk,
+                      labels = year_lab,
+                      right = FALSE))
+p + geom_point(aes(xlong,
+                   ylat,
+                   color = year),
+               data = wt_IA,
+               size = 3)
+```
+
+```{r eval = FALSE, echo = FALSE}
+library(tidyverse)
+p <- ggplot() + geom_sf(data = iowa_sf) + ggthemes::theme_map()
+p + geom_point(aes(xlong, ylat), data = wt_IA)
+
+wt_IA_sf <- sf::st_as_sf(wt_IA, coords = c("xlong", "ylat"), crs = 4326)
+
+p + geom_sf(data = filter(wt_IA_sf, year <= 2020))
+
+library(gganimate)
+pa <- p + geom_sf(data = wt_IA_sf) +
+    transition_manual(year, cumulative = TRUE) +
+    labs(title = "Wind turbines in Iowa",
+         subtitle = "Year = {current_frame}")
+anim_save("foo.gif", animate(pa, fps = 10, nframes = 100))
+```
+
 ### Cancer Map
 
 The website <http://www.cancer-rates.info/ia> provides data on
-cancer incidence for a number of different cancers in Iowa
+cancer incidence for a number of different cancers in Iowa.
 The data for lung and bronchus cancer in 2011 are available
 in a [csv file](data/Invasive-Cancer-Incidence-Rates-by-County-in-Iowa-Lung-and-Bronchus-2011.csv) in the project.
-
-<div class="alert alert-info"> [_CSV_ (comma-separated
-values)](https://en.wikipedia.org/wiki/Comma-separated_values) are a
-common form of data exchange. They are simple text files that are
-intended to be written and read by a computer.
-
-This CSV file is unusual in that it includes header and footer
-information that complicate machine reading a bit.
-
-One issue is that a comma isn't a good separator in countries where it
-is the decimal separator!  </div>
 
 We can read the file with `read_csv` from the `readr` package.
 
@@ -775,7 +867,7 @@ Looking at the file shows some things that need to be cleaned up:
 
 The header can be handled by using `skip = 2` in the `read_csv` call:
 
-```{r}
+```{r, message = FALSE}
 fname <- "data/Invasive-Cancer-Incidence-Rates-by-County-in-Iowa-Lung-and-Bronchus-2011.csv"
 d <- read_csv(fname, skip = 2)
 head(d)
@@ -785,6 +877,11 @@ Let's focus on a few variables and give them more convenient names:
 
 ```{r}
 d <- select(d, county = 1, population = 2, count = 3, crude_rate = 4)
+```
+
+The footer needs to be removed:
+
+```{r}
 tail(d)
 ```
 
@@ -792,10 +889,12 @@ One way to remove the footer:
 
 ```{r}
 d <- filter(d, ! is.na(population))
+d <- filter(d, county != "STATE")
 tail(d)
 ```
 
-Changing `count` and `crude_rate` to numeric changes the `~` entries to missing values (`NA`) values:
+Changing `count` and `crude_rate` to numeric changes the `~` entries
+to missing values (`NA`) values:
 
 ```{r}
 d <- mutate(d, count = as.numeric(count), crude_rate = as.numeric(crude_rate))
@@ -818,36 +917,25 @@ d <- replace_na(d, list(count = 0, crude_rate = 0))
 A _choropleth map_ uses color or shading to represent values measured
 for different geographic regions.
 
-In simple cases, like US counties, a choropleth map can be created by
-finding data for polygons defining county borders and shading the
-polygons.
-
-Polygon data for US counties in the lower 48 states can be obtained with
-
-```{r, message = FALSE}
-m <- map_data("county", "iowa")
-head(m)
-m <- select(m, -region)
-m <- rename(m, county = subregion)
-head(m)
-```
-
-We will need to merge, or _left join_, the data we want to plot into
-the polygon data using the county identifier.
+We will need to merge, or _left join_, the cancer data with the map
+date we loaded for the wind turbine map.
 
 For Iowa this can be done with the county name, but some care is needed.
 
 ```{r}
-d <- mutate(d, cname = county, county = tolower(county))
+d$county[1]
+iowa_sf$ID[1]
 
-setdiff(d$county, m$county)
-setdiff(m$county, d$county)
+d <- mutate(d, cname = county, county = tolower(county))
+iowa_sf <- mutate(iowa_sf, county = sub("iowa,", "", ID))
+
+setdiff(d$county, iowa_sf$county)
+setdiff(iowa_sf$county, d$county)
 
 d <- mutate(d, county = sub("'", "", county))
-d <- filter(d, county != "state")
 
-setdiff(d$county, m$county)
-setdiff(m$county, d$county)
+setdiff(d$county, iowa_sf$county)
+setdiff(iowa_sf$county, d$county)
 ```
 
 Define `rate1K` variable as the number of cases per 1000 inhabitants
@@ -855,7 +943,7 @@ and left join the data to the polygons:
 
 ```{r}
 d <- mutate(d, rate1K = 1000 * (count / population))
-md <- left_join(m, d, "county")
+md <- left_join(iowa_sf, d, "county")
 head(md)
 ```
 
@@ -864,8 +952,7 @@ A simple map:
 ```{r}
 library(ggthemes)
 library(viridis)
-ggplot(md) +
-    geom_polygon(aes(x = long, y = lat, group = group, fill = rate1K))
+ggplot(md) + geom_sf(aes(fill = rate1K))
 ```
 
 An improved version:
@@ -874,11 +961,10 @@ An improved version:
 library(ggthemes)
 library(viridis)
 ggplot(md) +
-    geom_polygon(aes(x = long, y = lat, group = group,
-                     fill = rate1K),
-                 color = "grey") +
+    geom_sf(aes(fill = rate1K),
+            color = "grey") +
     scale_fill_viridis(name = "Rate per 1000") +
-    theme_map() + coord_quickmap()
+    theme_map()
 ```
 
 A simple interactive version using [`plotly`](https://plot.ly/r/):
@@ -887,31 +973,35 @@ A simple interactive version using [`plotly`](https://plot.ly/r/):
 mdl <- mutate(md,
               label = paste(cname, round(rate1K, 1), population, sep = "\n"))
 p <- ggplot(mdl) +
-    geom_polygon(aes(x = long, y = lat, fill = rate1K, group = group,
-                     text = label), 
-                 color = "grey") +
+    geom_sf(aes(fill = rate1K,
+                text = label), 
+            color = "grey") +
     scale_fill_viridis(name = "Rate per 1000") +
-    theme_map() + coord_quickmap()
+    theme_map()
 
 plotly::ggplotly(p, tooltip = "text")
 ```
-
 The [`leaflet`](https://rstudio.github.io/leaflet/) package supports
-more sophisticated interactive maps.
+more sophisticated interactive maps:
 
-`geom_map` is alternative to `geom_poly` that does not require the
-join operation (it is done internally). It can be a bit tricky to use
-though.
-	   
 ```{r}
-ggplot(d, aes(map_id = county, fill = count/population)) +
-    geom_map(map = rename(m, id = county) , color = "grey") +
-    with(m, expand_limits(x = long, y = lat)) +
-    scale_fill_viridis() +
-    theme_map() + coord_quickmap()
+library(leaflet)
+md_lf <- leaflet(sf::st_transform(md, 4326))
+addPolygons(md_lf,
+            weight = 1,
+            color = "grey",
+            fillColor = ~ colorNumeric("viridis", rate1K)(rate1K),
+            fillOpacity = 1,
+            highlightOptions =
+                highlightOptions(color = "white",
+                                 weight = 2,
+                                 bringToFront = TRUE),
+            label =
+                ~ lapply(paste0(tools::toTitleCase(county), "<BR>",
+                                "Rate: ", round(rate1K, 1), "<BR>",
+                                "Pop: ", population),
+                         htmltools::HTML))
 ```
-
-For more complex mapping problems `geom_sf` is a better choice.
 
 
 ### Unemployment Map
@@ -1132,13 +1222,3 @@ p <- ggplot(filter(tgcm, country %in% tgcm_miss)) +
 p
 plotly::ggplotly(p)
 ```
-
-
-
-<!--
-Local Variables: 
-mode: poly-markdown+R
-mode: flyspell
-End:
--->
-
