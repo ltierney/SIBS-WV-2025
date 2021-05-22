@@ -984,23 +984,28 @@ plotly::ggplotly(p, tooltip = "text")
 The [`leaflet`](https://rstudio.github.io/leaflet/) package supports
 more sophisticated interactive maps:
 
+<!-- http://rstudio.github.io/leaflet/legends.html-->
 ```{r}
 library(leaflet)
-md_lf <- leaflet(sf::st_transform(md, 4326))
-addPolygons(md_lf,
-            weight = 1,
-            color = "grey",
-            fillColor = ~ colorNumeric("viridis", rate1K)(rate1K),
-            fillOpacity = 1,
-            highlightOptions =
-                highlightOptions(color = "white",
-                                 weight = 2,
-                                 bringToFront = TRUE),
-            label =
-                ~ lapply(paste0(tools::toTitleCase(county), "<BR>",
-                                "Rate: ", round(rate1K, 1), "<BR>",
-                                "Pop: ", population),
-                         htmltools::HTML))
+pal <- colorNumeric(
+    palette = "viridis",
+    domain = md$rate1K)
+lab <- lapply(paste0(tools::toTitleCase(md$county), "<BR>",
+                     "Rate: ", round(md$rate1K, 1), "<BR>",
+                     "Pop: ", scales::comma(md$population,
+                                            accuracy = 1)),
+              htmltools::HTML)
+leaflet(sf::st_transform(md, 4326)) %>%
+    addPolygons(weight = 2,
+                color = "grey",
+                fillColor = ~ pal(rate1K),
+                fillOpacity = 1,
+                highlightOptions =
+                    highlightOptions(color = "white",
+                                     weight = 2,
+                                     bringToFront = TRUE),
+                label = lab) %>%
+    addLegend(pal = pal, values = ~ rate1K)
 ```
 
 

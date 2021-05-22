@@ -275,6 +275,77 @@ rd <- data.frame(flow = river, month = seq_along(river))
 
 
 ## -----------------------------------------------------------------------------
+wind_turbines <- read.csv("data/us_wind.csv", comment = "#")
+
+
+## -----------------------------------------------------------------------------
+wt_IA <- filter(wind_turbines, t_fips %/% 1000 == 19)
+
+
+## -----------------------------------------------------------------------------
+wt_IA <- filter(wt_IA, ! is.na(xlong), ! is.na(ylat))
+
+
+## -----------------------------------------------------------------------------
+wt_IA <- mutate(wt_IA, p_year = replace(p_year, p_year < 0, NA))
+
+
+## ---- eval = FALSE------------------------------------------------------------
+## iowa_sf <- sf::st_as_sf(maps::map("county", "iowa", plot = FALSE, fill = TRUE))
+
+
+## ---- fig.width = 8-----------------------------------------------------------
+iowa_sf <-
+    sf::st_as_sf(maps::map("county", "iowa",
+                           plot = FALSE,
+                           fill = TRUE))
+p <- ggplot() +
+    geom_sf(data = iowa_sf) +
+    ggthemes::theme_map()
+p
+
+
+## ---- fig.width = 8-----------------------------------------------------------
+p + geom_point(aes(xlong, ylat), data = wt_IA)
+
+
+## ---- fig.width = 8-----------------------------------------------------------
+year_brk <-c(0, 2005, 2010, 2015, 2020)
+year_lab <- c("before 2005",
+              "2005-2009",
+              "2010-2014",
+              "2015-2020")
+wt_IA <-
+    mutate(wt_IA,
+           year = cut(p_year,
+                      breaks = year_brk,
+                      labels = year_lab,
+                      right = FALSE))
+p + geom_point(aes(xlong,
+                   ylat,
+                   color = year),
+               data = wt_IA,
+               size = 3)
+
+
+## ----eval = FALSE, echo = FALSE-----------------------------------------------
+## library(tidyverse)
+## p <- ggplot() + geom_sf(data = iowa_sf) + ggthemes::theme_map()
+## p + geom_point(aes(xlong, ylat), data = wt_IA)
+## 
+## wt_IA_sf <- sf::st_as_sf(wt_IA, coords = c("xlong", "ylat"), crs = 4326)
+## 
+## p + geom_sf(data = filter(wt_IA_sf, year <= 2020))
+## 
+## library(gganimate)
+## pa <- p + geom_sf(data = wt_IA_sf) +
+##     transition_manual(year, cumulative = TRUE) +
+##     labs(title = "Wind turbines in Iowa",
+##          subtitle = "Year = {current_frame}")
+## anim_save("foo.gif", animate(pa, fps = 10, nframes = 100))
+
+
+## ---- message = FALSE---------------------------------------------------------
 fname <- "data/Invasive-Cancer-Incidence-Rates-by-County-in-Iowa-Lung-and-Bronchus-2011.csv"
 d <- read_csv(fname, skip = 2)
 head(d)
@@ -282,11 +353,15 @@ head(d)
 
 ## -----------------------------------------------------------------------------
 d <- select(d, county = 1, population = 2, count = 3, crude_rate = 4)
+
+
+## -----------------------------------------------------------------------------
 tail(d)
 
 
 ## -----------------------------------------------------------------------------
 d <- filter(d, ! is.na(population))
+d <- filter(d, county != "STATE")
 tail(d)
 
 
@@ -303,70 +378,78 @@ any(d$count == 0, na.rm = TRUE)
 d <- replace_na(d, list(count = 0, crude_rate = 0))
 
 
-## ---- message = FALSE---------------------------------------------------------
-m <- map_data("county", "iowa")
-head(m)
-m <- select(m, -region)
-m <- rename(m, county = subregion)
-head(m)
-
-
 ## -----------------------------------------------------------------------------
-d <- mutate(d, cname = county, county = tolower(county))
+d$county[1]
+iowa_sf$ID[1]
 
-setdiff(d$county, m$county)
-setdiff(m$county, d$county)
+d <- mutate(d, cname = county, county = tolower(county))
+iowa_sf <- mutate(iowa_sf, county = sub("iowa,", "", ID))
+
+setdiff(d$county, iowa_sf$county)
+setdiff(iowa_sf$county, d$county)
 
 d <- mutate(d, county = sub("'", "", county))
-d <- filter(d, county != "state")
 
-setdiff(d$county, m$county)
-setdiff(m$county, d$county)
+setdiff(d$county, iowa_sf$county)
+setdiff(iowa_sf$county, d$county)
 
 
 ## -----------------------------------------------------------------------------
 d <- mutate(d, rate1K = 1000 * (count / population))
-md <- left_join(m, d, "county")
+md <- left_join(iowa_sf, d, "county")
 head(md)
 
 
 ## -----------------------------------------------------------------------------
 library(ggthemes)
 library(viridis)
-ggplot(md) +
-    geom_polygon(aes(x = long, y = lat, group = group, fill = rate1K))
+ggplot(md) + geom_sf(aes(fill = rate1K))
 
 
 ## -----------------------------------------------------------------------------
 library(ggthemes)
 library(viridis)
 ggplot(md) +
-    geom_polygon(aes(x = long, y = lat, group = group,
-                     fill = rate1K),
-                 color = "grey") +
+    geom_sf(aes(fill = rate1K),
+            color = "grey") +
     scale_fill_viridis(name = "Rate per 1000") +
-    theme_map() + coord_quickmap()
+    theme_map()
 
 
 ## -----------------------------------------------------------------------------
 mdl <- mutate(md,
               label = paste(cname, round(rate1K, 1), population, sep = "\n"))
 p <- ggplot(mdl) +
-    geom_polygon(aes(x = long, y = lat, fill = rate1K, group = group,
-                     text = label), 
-                 color = "grey") +
+    geom_sf(aes(fill = rate1K,
+                text = label), 
+            color = "grey") +
     scale_fill_viridis(name = "Rate per 1000") +
-    theme_map() + coord_quickmap()
+    theme_map()
 
 plotly::ggplotly(p, tooltip = "text")
 
 
 ## -----------------------------------------------------------------------------
-ggplot(d, aes(map_id = county, fill = count/population)) +
-    geom_map(map = rename(m, id = county) , color = "grey") +
-    with(m, expand_limits(x = long, y = lat)) +
-    scale_fill_viridis() +
-    theme_map() + coord_quickmap()
+library(leaflet)
+pal <- colorNumeric(
+    palette = "viridis",
+    domain = md$rate1K)
+lab <- lapply(paste0(tools::toTitleCase(md$county), "<BR>",
+                     "Rate: ", round(md$rate1K, 1), "<BR>",
+                     "Pop: ", scales::comma(md$population,
+                                            accuracy = 1)),
+              htmltools::HTML)
+leaflet(sf::st_transform(md, 4326)) %>%
+    addPolygons(weight = 2,
+                color = "grey",
+                fillColor = ~ pal(rate1K),
+                fillOpacity = 1,
+                highlightOptions =
+                    highlightOptions(color = "white",
+                                     weight = 2,
+                                     bringToFront = TRUE),
+                label = lab) %>%
+    addLegend(pal = pal, values = ~ rate1K)
 
 
 ## -----------------------------------------------------------------------------
