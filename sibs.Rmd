@@ -193,7 +193,7 @@ The rows represent measurements recorded for eruptions of the _Old
 Faithful_ geyser in Yellowstone National Park, Wyoming. The variables
 are:
 
-* `waiting`: the time in minutes since the precious eruption;
+* `waiting`: the time in minutes since the previous eruption;
 * `duration`: the duration of the eruption.
 
 The durations have a bimodal distribution:
