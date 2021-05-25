@@ -453,7 +453,7 @@ leaflet(sf::st_transform(md, 4326)) %>%
 
 
 ## -----------------------------------------------------------------------------
-lausURL <- "data/laucntycur14-2017.txt"
+lausURL <- "data/laucntycur14-2020.txt"
 lausUS <- read.table(lausURL,
                      col.names = c("LAUSAreaCode", "State", "County",
                                    "Title", "Period",
@@ -518,6 +518,7 @@ head(county.fips)
 
 
 ## -----------------------------------------------------------------------------
+
 counties_US <- map_data("county")
 counties_US <- rename(counties_US, state = region, county = subregion)
 counties_US <- left_join(counties_US, county.fips, c("state", "county"))
@@ -538,6 +539,32 @@ ggplot(avgUS, aes(fill = avg_unemp, map_id = fips)) +
     with(counties_US, expand_limits(x = long, y = lat)) +
     scale_fill_viridis(name = "Rate", na.value = "red") +
     theme_map() + coord_map()
+
+
+## -----------------------------------------------------------------------------
+ggpoly2sf <- function(poly, coords = c("long", "lat"),
+                      id = "group", region = "region", crs = 4326) {
+    sf::st_as_sf(poly, coords = coords, crs = crs) %>%
+    group_by(!! as.name(id), !! as.name(region)) %>%
+    summarize(do_union = FALSE) %>%
+    sf::st_cast("POLYGON") %>%
+    ungroup() %>%
+    group_by(!! as.name(region)) %>%
+    summarize(do_union = FALSE) %>%
+    ungroup()
+}
+m_sf <- ggpoly2sf(socviz::county_map, c("long", "lat"), "group", "id")
+m_sf <- mutate(m_sf, fips = as.numeric(id))
+m_sf <- mutate(m_sf, fips = replace(fips, fips == 46113, 46102))
+ggplot(m_sf) + geom_sf()
+lausUS <- mutate(lausUS, fips = State * 1000 + County)
+au <- group_by(lausUS, fips) %>% summarize(avg_ur = mean(UnempRate, na.rm = TRUE))
+mu <- group_by(lausUS, fips) %>% summarize(max_ur = max(UnempRate, na.rm = TRUE))
+da <- left_join(m_sf, au, "fips")
+dm <- left_join(m_sf, mu, "fips")
+ggplot(da, aes(fill = avg_ur)) + geom_sf(size = 0.1) + scale_fill_viridis(name = "Rate", na.value = "red")
+d <- left_join(m_sf, lausUS, "fips")
+
 
 
 ## -----------------------------------------------------------------------------

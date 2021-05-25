@@ -1013,10 +1013,10 @@ leaflet(sf::st_transform(md, 4326)) %>%
 
 [Local Area Unemployment Statistics page](https://www.bls.gov/lau/)
 from the Bureau of Labor Statistics makes available county-level
-monthly unemployment data for a 14-month window. The file for November
-2016 through December 2017 is available is available at
-<http://www.stat.uiowa.edu/~luke/data/laus/laucntycur14-2017.txt>
-and in the project data folder.
+monthly unemployment data for a 14-month window. The file for February
+2020 through March 2021 is available is available at
+<http://www.stat.uiowa.edu/~luke/data/laus/laucntycur14-2020.txt> and
+in the project data folder.
 
 <div class="alert alert-info"> This file is a text file but uses a
 non-standard separator. It is designed for human readability and uses
@@ -1027,7 +1027,7 @@ read in.  </div>
 One way to read the data into R is:
 
 ```{r}
-lausURL <- "data/laucntycur14-2017.txt"
+lausURL <- "data/laucntycur14-2020.txt"
 lausUS <- read.table(lausURL,
                      col.names = c("LAUSAreaCode", "State", "County",
                                    "Title", "Period",
@@ -1066,9 +1066,9 @@ The state code is missing for the District of Columbia:
 ```{r}
 unique(filter(select(lausUS, cname, scode), is.na(scode)))
 ```
-
+<!--
 Missing values for `UnempRate` are all for Puerto Rico and September
-2017. Hurricane Maria made landfall on September 20.
+2017. Hurricane Maria made landfall on September 20. -->
 
 ```{r}
 unique(filter(select(lausUS, scode, Period, UnempRate), is.na(UnempRate)))
@@ -1125,6 +1125,7 @@ head(county.fips)
 County map data for the lower 48 states:
 
 ```{r}
+
 counties_US <- map_data("county")
 counties_US <- rename(counties_US, state = region, county = subregion)
 counties_US <- left_join(counties_US, county.fips, c("state", "county"))
@@ -1143,6 +1144,8 @@ ggplot(left_join(counties_US, avgUS, "fips")) +
 
 A version using `geom_map` leaves out Shannon County, SD (46113) which
 for some reason is not in the LAUS data.
+<!-- Shannon County was renamed to Oglala Lakota County in June 2015.
+New FIPS is 46102 -->
 
 <!-- Check how to use geom_sf? -->
 
@@ -1154,7 +1157,40 @@ ggplot(avgUS, aes(fill = avg_unemp, map_id = fips)) +
     theme_map() + coord_map()
 ```
 
-   
+```{r}
+lausUS <- mutate(lausUS,
+                 Period = fct_inorder(Period),
+                 LaborForce = as.numeric(gsub(",", "", LaborForce)),
+                 Unemployed = as.numeric(gsub(",", "", Unemployed)))
+group_by(lausUS, Period) %>% summarize(rate = 100 * (sum(Unemployed, na.rm = TRUE) / sum(LaborForce, na.rm = TRUE))) %>%  ggplot(aes(Period, rate, group = 1)) + geom_line()
+```
+
+```{r}
+ggpoly2sf <- function(poly, coords = c("long", "lat"),
+                      id = "group", region = "region", crs = 4326) {
+    sf::st_as_sf(poly, coords = coords, crs = crs) %>%
+    group_by(!! as.name(id), !! as.name(region)) %>%
+    summarize(do_union = FALSE) %>%
+    sf::st_cast("POLYGON") %>%
+    ungroup() %>%
+    group_by(!! as.name(region)) %>%
+    summarize(do_union = FALSE) %>%
+    ungroup()
+}
+m_sf <- ggpoly2sf(socviz::county_map, c("long", "lat"), "group", "id")
+m_sf <- mutate(m_sf, fips = as.numeric(id))
+m_sf <- mutate(m_sf, fips = replace(fips, fips == 46113, 46102))
+ggplot(m_sf) + geom_sf()
+lausUS <- mutate(lausUS, fips = State * 1000 + County)
+au <- group_by(lausUS, fips) %>% summarize(avg_ur = mean(UnempRate, na.rm = TRUE))
+mu <- group_by(lausUS, fips) %>% summarize(max_ur = max(UnempRate, na.rm = TRUE))
+da <- left_join(m_sf, au, "fips")
+dm <- left_join(m_sf, mu, "fips")
+ggplot(da, aes(fill = avg_ur)) + geom_sf(size = 0.1) + scale_fill_viridis(name = "Rate", na.value = "red")
+ggplot(dm, aes(fill = max_ur)) + geom_sf(size = 0.1) + scale_fill_viridis(name = "Rate", na.value = "red")
+ggplot(left_join(m_sf, filter(lausUS, Period == "Apr-20"), "fips"), aes(fill = UnempRate)) + geom_sf(size = 0.1) + scale_fill_viridis(name = "Rate", na.value = "red")
+
+```
 ### Gapminder Childhood Mortality Data
 
 The `gapminder` package provides a subset of the data from the
