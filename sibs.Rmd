@@ -1058,114 +1058,128 @@ lausUS <- mutate(lausUS, UnempRate = as.numeric(UnempRate))
 Check for missing values:
 
 ```{r}
-sapply(lausUS, function(x) any(is.na(x)))
+select_if(lausUS, anyNA) %>% names()
 ```
 
 The state code is missing for the District of Columbia:
 
 ```{r}
-unique(filter(select(lausUS, cname, scode), is.na(scode)))
+select(lausUS, cname, scode) %>%
+    filter(is.na(scode)) %>%
+    unique()
 ```
 <!--
 Missing values for `UnempRate` are all for Puerto Rico and September
 2017. Hurricane Maria made landfall on September 20. -->
 
-```{r}
-unique(filter(select(lausUS, scode, Period, UnempRate), is.na(UnempRate)))
-```
-
-Average unemployment rates over the period can be computed as
+March and April 2020 numbers were not available for Puerto Rico:
 
 ```{r}
-avgUS <- summarize(group_by(lausUS, County, State),
-                   avg_unemp = mean(UnempRate),
-                   cname = unique(cname),
-                   scode = unique(scode))
-head(avgUS)
+select(lausUS, scode, Period, UnempRate) %>%
+    filter(is.na(UnempRate)) %>%
+    unique()
 ```
 
-To show average unemployment rates on a map we need to merge the
-unemployment data with map data.
-
-It is safer to use the numeric [FIPS county
-code](https://en.wikipedia.org/wiki/FIPS_county_code), which can be
-computed as
-
-Add FIPS code to `avgUS`:
-
-```{r}
-avgUS <- mutate(avgUS, fips = 1000 * State + County)
-head(avgUS)
-```
-
-The `county.fips` data frame in the `maps` package links the FIPS code
-to region names used by the map data in the `maps` package.
-
-```{r}
-library(maps)
-head(county.fips)
-```
-
-Some issues:
-
-```{r}
-filter(county.fips, grepl("florida,o", polyname))
-head(select(filter(lausUS, scode == "LA"), cname))
-```
-
-Cleaning up a bit:
-
-```{r}
-county.fips <- separate(county.fips, polyname,
-                        c("state", "county", "part"),
-                        sep = "[,:]", fill = "right")
-head(county.fips)
-```
-
-County map data for the lower 48 states:
-
-```{r}
-
-counties_US <- map_data("county")
-counties_US <- rename(counties_US, state = region, county = subregion)
-counties_US <- left_join(counties_US, county.fips, c("state", "county"))
-```
-
-A choropleth map:
-
-```{r}
-ggplot(left_join(counties_US, avgUS, "fips")) +
-    geom_polygon(aes(x = long, y = lat, fill = avg_unemp, group = group)) +
-    scale_fill_viridis(name = "Rate", na.value = "red") +
-    theme_map() + coord_map() + 
-    geom_polygon(aes(x = long, y = lat, group = group),
-                 data = map_data("state"), col = "grey", fill = NA)
-```
-
-A version using `geom_map` leaves out Shannon County, SD (46113) which
-for some reason is not in the LAUS data.
-<!-- Shannon County was renamed to Oglala Lakota County in June 2015.
-New FIPS is 46102 -->
-
-<!-- Check how to use geom_sf? -->
-
-```{r}
-ggplot(avgUS, aes(fill = avg_unemp, map_id = fips)) +
-    geom_map(map = mutate(counties_US, id = fips)) +
-    with(counties_US, expand_limits(x = long, y = lat)) +
-    scale_fill_viridis(name = "Rate", na.value = "red") +
-    theme_map() + coord_map()
-```
+To compute the national monthly unemployment rates over this period we
+need some more data cleaning:
 
 ```{r}
 lausUS <- mutate(lausUS,
                  Period = fct_inorder(Period),
                  LaborForce = as.numeric(gsub(",", "", LaborForce)),
                  Unemployed = as.numeric(gsub(",", "", Unemployed)))
-group_by(lausUS, Period) %>% summarize(rate = 100 * (sum(Unemployed, na.rm = TRUE) / sum(LaborForce, na.rm = TRUE))) %>%  ggplot(aes(Period, rate, group = 1)) + geom_line()
 ```
 
+Unemployment during this period was affected significantly by the
+COVID-19 pandemic.  A plot shows a large spike in April 2020:
+
 ```{r}
+group_by(lausUS, Period) %>%
+    summarize(Unemployed = sum(Unemployed, na.rm = TRUE),
+              LaborForce = sum(LaborForce, na.rm = TRUE),
+              UnempRate = 100 * (Unemployed / LaborForce)) %>%
+    ggplot(aes(Period, UnempRate, group = 1)) +
+    geom_line()
+```
+
+A choropleth map can be used to look at how the impact was distributed
+across the country.
+
+To show unemployment rates on a map we need to merge the unemployment data
+with map data.
+
+To match county unemployment data and county shape data it is safer to
+use the numeric [FIPS county
+code](https://en.wikipedia.org/wiki/FIPS_county_code). This can be
+added with
+
+```{r}
+lausUS <- mutate(lausUS, fips = State * 1000 + County)
+```
+Shape data for US counties can be obtained from a number of sources in a
+number of different formats.
+
+Here is one approach:
+
+```{r}
+counties_sf <- sf::st_as_sf(maps::map("county", plot = FALSE, fill = TRUE))
+county.fips <-
+    mutate(maps::county.fips, polyname = sub(":.*", "", polyname)) %>%
+    unique()
+counties_sf <- left_join(counties_sf, county.fips, c("ID" = "polyname"))
+states_sf <-  sf::st_as_sf(maps::map("state", plot = FALSE, fill = TRUE))
+```
+Some summaries over the period can be computed as
+
+```{r}
+summaryUS <- group_by(lausUS, County, State, fips) %>%
+    summarize(avg_unemp = mean(UnempRate, na.rm = TRUE),
+              max_unemp = max(UnempRate, na.rm = TRUE),
+              apr_unemp = UnempRate[Period == "Apr-20"]) %>%
+    ungroup()
+head(summaryUS)
+```
+A choropleth map of the April 2020 unemployment rates:
+
+
+```{r}
+left_join(counties_sf, summaryUS, "fips") %>%
+    ggplot() +
+    geom_sf(aes(fill = apr_unemp)) +
+    scale_fill_viridis(name = "Rate", na.value = "red") +
+    theme_map() +
+    geom_sf(data = states_sf, col = "grey", fill = NA)
+```
+
+Using a very visible color for missing data is useful, at least during
+exploration.
+
+`anti_join` can show the county geometry that does not have an entry
+in the unemployment data:
+
+```{r}
+anti_join(counties_sf, summaryUS, "fips")
+```
+Shannon County, SD (FIPS 46113), was renamed to [Oglala Lakota County](https://en.wikipedia.org/wiki/Oglala_Lakota_County,_South_Dakota) in June 2015 and given a new FIPS code, 46102.
+
+The geometry data table needs to be updated:
+
+```{r}
+counties_sf <- mutate(counties_sf, fips = replace(fips, fips == 46113, 46102))
+```
+
+With the updated data the map is now complete:
+
+```{r}
+left_join(counties_sf, summaryUS, "fips") %>%
+    ggplot() +
+    geom_sf(aes(fill = apr_unemp)) +
+    scale_fill_viridis(name = "Rate", na.value = "red") +
+    theme_map() +
+    geom_sf(data = states_sf, col = "grey", fill = NA)
+```
+
+```{r, echo = FALSE, eval = FALSE}
 ggpoly2sf <- function(poly, coords = c("long", "lat"),
                       id = "group", region = "region", crs = 4326) {
     sf::st_as_sf(poly, coords = coords, crs = crs) %>%
@@ -1181,7 +1195,6 @@ m_sf <- ggpoly2sf(socviz::county_map, c("long", "lat"), "group", "id")
 m_sf <- mutate(m_sf, fips = as.numeric(id))
 m_sf <- mutate(m_sf, fips = replace(fips, fips == 46113, 46102))
 ggplot(m_sf) + geom_sf()
-lausUS <- mutate(lausUS, fips = State * 1000 + County)
 au <- group_by(lausUS, fips) %>% summarize(avg_ur = mean(UnempRate, na.rm = TRUE))
 mu <- group_by(lausUS, fips) %>% summarize(max_ur = max(UnempRate, na.rm = TRUE))
 da <- left_join(m_sf, au, "fips")
@@ -1189,8 +1202,8 @@ dm <- left_join(m_sf, mu, "fips")
 ggplot(da, aes(fill = avg_ur)) + geom_sf(size = 0.1) + scale_fill_viridis(name = "Rate", na.value = "red")
 ggplot(dm, aes(fill = max_ur)) + geom_sf(size = 0.1) + scale_fill_viridis(name = "Rate", na.value = "red")
 ggplot(left_join(m_sf, filter(lausUS, Period == "Apr-20"), "fips"), aes(fill = UnempRate)) + geom_sf(size = 0.1) + scale_fill_viridis(name = "Rate", na.value = "red")
-
 ```
+
 ### Gapminder Childhood Mortality Data
 
 The `gapminder` package provides a subset of the data from the
