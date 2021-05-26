@@ -563,6 +563,33 @@ sgd <- summarize(group_by(geyser, type),
 ---
 ## Old Faithful Eruptions
 
+An alternative approach uses the _pipe operator_:
+
+--
+
+```{r}
+sgd <-
+    group_by(geyser, type) %>%
+    summarize(mean = mean(duration),
+              sd = sd(duration),
+              n = n()) %>%
+    ungroup() %>%
+    mutate(prop = n / sum(n))
+sgd
+```
+--
+
+The pipe operator allows a sequence of operations to be chained together.
+
+--
+
+The left-hand operation is passed implicitly as the first argument to
+the function called on the right.
+
+
+---
+## Old Faithful Eruptions
+
 One way to show the superimposed normal densities:
 
 .pull-left[
@@ -599,11 +626,14 @@ Summaries that omit values equal to 2 or 4 minutes can be computed as
 
 ```{r}
 geyser2 <- filter(geyser, duration != 2, duration != 4)
-sgd2 <- summarize(group_by(geyser2, type),
-                  mean = mean(duration),
-                  sd = sd(duration),
-                  n = n())
-(sgd2 <- mutate(sgd2, prop = n / sum(n)))
+sgd2 <-
+    group_by(geyser2, type) %>%
+    summarize(mean = mean(duration),
+              sd = sd(duration),
+              n = n()) %>%
+    ungroup() %>%
+    mutate(prop = n / sum(n))
+sgd2
 ```
 
 --
@@ -784,8 +814,10 @@ A _dot plot_:
 .pull-left[
 ```{r barley-avg-dot, echo = FALSE, message = FALSE, fig.width = 7}
 barley_site_year <-
-    summarize(group_by(barley, site, year),
-              yield = mean(yield))
+    group_by(barley, site, year) %>%
+    summarize(yield = mean(yield)) %>%
+    ungroup()
+
 ggplot(barley_site_year) +
     geom_point(aes(y = site,
                    x = yield,
@@ -808,8 +840,10 @@ a _dumbbell chart_:
 .pull-left[
 ```{r barley-avg-dot-2, echo = FALSE, message = FALSE, fig.width = 7}
 barley_site_year <-
-    summarize(group_by(barley, site, year),
-              yield = mean(yield))
+    group_by(barley, site, year) %>%
+    summarize(yield = mean(yield)) %>%
+    ungroup()
+
 ggplot(barley_site_year) +
     geom_line(aes(y = site,        #<<
                   x = yield,       #<<
@@ -834,9 +868,6 @@ _Bar charts_ are sometimes used for summaries, but dot plots are
 usually a better choice.
 .pull-left[
 ```{r barley-avg-bar, echo = FALSE, message = FALSE, fig.width = 7}
-barley_site_year <-
-    summarize(group_by(barley, site, year),
-              yield = mean(yield))
 ggplot(barley_site_year) +
     geom_col(aes(x = yield,
                  y = site,
@@ -892,8 +923,11 @@ Looking at the distribution of eye color:
 --
 .pull-left[
 ```{r eye-bar, echo = FALSE}
-eye <- summarize(group_by(HairEyeDF, Eye),
-                 Freq = sum(Freq))
+eye <-
+    group_by(HairEyeDF, Eye) %>%
+    summarize(Freq = sum(Freq)) %>%
+    ungroup()
+
 ggplot(eye) +
     geom_col(aes(x = Eye,
                  y = Freq),
@@ -913,8 +947,11 @@ Mapping eye color to color in addition to the horizontal axis can help:
 
 .pull-left[
 ```{r eye-bar-2, echo = FALSE}
-eye <- summarize(group_by(HairEyeDF, Eye),
-                 Freq = sum(Freq))
+eye <-
+    group_by(HairEyeDF, Eye) %>%
+    summarize(Freq = sum(Freq)) %>%
+    ungroup()
+
 ggplot(eye) +
     geom_col(aes(x = Eye,
                  y = Freq,
@@ -1053,7 +1090,11 @@ Looking at the proportions within hair color and sex:
 
 .hide-code[
 ```{r, fig.width = 14, fig.height = 6}
-eye_hairsex <- mutate(group_by(HairEyeDF, Hair, Sex), Prop = Freq / sum(Freq))
+eye_hairsex <-
+    group_by(HairEyeDF, Hair, Sex) %>%
+    mutate(Prop = Freq / sum(Freq)) %>%
+    ungroup()
+
 p1 <- ggplot(eye_hairsex) +
     geom_col(aes(x = Eye, y = Prop, fill = Eye)) +
     scale_fill_manual(values = cols) +
@@ -1445,7 +1486,7 @@ class: center, middle
 
 
 ---
-# More Examples
+## More Examples
 
 These examples start with raw data as you might receive it from a
 researcher, and involve reading and cleaning the data.
@@ -1479,7 +1520,7 @@ Common data formats you might encounter include
 
 --
 
-Tools are available for reading the data formats into R.
+Tools are available for reading data in these formats into R.
 
 ---
 ## Wind Turbines in Iowa
