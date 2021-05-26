@@ -33,6 +33,10 @@ set.seed(12345)
 xaringanExtra::use_clipboard()
 ```
 
+```{css, echo = FALSE}
+.content-box-blue { background-color: lightblue; }
+```
+
 ## Introduction
 
 In this class I will
@@ -2237,3 +2241,165 @@ ggplot(da, aes(fill = avg_ur)) + geom_sf(size = 0.1) + scale_fill_viridis(name =
 ggplot(dm, aes(fill = max_ur)) + geom_sf(size = 0.1) + scale_fill_viridis(name = "Rate", na.value = "red")
 ggplot(left_join(m_sf, filter(lausUS, Period == "Apr-20"), "fips"), aes(fill = UnempRate)) + geom_sf(size = 0.1) + scale_fill_viridis(name = "Rate", na.value = "red")
 ```
+---
+## Gapminder Childhood Mortality Data
+
+The `gapminder` package provides a subset of the data from the
+[Gapminder](http://www.gapminder.org/) web site.
+
+--
+
+Additional data sets are [available](http://www.gapminder.org/data/).
+
+--
+
+* A data set on childhood mortality is available locally as a [csv
+  file](http://homepage.stat.uiowa.edu/~luke/data/gapminder-under5mortality.csv)
+  or an [Excel
+  file](http://homepage.stat.uiowa.edu/~luke/data/gapminder-under5mortality.xlsx).
+  
+--
+
+* The Excel file is also available in the project data folder.
+
+--
+
+* The numbers represent number of deaths within the first five years
+  per 1000 births.
+
+--
+
+Many researchers like to manage their data in a spreadsheet.
+
+--
+
+* Being able to read such a sheet directly greatly helps keeping the
+  workflow reproducible.
+
+--
+
+* Many spreadsheets contain header, footers, and other annotations to
+  aid a human viewer.
+
+--
+
+* As long as the data are in a rectangular region it is usually not
+  hard to extract them programmatically.
+
+
+---
+## Gapminder Childhood Mortality Data
+
+Loading the data:
+
+```{r}
+library(readxl)
+gcm <- read_excel("../data/gapminder-under5mortality.xlsx")
+```
+
+--
+A first look:
+
+```{r}
+head(gcm, 3)
+```
+
+---
+## Gapminder Childhood Mortality Data
+
+This data set is in _wide_ format, with one column per year.
+
+--
+
+A _long_ version with a year and a value column is useful for working
+with `ggplot`.
+
+--
+
+A better first varaible name:
+
+```{r}
+names(gcm)[1] <- "country"
+```
+
+--
+
+Convert to long format:
+
+```{r}
+tgcm <-
+    pivot_longer(gcm, -1, names_to = "year", values_to = "u5mort") %>%
+    mutate(year = as.numeric(year))
+head(tgcm, 3)
+```
+
+---
+## Gapminder Childhood Mortality Data
+
+Some explorations:
+
+.pull-left[
+```{r u5-1, eval = FALSE}
+p <- ggplot(tgcm) +
+    geom_line(aes(year,
+                  u5mort,
+                  group = country),
+              alpha = 0.3)
+plotly::ggplotly(p)
+```
+]
+.pull-right[
+```{r u5-1, echo = FALSE, fig.height = 6, fig.width = 8}
+```
+]
+
+---
+## Gapminder Childhood Mortality Data
+Some selected countries:
+
+.pull-left[
+```{r u5-2, eval = FALSE}
+countries <- c("United States",
+               "United Kingdom",
+               "Germany",
+               "China",
+               "Egypt")
+filter(tgcm, country %in% countries) %>%
+    ggplot() +
+    geom_line(aes(x = year,
+                  y = u5mort,
+                  color = country))
+```
+]
+.pull-right[
+```{r u5-2, echo = FALSE, fig.height = 6, fig.width = 8}
+```
+]
+
+---
+## Gapminder Childhood Mortality Data
+Examining the missing values:
+
+.pull-left[
+```{r u5-3, eval = FALSE}
+tgcm_miss <-
+    group_by(tgcm, country) %>%
+    summarize(anyNA = anyNA(u5mort)) %>%
+    filter(anyNA) %>%
+    pull(country)
+
+p <- filter(tgcm,
+            country %in% tgcm_miss) %>%
+    ggplot(aes(x = year,
+               y = u5mort,
+               group = country)) +
+    geom_line(na.rm = TRUE) +
+    xlim(c(1940, 2020))
+plotly::ggplotly(p)
+```
+]
+.pull-right[
+```{r u5-3, echo = FALSE, fig.height = 6, fig.width = 7}
+```
+]
+
