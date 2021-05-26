@@ -82,6 +82,16 @@ sgd <- summarize(group_by(geyser, type),
 
 
 ## -----------------------------------------------------------------------------
+sgd <-
+    group_by(geyser, type) %>%
+    summarize(mean = mean(duration),
+              sd = sd(duration),
+              n = n()) %>%
+    ungroup() %>%
+    mutate(prop = n / sum(n))
+
+
+## -----------------------------------------------------------------------------
 p <- p +
     stat_function(color = "red",
                   fun = function(x)
@@ -94,11 +104,14 @@ p
 
 ## -----------------------------------------------------------------------------
 geyser2 <- filter(geyser, duration != 2, duration != 4)
-sgd2 <- summarize(group_by(geyser2, type),
-                  mean = mean(duration),
-                  sd = sd(duration),
-                  n = n())
-(sgd2 <- mutate(sgd2, prop = n / sum(n)))
+sgd2 <-
+    group_by(geyser2, type) %>%
+    summarize(mean = mean(duration),
+              sd = sd(duration),
+              n = n()) %>%
+    ungroup() %>%
+    mutate(prop = n / sum(n))
+sgd2
 
 
 ## -----------------------------------------------------------------------------
@@ -182,8 +195,10 @@ ggplot(barley) +
 
 
 ## ---- fig.width = 10----------------------------------------------------------
-barley_site_year <- summarize(group_by(barley, site, year),
-                              yield = mean(yield))
+barley_site_year <-
+    group_by(barley, site, year) %>%
+    summarize(yield = mean(yield)) %>%
+    ungroup()
 p1 <- ggplot(barley_site_year) +
     geom_point(aes(y = site, x = yield, color = year), size = 3)
 p2 <- ggplot(barley_site_year) +
@@ -200,8 +215,12 @@ head(HairEyeDF)
 
 
 ## -----------------------------------------------------------------------------
-eye <- summarize(group_by(HairEyeDF, Eye), Freq = sum(Freq))
-ggplot(eye) + geom_col(aes(x = Eye, y = Freq), position = "dodge")
+eye <-
+    group_by(HairEyeDF, Eye) %>%
+    summarize(Freq = sum(Freq)) %>%
+    ungroup()
+ggplot(eye) +
+    geom_col(aes(x = Eye, y = Freq), position = "dodge")
 
 
 ## -----------------------------------------------------------------------------
@@ -243,7 +262,10 @@ cowplot::plot_grid(pb, pp)
 
 
 ## ---- fig.width = 10----------------------------------------------------------
-eye_hairsex <- mutate(group_by(HairEyeDF, Hair, Sex), Prop = Freq / sum(Freq))
+eye_hairsex <-
+    group_by(HairEyeDF, Hair, Sex) %>%
+    mutate(Prop = Freq / sum(Freq)) %>%
+    ungroup()
 p1 <- ggplot(eye_hairsex) +
     geom_col(aes(x = Eye, y = Prop, fill = Eye)) +
     scale_fill_manual(values = cols) +
@@ -476,95 +498,108 @@ lausUS <- mutate(lausUS, UnempRate = as.numeric(UnempRate))
 
 
 ## -----------------------------------------------------------------------------
-sapply(lausUS, function(x) any(is.na(x)))
+select_if(lausUS, anyNA) %>% names()
 
 
 ## -----------------------------------------------------------------------------
-unique(filter(select(lausUS, cname, scode), is.na(scode)))
+select(lausUS, cname, scode) %>%
+    filter(is.na(scode)) %>%
+    unique()
 
 
 ## -----------------------------------------------------------------------------
-unique(filter(select(lausUS, scode, Period, UnempRate), is.na(UnempRate)))
+select(lausUS, scode, Period, UnempRate) %>%
+    filter(is.na(UnempRate)) %>%
+    unique()
 
 
 ## -----------------------------------------------------------------------------
-avgUS <- summarize(group_by(lausUS, County, State),
-                   avg_unemp = mean(UnempRate),
-                   cname = unique(cname),
-                   scode = unique(scode))
-head(avgUS)
+lausUS <- mutate(lausUS,
+                 Period = fct_inorder(Period),
+                 LaborForce = as.numeric(gsub(",", "", LaborForce)),
+                 Unemployed = as.numeric(gsub(",", "", Unemployed)))
 
 
 ## -----------------------------------------------------------------------------
-avgUS <- mutate(avgUS, fips = 1000 * State + County)
-head(avgUS)
+group_by(lausUS, Period) %>%
+    summarize(Unemployed = sum(Unemployed, na.rm = TRUE),
+              LaborForce = sum(LaborForce, na.rm = TRUE),
+              UnempRate = 100 * (Unemployed / LaborForce)) %>%
+    ggplot(aes(Period, UnempRate, group = 1)) +
+    geom_line()
 
 
 ## -----------------------------------------------------------------------------
-library(maps)
-head(county.fips)
-
-
-## -----------------------------------------------------------------------------
-filter(county.fips, grepl("florida,o", polyname))
-head(select(filter(lausUS, scode == "LA"), cname))
-
-
-## -----------------------------------------------------------------------------
-county.fips <- separate(county.fips, polyname,
-                        c("state", "county", "part"),
-                        sep = "[,:]", fill = "right")
-head(county.fips)
-
-
-## -----------------------------------------------------------------------------
-
-counties_US <- map_data("county")
-counties_US <- rename(counties_US, state = region, county = subregion)
-counties_US <- left_join(counties_US, county.fips, c("state", "county"))
-
-
-## -----------------------------------------------------------------------------
-ggplot(left_join(counties_US, avgUS, "fips")) +
-    geom_polygon(aes(x = long, y = lat, fill = avg_unemp, group = group)) +
-    scale_fill_viridis(name = "Rate", na.value = "red") +
-    theme_map() + coord_map() + 
-    geom_polygon(aes(x = long, y = lat, group = group),
-                 data = map_data("state"), col = "grey", fill = NA)
-
-
-## -----------------------------------------------------------------------------
-ggplot(avgUS, aes(fill = avg_unemp, map_id = fips)) +
-    geom_map(map = mutate(counties_US, id = fips)) +
-    with(counties_US, expand_limits(x = long, y = lat)) +
-    scale_fill_viridis(name = "Rate", na.value = "red") +
-    theme_map() + coord_map()
-
-
-## -----------------------------------------------------------------------------
-ggpoly2sf <- function(poly, coords = c("long", "lat"),
-                      id = "group", region = "region", crs = 4326) {
-    sf::st_as_sf(poly, coords = coords, crs = crs) %>%
-    group_by(!! as.name(id), !! as.name(region)) %>%
-    summarize(do_union = FALSE) %>%
-    sf::st_cast("POLYGON") %>%
-    ungroup() %>%
-    group_by(!! as.name(region)) %>%
-    summarize(do_union = FALSE) %>%
-    ungroup()
-}
-m_sf <- ggpoly2sf(socviz::county_map, c("long", "lat"), "group", "id")
-m_sf <- mutate(m_sf, fips = as.numeric(id))
-m_sf <- mutate(m_sf, fips = replace(fips, fips == 46113, 46102))
-ggplot(m_sf) + geom_sf()
 lausUS <- mutate(lausUS, fips = State * 1000 + County)
-au <- group_by(lausUS, fips) %>% summarize(avg_ur = mean(UnempRate, na.rm = TRUE))
-mu <- group_by(lausUS, fips) %>% summarize(max_ur = max(UnempRate, na.rm = TRUE))
-da <- left_join(m_sf, au, "fips")
-dm <- left_join(m_sf, mu, "fips")
-ggplot(da, aes(fill = avg_ur)) + geom_sf(size = 0.1) + scale_fill_viridis(name = "Rate", na.value = "red")
-d <- left_join(m_sf, lausUS, "fips")
 
+
+## -----------------------------------------------------------------------------
+counties_sf <- sf::st_as_sf(maps::map("county", plot = FALSE, fill = TRUE))
+county.fips <-
+    mutate(maps::county.fips, polyname = sub(":.*", "", polyname)) %>%
+    unique()
+counties_sf <- left_join(counties_sf, county.fips, c("ID" = "polyname"))
+states_sf <-  sf::st_as_sf(maps::map("state", plot = FALSE, fill = TRUE))
+
+
+## -----------------------------------------------------------------------------
+summaryUS <- group_by(lausUS, County, State, fips) %>%
+    summarize(avg_unemp = mean(UnempRate, na.rm = TRUE),
+              max_unemp = max(UnempRate, na.rm = TRUE),
+              apr_unemp = UnempRate[Period == "Apr-20"]) %>%
+    ungroup()
+head(summaryUS)
+
+
+## -----------------------------------------------------------------------------
+left_join(counties_sf, summaryUS, "fips") %>%
+    ggplot() +
+    geom_sf(aes(fill = apr_unemp)) +
+    scale_fill_viridis(name = "Rate", na.value = "red") +
+    theme_map() +
+    geom_sf(data = states_sf, col = "grey", fill = NA)
+
+
+## -----------------------------------------------------------------------------
+anti_join(counties_sf, summaryUS, "fips")
+
+
+## -----------------------------------------------------------------------------
+counties_sf <- mutate(counties_sf, fips = replace(fips, fips == 46113, 46102))
+
+
+## -----------------------------------------------------------------------------
+left_join(counties_sf, summaryUS, "fips") %>%
+    ggplot() +
+    geom_sf(aes(fill = apr_unemp)) +
+    scale_fill_viridis(name = "Rate", na.value = "red") +
+    theme_map() +
+    geom_sf(data = states_sf, col = "grey", fill = NA)
+
+
+## ---- echo = FALSE, eval = FALSE----------------------------------------------
+## ggpoly2sf <- function(poly, coords = c("long", "lat"),
+##                       id = "group", region = "region", crs = 4326) {
+##     sf::st_as_sf(poly, coords = coords, crs = crs) %>%
+##     group_by(!! as.name(id), !! as.name(region)) %>%
+##     summarize(do_union = FALSE) %>%
+##     sf::st_cast("POLYGON") %>%
+##     ungroup() %>%
+##     group_by(!! as.name(region)) %>%
+##     summarize(do_union = FALSE) %>%
+##     ungroup()
+## }
+## m_sf <- ggpoly2sf(socviz::county_map, c("long", "lat"), "group", "id")
+## m_sf <- mutate(m_sf, fips = as.numeric(id))
+## m_sf <- mutate(m_sf, fips = replace(fips, fips == 46113, 46102))
+## ggplot(m_sf) + geom_sf()
+## au <- group_by(lausUS, fips) %>% summarize(avg_ur = mean(UnempRate, na.rm = TRUE))
+## mu <- group_by(lausUS, fips) %>% summarize(max_ur = max(UnempRate, na.rm = TRUE))
+## da <- left_join(m_sf, au, "fips")
+## dm <- left_join(m_sf, mu, "fips")
+## ggplot(da, aes(fill = avg_ur)) + geom_sf(size = 0.1) + scale_fill_viridis(name = "Rate", na.value = "red")
+## ggplot(dm, aes(fill = max_ur)) + geom_sf(size = 0.1) + scale_fill_viridis(name = "Rate", na.value = "red")
+## ggplot(left_join(m_sf, filter(lausUS, Period == "Apr-20"), "fips"), aes(fill = UnempRate)) + geom_sf(size = 0.1) + scale_fill_viridis(name = "Rate", na.value = "red")
 
 
 ## -----------------------------------------------------------------------------
@@ -572,31 +607,37 @@ library(readxl)
 gcm <- read_excel("data/gapminder-under5mortality.xlsx")
 names(gcm)[1]
 names(gcm)[1] <- "country"
+head(gcm)
 
 
 ## -----------------------------------------------------------------------------
-tgcm <- gather(gcm, year, u5mort, -1)
+tgcm <- pivot_longer(gcm, -1, names_to = "year", values_to = "u5mort")
 head(tgcm)
 tgcm <- mutate(tgcm, year = as.numeric(year))
 head(tgcm)
 
 
 ## -----------------------------------------------------------------------------
-library(lattice)
-p <- ggplot(tgcm) + geom_line(aes(year, u5mort, group = country), alpha = 0.3)
+p <- ggplot(tgcm) +
+    geom_line(aes(year, u5mort, group = country), alpha = 0.3)
 p
 plotly::ggplotly(p)
 
 
 ## -----------------------------------------------------------------------------
 countries <- c("United States", "United Kingdom", "Germany", "China", "Egypt")
-tcgm1 <- filter(tgcm, country %in% countries)
-ggplot(tcgm1) + geom_line(aes(x = year, y = u5mort, color = country))
+filter(tgcm, country %in% countries) %>%
+    ggplot() +
+    geom_line(aes(x = year, y = u5mort, color = country))
 
 
 ## -----------------------------------------------------------------------------
-tgcm_miss <- summarize(group_by(tgcm, country), anyNA = any(is.na(u5mort)))
-tgcm_miss <- filter(tgcm_miss, anyNA)$country
+tgcm_miss <-
+    group_by(tgcm, country) %>%
+    summarize(anyNA = any(is.na(u5mort))) %>%
+    filter(anyNA) %>%
+    pull(country)
+
 p <- ggplot(filter(tgcm, country %in% tgcm_miss)) +
     geom_line(aes(x = year, y = u5mort, group = country), na.rm = TRUE)
 p

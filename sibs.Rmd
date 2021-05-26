@@ -275,6 +275,18 @@ sgd <- summarize(group_by(geyser, type),
 (sgd <- mutate(sgd, prop = n / sum(n)))
 ```
 
+This computation can also be written using the _pipe operator_ `%>%`:
+
+```{r}
+sgd <-
+    group_by(geyser, type) %>%
+    summarize(mean = mean(duration),
+              sd = sd(duration),
+              n = n()) %>%
+    ungroup() %>%
+    mutate(prop = n / sum(n))
+```
+
 One way to show the superimposed normal densities:
 
 ```{r}
@@ -297,11 +309,14 @@ computed as
 
 ```{r}
 geyser2 <- filter(geyser, duration != 2, duration != 4)
-sgd2 <- summarize(group_by(geyser2, type),
-                  mean = mean(duration),
-                  sd = sd(duration),
-                  n = n())
-(sgd2 <- mutate(sgd2, prop = n / sum(n)))
+sgd2 <-
+    group_by(geyser2, type) %>%
+    summarize(mean = mean(duration),
+              sd = sd(duration),
+              n = n()) %>%
+    ungroup() %>%
+    mutate(prop = n / sum(n))
+sgd2
 ```
 
 <div class="alert alert-info"> `summarize`, `group_by`, and `mutate`
@@ -417,8 +432,10 @@ Focusing on summaries can help. _Bar charts_ are sometimes used for
 summaries, but _dot plots_ are usually a better choice.
 
 ```{r, fig.width = 10}
-barley_site_year <- summarize(group_by(barley, site, year),
-                              yield = mean(yield))
+barley_site_year <-
+    group_by(barley, site, year) %>%
+    summarize(yield = mean(yield)) %>%
+    ungroup()
 p1 <- ggplot(barley_site_year) +
     geom_point(aes(y = site, x = yield, color = year), size = 3)
 p2 <- ggplot(barley_site_year) +
@@ -454,8 +471,12 @@ head(HairEyeDF)
 Looking at the distribution of eye color:
 	
 ```{r}
-eye <- summarize(group_by(HairEyeDF, Eye), Freq = sum(Freq))
-ggplot(eye) + geom_col(aes(x = Eye, y = Freq), position = "dodge")
+eye <-
+    group_by(HairEyeDF, Eye) %>%
+    summarize(Freq = sum(Freq)) %>%
+    ungroup()
+ggplot(eye) +
+    geom_col(aes(x = Eye, y = Freq), position = "dodge")
 ```
 
 Mapping eye color to color in addition to the horizontal axis can help:
@@ -529,7 +550,10 @@ Some questions:
 Looking at the proportions within hair color and sex:
       
 ```{r, fig.width = 10}
-eye_hairsex <- mutate(group_by(HairEyeDF, Hair, Sex), Prop = Freq / sum(Freq))
+eye_hairsex <-
+    group_by(HairEyeDF, Hair, Sex) %>%
+    mutate(Prop = Freq / sum(Freq)) %>%
+    ungroup()
 p1 <- ggplot(eye_hairsex) +
     geom_col(aes(x = Eye, y = Prop, fill = Eye)) +
     scale_fill_manual(values = cols) +
@@ -1236,6 +1260,7 @@ library(readxl)
 gcm <- read_excel("data/gapminder-under5mortality.xlsx")
 names(gcm)[1]
 names(gcm)[1] <- "country"
+head(gcm)
 ```
 
 This data set is in _wide_ format.
@@ -1243,7 +1268,7 @@ This data set is in _wide_ format.
 A _long_ version is useful for working with `ggplot`.
 
 ```{r}
-tgcm <- gather(gcm, year, u5mort, -1)
+tgcm <- pivot_longer(gcm, -1, names_to = "year", values_to = "u5mort")
 head(tgcm)
 tgcm <- mutate(tgcm, year = as.numeric(year))
 head(tgcm)
@@ -1252,8 +1277,8 @@ head(tgcm)
 
 Some explorations:
 ```{r}
-library(lattice)
-p <- ggplot(tgcm) + geom_line(aes(year, u5mort, group = country), alpha = 0.3)
+p <- ggplot(tgcm) +
+    geom_line(aes(year, u5mort, group = country), alpha = 0.3)
 p
 plotly::ggplotly(p)
 ```
@@ -1262,15 +1287,20 @@ Some selected countries:
 
 ```{r}
 countries <- c("United States", "United Kingdom", "Germany", "China", "Egypt")
-tcgm1 <- filter(tgcm, country %in% countries)
-ggplot(tcgm1) + geom_line(aes(x = year, y = u5mort, color = country))
+filter(tgcm, country %in% countries) %>%
+    ggplot() +
+    geom_line(aes(x = year, y = u5mort, color = country))
 ```
 
 Examining the missing values:
 
 ```{r}
-tgcm_miss <- summarize(group_by(tgcm, country), anyNA = any(is.na(u5mort)))
-tgcm_miss <- filter(tgcm_miss, anyNA)$country
+tgcm_miss <-
+    group_by(tgcm, country) %>%
+    summarize(anyNA = any(is.na(u5mort))) %>%
+    filter(anyNA) %>%
+    pull(country)
+
 p <- ggplot(filter(tgcm, country %in% tgcm_miss)) +
     geom_line(aes(x = year, y = u5mort, group = country), na.rm = TRUE)
 p
