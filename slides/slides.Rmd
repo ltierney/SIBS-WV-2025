@@ -813,7 +813,7 @@ ggplot(barley) +
 Focusing on summaries can help. 
 
 --
-A _dot plot_:
+A _dot plot_ of average yields for each site and year:
 
 .pull-left[
 ```{r barley-avg-dot, echo = FALSE, message = FALSE, fig.width = 7}
@@ -947,7 +947,8 @@ ggplot(eye) +
 ---
 ## Hair and Eye Color Data
 
-Mapping eye color to color in addition to the horizontal axis can help:
+Mapping eye color to bar color in addition to the horizontal axis
+position can help:
 
 .pull-left[
 ```{r eye-bar-2, echo = FALSE}
@@ -1408,8 +1409,7 @@ Color perception is relative:
 
 --
 
-A note on [rainbow colors](
-https://eeecon.uibk.ac.at/~zeileis/news/endrainbow/).
+Groups of colors that work well together are called _palettes_.
 
 --
 
@@ -1424,6 +1424,11 @@ Some tools for selecting palettes include:
 
 * [HCL Wizard](http://www.hclwizard.org/); also available as `hclwizard`
   in the `colorspace` package.
+
+--
+
+A note on [rainbow colors](
+https://eeecon.uibk.ac.at/~zeileis/news/endrainbow/).
 
 ---
 class: center, middle
