@@ -1234,13 +1234,13 @@ The `gapminder` package provides a subset of the data from the
 [Gapminder](http://www.gapminder.org/) web site. Additional data sets
 are [available](http://www.gapminder.org/data/).
 
-- A data set on childhood mortality is available locally as a [csv
+* A data set on childhood mortality is available locally as a [csv
   file](http://homepage.stat.uiowa.edu/~luke/data/gapminder-under5mortality.csv)
   or an [Excel
   file](http://homepage.stat.uiowa.edu/~luke/data/gapminder-under5mortality.xlsx). The
   Excel file is also available in the project data folder.
 
-- The numbers represent number of deaths within the first five years
+* The numbers represent number of deaths within the first five years
   per 1000 births.
 
 <div class="alert alert-info"> Many researchers like to manage their
