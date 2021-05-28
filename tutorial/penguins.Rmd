@@ -1,0 +1,297 @@
+---
+#############################################################
+#                                                           #
+# It RStudio click on "Run Document" to run this tutorial   #
+#                                                           #
+#############################################################
+title: "Penguins"
+author: "Luke Tierney"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+library(tidyverse)
+knitr::opts_chunk$set(echo = FALSE, comment = "", warning = FALSE)
+```
+
+## Palmer Penguins
+
+```{r, out.width = 500, fig.align = "center", fig.cap = "Artwork by @allison_horst"}
+knitr::include_graphics("https://allisonhorst.github.io/palmerpenguins/man/figures/lter_penguins.png")
+```
+The [**palmerpenguins** package](https://allisonhorst.github.io/palmerpenguins/)
+includes data for adult foraging Adélie, Chinstrap, and Gentoo
+penguins observed on islands in the Palmer Archipelago near Palmer
+Station, Antarctica. Data were collected and made available by
+Dr. Kristen Gorman and the Palmer Station Long Term Ecological
+Research (LTER) Program.
+
+```{r, echo = TRUE}
+library(palmerpenguins)
+penguins
+```
+
+
+## How Many Are There?
+
+The variables `species` and `island` are categorical.
+
+The function `count` can be used to find out how many observations
+there are at each level or combination of levels.
+
+How many penguins of each species were observed?
+
+```{r count_species, exercise=TRUE}
+
+```
+
+```{r count_species-hint}
+count(penguins, ___ )
+```
+
+```{r count_species-solution}
+count(penguins, species)
+```
+
+How many penguins were observed on each of the islands?
+
+```{r island-counts, exercise=TRUE}
+
+```
+
+```{r island-counts-solution}
+count(penguins, island)
+```
+
+How many penguins of each species were observed on each of the islands?
+
+```{r island-species-counts, exercise=TRUE}
+
+```
+
+```{r island-species-counts-solution}
+count(penguins, species, island)
+```
+
+## Flippers and Bills
+
+Use **ggplot** to create a scatter plot of bill length against flipper
+length:
+
+```{r simple-scatter, exercise = TRUE}
+ggplot(___, aes(x = ___, y = ___)) + geom____()
+```
+
+```{r simple-scatter-hint-1}
+ggplot(penguins, aes(x = ___, y = ___)) + geom_point()
+```
+
+```{r simple-scatter-hint-2}
+ggplot(penguins, aes(x = flipper_length_mm, y = ___)) + geom_point()
+```
+
+
+```{r simple-scatter-solution}
+ggplot(penguins, aes(x = flipper_length_mm, y = bill_length_mm)) + geom_point()
+```
+
+You can show categorical variables `sex`, `species`, or `island` by
+mapping them to the `color` or `shape` aesthetics:
+
+```{r scatter-more, exercise = TRUE, exercise.lines = 6}
+ggplot(penguins,
+       aes(x = flipper_length_mm,
+           y = bill_length_mm,
+           color = ___)) +
+    geom_point()
+```
+
+It is sometimes useful to use two aesthetic channels as a _redundant
+encoding_ of a variable.
+
+Use both color and shape to encode the species variable:
+
+```{r scatter-species, exercise = TRUE}
+ggplot(penguins,
+       aes(x = flipper_length_mm,
+           y = bill_length_mm,
+           color = ___,
+           shape = ___)) +
+    geom_point()
+```
+
+```{r scatter-species-solution}
+ggplot(penguins,
+       aes(x = flipper_length_mm,
+           y = bill_length_mm,
+           color = species,
+           shape = species)) +
+    geom_point()
+```
+
+## Spiffing It Up
+
+Let's look at some ways to improve our plot.
+
+
+### Point Size and Transparency
+
+It can help to make points a little larger. You can do this with the
+`size` argument to `geom_point`. Try a size around 2 or 3.
+
+Increasing the point size can lead to more overlap, so making the
+points translucent may be useful also. Use the `alpha` argument for this.
+
+* `alpha = 1` is fully opaque;
+* `alpha = 0` is transparent.
+
+```{r scatter-size-alpha, exercise = TRUE}
+ggplot(penguins,
+       aes(x = flipper_length_mm,
+           y = bill_length_mm,
+           color = species,
+           shape = species)) +
+    geom_point(___, ___)
+```
+
+```{r scatter-size-alpha-solution}
+ggplot(penguins,
+       aes(x = flipper_length_mm,
+           y = bill_length_mm,
+           color = species,
+           shape = species)) +
+    geom_point(size = 3, alpha = 0.8)
+```
+
+
+### Changing Colors
+
+The default color palette often works well but you can try other options:
+
+* A [ColorBrewer](https://colorbrewer2.org/) palette:
+  `scale_color_brewer(palette = "Set1")`
+
+* A Viridis palette:
+  `viridis::scale_color_viridis(discrete = TRUE)`
+
+* Colors that match the graphic at the beginning:
+  `scale_color_manual(values = c("darkorange","purple","cyan4"))`
+
+You can use many different [named
+colors](https://htmlcolorcodes.com/color-names/) with
+`scale_color_manual`.
+
+Try some:
+
+```{r scatter-color, exercise = TRUE}
+ggplot(penguins,
+       aes(x = flipper_length_mm,
+           y = bill_length_mm,
+           color = species,
+           shape = species)) +
+    geom_point(size = 2, alpha = 0.8) +
+    scale_color____(___)
+```
+
+```{r scatter-color-solution}
+ggplot(penguins,
+       aes(x = flipper_length_mm,
+           y = bill_length_mm,
+           color = species,
+           shape = species)) +
+    geom_point(size = 2, alpha = 0.8) +
+    scale_color_manual(values = c("darkorange","purple","cyan4"))
+```
+
+### Titles and Labels
+
+Default labels for axes and legends are based on variable names.
+
+This usually fine for exploratory graphs, but can be improved for a
+graph to put in a report.
+
+The `labs` function is one way to specify new axis and legend labels:
+
+```{r scatter-labels, exercise = TRUE}
+ggplot(penguins,
+       aes(x = flipper_length_mm,
+           y = bill_length_mm,
+           color = species,
+           shape = species)) +
+    geom_point(size = 2, alpha = 0.8) +
+    scale_color_manual(values = c("darkorange","purple","cyan4")) +
+    labs(title = ___,
+         subtitle = ___,
+         color = ___,
+         shape = ___,
+         x = ___,
+         y = ___)
+```
+```{r mylabs}
+mylabs <-
+    labs(title = "Flipper and Bill Length",
+         subtitle = "Dimensions for Adelie, Chinstrap and Gentoo Penguins at Palmer Station LTER",
+         color = "Penguin Species",
+         shape = "Penguin Species",
+         x = "Flipper Length (mm)",
+         y = "Bill Length (mm)")
+```
+```{r scatter-labels-solution}
+<<mylabs>>
+ggplot(penguins,
+       aes(x = flipper_length_mm,
+           y = bill_length_mm,
+           color = species,
+           shape = species)) +
+    geom_point(size = 2, alpha = 0.8) +
+    scale_color_manual(values = c("darkorange","purple","cyan4")) +
+    mylabs
+```
+
+
+### Changing Themes
+
+Themes and theme settings control the general appearance of a plot.
+
+Some complete themes to try:
+
+* `theme_minimal()` with less clutter than the default theme.
+
+* `ggthemes::theme_wsj()` a theme based on the Wall Street Journal.
+
+* `ggthemes::theme_economist()` a theme based on the Economist.
+
+Give it a try:
+
+```{r scatter-theme, exercise = TRUE}
+ggplot(penguins,
+       aes(x = flipper_length_mm,
+           y = bill_length_mm,
+           color = species,
+           shape = species)) +
+    geom_point(size = 2, alpha = 0.8) +
+    scale_color_manual(values = c("darkorange","purple","cyan4")) +
+    mylabs +
+    theme_minimal()
+```
+
+The `theme` function lets you adjust many individual features.
+
+Here are a few; you can try some more:
+
+
+```{r scatter-more-theme, exercise = TRUE}
+ggplot(penguins,
+       aes(x = flipper_length_mm,
+           y = bill_length_mm,
+           color = species,
+           shape = species)) +
+    geom_point(size = 2, alpha = 0.8) +
+    scale_color_manual(values = c("darkorange","purple","cyan4")) +
+    mylabs +
+    theme_minimal() +
+    theme(legend.position = c(0.85, 0.15),
+          plot.title.position = "plot")
+```
