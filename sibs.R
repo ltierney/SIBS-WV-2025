@@ -92,13 +92,13 @@ sgd <-
 
 
 ## -----------------------------------------------------------------------------
+f1 <- function(x)
+    sgd$prop[1] * dnorm(x, sgd$mean[1], sgd$sd[1])
+f2 <- function(x)
+    sgd$prop[2] * dnorm(x, sgd$mean[2], sgd$sd[2])
 p <- p +
-    stat_function(color = "red",
-                  fun = function(x)
-                          sgd$prop[1] * dnorm(x, sgd$mean[1], sgd$sd[1])) +
-    stat_function(color = "blue",
-                  fun = function(x)
-                          sgd$prop[2] * dnorm(x, sgd$mean[2], sgd$sd[2]))
+    stat_function(color = "red", fun = f1) +
+    stat_function(color = "blue", fun = f2)
 p
 
 
@@ -115,15 +115,17 @@ sgd2
 
 
 ## -----------------------------------------------------------------------------
+f1_2 <- function(x)
+    sgd2$prop[1] * dnorm(x, sgd2$mean[1], sgd2$sd[1])
+f2_2 <- function(x)
+    sgd2$prop[2] * dnorm(x, sgd2$mean[2], sgd2$sd[2])
 p <- p +
     stat_function(color = "red",
                   linetype = 2,
-                  fun = function(x)
-                          sgd2$prop[1] * dnorm(x, sgd2$mean[1], sgd2$sd[1])) +
+                  fun = f1_2) +
     stat_function(color = "blue",
                   linetype = 2,
-                  fun = function(x)
-                          sgd2$prop[2] * dnorm(x, sgd2$mean[2], sgd2$sd[2]))
+                  fun = f2_2)
 p
 
 

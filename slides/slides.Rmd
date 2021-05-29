@@ -98,7 +98,7 @@ Some tools I will be using:
 
 --
 
-Most of the packages are loaded by loading the `tidyverse` package
+Most of the packages are loaded by loading the `tidyverse` package:
 
 ```{r, message = FALSE}
 library(tidyverse)
@@ -567,7 +567,7 @@ sgd <- summarize(group_by(geyser, type),
 ---
 ## Old Faithful Eruptions
 
-An alternative approach uses the _pipe operator_:
+An alternative approach uses the _forward pipe operator_:
 
 --
 
@@ -863,6 +863,38 @@ ggplot(barley_site_year) +
 .pull-right[
 ```{r barley-avg-dot-2, eval = FALSE}
 ```
+]
+
+---
+## Minnesota Barley Yields
+
+Another useful approach for showing repeated measurements is a _slope
+graph_:
+
+.pull-left[
+.hide-code[
+```{r}
+library(ggrepel)
+barley_site_year <-
+    mutate(barley_site_year, year = fct_rev(year))
+barley_site_year_1932 <-
+    filter(barley_site_year, year == "1932")
+ggplot(barley_site_year,
+       aes(x = year, y = yield, group = site)) +
+    geom_line() +
+    geom_text_repel(aes(label = site),
+                    data = barley_site_year_1932,
+                    hjust = "left",
+                    direction = "y") +
+    scale_x_discrete(expand = expansion(mult = c(0.1, .25)),
+                     position = "top") +
+    labs(x = NULL, y = "Average Yield")
+```
+]
+]
+--
+.pull-right[
+This emphasizes the reversal for Morris.
 ]
 
 ---
