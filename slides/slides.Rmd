@@ -16,10 +16,13 @@ output:
       titleSlideClass: [center, middle]
 ---
 
+class: center, middle
+
 ```{r setup, include = FALSE}
 options(htmltools.dir.version = FALSE)
 library(ggplot2)
-knitr::opts_chunk$set(collapse = TRUE, fig.height = 5, fig.width = 6)
+knitr::opts_chunk$set(collapse = TRUE, fig.height = 5, fig.width = 6,
+                      warning = FALSE)
 library(lattice)
 library(tidyverse)
 library(gridExtra)
@@ -37,7 +40,10 @@ xaringanExtra::use_clipboard()
 .content-box-blue { background-color: lightblue; }
 ```
 
-## Introduction
+# Introduction
+
+---
+## Outline
 
 In this class I will
 
@@ -75,7 +81,7 @@ Technologies_ course are available at
 
 ---
 
-## Introduction: Tools
+## Tools
 
 Some tools I will be using:
 
@@ -105,7 +111,7 @@ library(tidyverse)
 ```
 
 ---
-## Introduction: References
+## References
 
 Useful references:
 
@@ -137,7 +143,12 @@ Useful references:
 **Ask questions any time!**
 
 ---
-## The R Language
+class: center, middle
+
+# The R Language
+
+---
+## Background
 
 R is a language for data analysis and graphics.
 
@@ -176,10 +187,7 @@ R is an Open Source project.
   similar repositories.
 
 ---
-layout: true
 ## Working with R
-
----
 
 R is designed for interactive data exploration.
 
@@ -228,6 +236,7 @@ The language is used to
 Specifying these tasks in a language supports _reproducible research_.
 
 ---
+## Working with R
 
 The R language operates on vectors and arrays.
 
@@ -266,7 +275,6 @@ frames_.
 
 
 ---
-layout: false
 ## The Data Analysis Process
 
 A figure that shows the steps usually involved in a data analysis
@@ -334,7 +342,7 @@ class: center, middle
 # Some Examples
 
 ---
-## Some Examples
+## Example Data Sets
 
 When working with research data, a first step is usually to read and
 clean the data.
@@ -385,8 +393,9 @@ They are useful for quick sanity checks.
 
 --
 
-The rows represent measurements recorded for eruptions of the _Old
-Faithful_ geyser in Yellowstone National Park, Wyoming.
+The rows represent measurements recorded for eruptions of the [_Old
+Faithful_](https://www.yellowstonepark.com/things-to-do/geysers-hot-springs/about-old-faithful/)
+geyser in Yellowstone National Park, Wyoming.
 
 --
 
@@ -1831,19 +1840,28 @@ d <- mutate(d, count = as.numeric(count))
 
 In this case there are no zero case values; two ways to check:
 
+.pull-left[
 ```{r}
 count(d, count == 0)
+```
+]
+--
+.pull-right[
+```{r}
 any(d$count == 0, na.rm = TRUE)
 ```
-
+]
 --
-
+.pull-left[
 It _might_ be reasonable to assume these values where zero, so replace
 them with zeros:
-
+]
+--
+.pull-right[
 ```{r}
 d <- replace_na(d, list(count = 0))
 ```
+]
 
 ---
 ## Cancer Map
