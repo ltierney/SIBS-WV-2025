@@ -9,15 +9,21 @@ output:
 ---
 
 ```{r global_options, include=FALSE}
-knitr::opts_chunk$set(collapse=TRUE)
+knitr::opts_chunk$set(collapse = TRUE, warning = FALSE)
+xaringanExtra::use_clipboard()
+library(ggplot2)
+theme_set(theme_minimal() +
+          theme(text = element_text(size = 16)) +
+          theme(panel.border = element_rect(color = "grey30", fill = NA)))
 ```
 
 ## Introduction
 
 In this class I will
 
-- Briefly outline the history of R.
-- Using some examples briefly show how to do data wrangling
+* Briefly outline the history of R.
+
+* Using some examples briefly show how to do data wrangling
   and visualize data in R.
  
 Materials for this class are available on GitHub at
@@ -34,6 +40,8 @@ Materials for our _Data Visualization and Data
 Technologies_ course are available at
  <http://www.stat.uiowa.edu/~luke/classes/STAT4580-2021/>
 
+### Tools
+
 Some tools I will be using:
 
 * The [RStudio](https://www.rstudion.com) IDE.
@@ -47,6 +55,8 @@ Most of the packages are loaded by loading the `tidyverse` package:
 ```{r, message = FALSE}
 library(tidyverse)
 ```
+
+### References
 
 Useful references:
 
@@ -65,10 +75,12 @@ Useful references:
 > source on GitHub](https://github.com/rafalab/dsbook))
 
 
-Ask questions any time!
+**Ask questions any time!**
 
  
-### The R Language
+## The R Language
+
+### Background
 
 R is a language for data analysis and graphics.
 
@@ -181,8 +193,10 @@ Git and GitHub for the useR_](https://happygitwithr.com/).
 
 ## Some Examples
 
-Working with research data a first step is usually to read and clean
-the data.
+### Example Data Sets
+
+When working with research data, a first step is usually to read and
+clean the data.
 
 We'll put that off for a little while and work with some data sets
 made available in R packages.
@@ -197,12 +211,12 @@ Data sets available in R packages include:
 ### Old Faithful Eruptions
 
 A simple classic data set is the `geyser` data frame available in
-package `MASS`
+package `MASS`.
 
 ```{r}
 data(geyser, package = "MASS")
 dim(geyser)
-head(geyser)
+head(geyser, 4)
 ```
 
 <div class="alert alert-info"> `head` and `tail` return the first and
@@ -210,8 +224,9 @@ last few rows of a data frame.
 
 They are useful for quick sanity checks.  </div>
 
-The rows represent measurements recorded for eruptions of the _Old
-Faithful_ geyser in Yellowstone National Park, Wyoming.
+The rows represent measurements recorded for eruptions of the [_Old
+Faithful_](https://www.yellowstonepark.com/things-to-do/geysers-hot-springs/about-old-faithful/)
+geyser in Yellowstone National Park, Wyoming.
 
 The variables are:
 
@@ -222,7 +237,10 @@ The durations have a bimodal distribution:
 
 ```{r}
 ggplot(geyser) +
-    geom_histogram(aes(x = duration), bins = 15, color = "black", fill = "grey")
+    geom_histogram(aes(x = duration),
+                   bins = 15,
+                   color = "black",
+                   fill = "grey")
 ```
 
 <div class="alert alert-info"> A basic template for creating a plot
@@ -240,19 +258,24 @@ A plot of the _previous_ duration against the waiting time to the
 current eruption:
 
 ```{r}
-ggplot(geyser) + geom_point(aes(x = lag(duration), y = waiting))
+ggplot(geyser) +
+    geom_point(aes(x = lag(duration),
+                   y = waiting))
 ```
 
 It looks like a useful rule would be to expect a shorter waiting time
-after a shorter eruption.
+after a shorter eruption duration.
 
 An interesting feature: Many durations are recorded as 2 or 4 minutes.
-This can also be seen in a histogram with many small bins:
+This can also be seen in a histogram with a small bin width:
 
 ```{r}
 p <- ggplot(geyser) +
-    geom_histogram(aes(x = duration, y = stat(density)),
-                   fill = "grey", color = "black", bins = 50)
+    geom_histogram(aes(x = duration,
+                       y = stat(density)),
+                   fill = "grey",
+                   color = "black",
+                   binwidth = 0.1)
 p
 ```
 
@@ -265,12 +288,17 @@ Does this rounding matter?
 * It might if you wanted to fit normal distributions to the two groups.
 
 Taking 3 minutes as the divide between short and long durations we can
-compute the means and standard deviations as
+first pick out the short and long durations:
 
 ```{r}
 d <- geyser$duration
 d_short <- d[d < 3]
 d_long <- d[d >= 3]
+```
+
+Then compute the means and standard deviations as
+
+```{r}
 mean(d_short)
 sd(d_short)
 mean(d_long)
@@ -278,8 +306,9 @@ sd(d_long)
 mean(d >= 3)
 ```
 
-An approach that scales better is to compute group summaries using
-tools from the `dplyr` `tidyverse` package.
+An approach that scales better:
+Compute group summaries using tools from the `dplyr` `tidyverse`
+package.
 
 First, add a `type` variable:
 
@@ -433,7 +462,10 @@ Can we also show `site` using symbol shape?
 
 ```{r}
 ggplot(barley) +
-    geom_point(aes(x = yield, y = variety, color = year, shape = site))
+    geom_point(aes(x = yield,
+                   y = variety,
+                   color = year,
+                   shape = site))
 ```
 
 There is a lot of _interference_ between shape and color.
