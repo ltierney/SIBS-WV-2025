@@ -176,7 +176,10 @@ R is an Open Source project.
   similar repositories.
 
 ---
+layout: true
 ## Working with R
+
+---
 
 R is designed for interactive data exploration.
 
@@ -225,7 +228,6 @@ The language is used to
 Specifying these tasks in a language supports _reproducible research_.
 
 ---
-## Working with R
 
 The R language operates on vectors and arrays.
 
@@ -264,7 +266,8 @@ frames_.
 
 
 ---
-### The Data Analysis Process
+layout: false
+## The Data Analysis Process
 
 A figure that shows the steps usually involved in a data analysis
 project:
