@@ -942,9 +942,9 @@ charts](https://flowingdata.com/2015/08/31/bar-chart-baselines-start-at-zero/).
 
 --
 
-![](../img/viz3-520x294.jpg)
+![](`r here::here("img/viz3-520x294.jpg")`)
 --
-![](../img/viz5-520x280.jpg)
+![](`r here::here("img/viz5-520x280.jpg")`)
 
 ---
 ## Hair and Eye Color Data
@@ -1195,7 +1195,7 @@ An initial plot using default settings:
 
 .hide-code[
 ```{r, fig.width = 8}
-river <- scan("../data/river.dat")
+river <- scan(here::here("data/river.dat"))
 rd <- data.frame(flow = river, month = seq_along(river))
 (pp <- ggplot(rd) + geom_point(aes(x = month, y = flow)))
 ```
@@ -1454,9 +1454,9 @@ Color perception is relative:
 
 --
 
-![](../img/chess1.png)
+![](`r here::here("img/chess1.png")`)
 --
-![](../img/chess2.png)
+![](`r here::here("img/chess2.png")`)
 
 --
 
@@ -1594,7 +1594,8 @@ Database](https://eerscmap.usgs.gov/uswtdb/).
 
 --
 
-A snapshot is available is [here](../data/us_wind.csv) as a CSV file.
+A snapshot is available is [here](`r here::here("data/us_wind.csv")`)
+as a CSV file.
 
 --
 
@@ -1623,7 +1624,7 @@ A snapshot is available is [here](../data/us_wind.csv) as a CSV file.
 Reading the wind turbine data:
 
 ```{r}
-wind_turbines <- read.csv("../data/us_wind.csv", comment = "#")
+wind_turbines <- read.csv(here::here("data/us_wind.csv"), comment = "#")
 ```
 
 ---
@@ -1765,9 +1766,12 @@ cancer incidence for a number of different cancers in Iowa.
 
 --
 
+```{r, include = FALSE}
+cancer_data_file <- here::here("data/Invasive-Cancer-Incidence-Rates-by-County-in-Iowa-Lung-and-Bronchus-2011.csv")
+```
+
 The data for lung and bronchus cancer in 2011 are available in a [csv
-file](../data/Invasive-Cancer-Incidence-Rates-by-County-in-Iowa-Lung-and-Bronchus-2011.csv)
-in the project.
+file](`r cancer_data_file`) in the project.
 
 --
 
@@ -1796,7 +1800,7 @@ Looking at the file shows some things that need to be cleaned up:
 The header can be handled by using `skip = 2` in the `read_csv` call:
 
 ```{r, message = FALSE}
-fname <- "../data/Invasive-Cancer-Incidence-Rates-by-County-in-Iowa-Lung-and-Bronchus-2011.csv"
+fname <- here::here("data/Invasive-Cancer-Incidence-Rates-by-County-in-Iowa-Lung-and-Bronchus-2011.csv")
 d <- read_csv(fname, skip = 2)
 head(d)
 ```
@@ -2066,7 +2070,7 @@ It is still reasonably easy to read in.
 One way to read the data into R is:
 
 ```{r}
-lausURL <- "../data/laucntycur14-2020.txt"
+lausURL <- here::here("data/laucntycur14-2020.txt")
 lausUS <- read.table(lausURL,
                      col.names = c("LAUSAreaCode", "State", "County",
                                    "Title", "Period",
@@ -2360,7 +2364,7 @@ Loading the data:
 
 ```{r}
 library(readxl)
-gcm <- read_excel("../data/gapminder-under5mortality.xlsx")
+gcm <- read_excel(here::here("data/gapminder-under5mortality.xlsx"))
 ```
 
 --
