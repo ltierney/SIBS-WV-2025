@@ -20,20 +20,14 @@ class: center, middle
 
 ```{r setup, include = FALSE}
 options(htmltools.dir.version = FALSE)
+knitr::opts_chunk$set(collapse = TRUE, warning = FALSE)
+knitr::opts_chunk$set(fig.height = 5, fig.width = 6)
+xaringanExtra::use_clipboard()
 library(ggplot2)
-knitr::opts_chunk$set(collapse = TRUE, fig.height = 5, fig.width = 6,
-                      warning = FALSE)
-library(lattice)
-library(tidyverse)
-library(gridExtra)
-library(forecast)
 theme_set(theme_minimal() +
           theme(text = element_text(size = 16)) +
           theme(panel.border = element_rect(color = "grey30", fill = NA)))
 set.seed(12345)
-```
-```{r xaringanExtra-clipboard, echo=FALSE}
-xaringanExtra::use_clipboard()
 ```
 
 ```{css, echo = FALSE}
