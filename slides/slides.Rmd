@@ -27,7 +27,6 @@ library(ggplot2)
 theme_set(theme_minimal() +
           theme(text = element_text(size = 16)) +
           theme(panel.border = element_rect(color = "grey30", fill = NA)))
-set.seed(12345)
 ```
 
 ```{css, echo = FALSE}
