@@ -2381,7 +2381,7 @@ with `ggplot`.
 
 --
 
-A better first varaible name:
+A better first variable name:
 
 ```{r}
 names(gcm)[1] <- "country"
