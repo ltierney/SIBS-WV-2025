@@ -574,7 +574,7 @@ sgd <- summarize(group_by(geyser, type),
 ---
 ## Old Faithful Eruptions
 
-An alternative approach uses the _forward pipe operator_:
+This computation can also be written using the _forward pipe operator_ `%>%`:
 
 --
 
