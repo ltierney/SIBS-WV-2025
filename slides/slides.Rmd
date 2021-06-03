@@ -55,7 +55,7 @@ Materials for this class are available on GitHub at
 --
 
 * You can access it as an RStudio project by following the menu selection
-  **File > New Project > Version Control > Git** and specifying this url.
+  **File > New Project > Version Control > Git** and specifying this URL.
 
 --
 
