@@ -1667,7 +1667,8 @@ iowa_sf <-
                            fill = TRUE))
 ```
 ]
-.pull-right[]
+.pull-right[
+]
 
 ---
 ## Wind Turbines in Iowa
