@@ -966,8 +966,10 @@ head(HairEyeDF)
 .pull-right[
 The data set is available as a _cross-tabulation_.
 
-`as.data.frame` converts it to a data frame.
+{{content}}
 ]
+--
+`as.data.frame` converts it to a data frame.
 
 ---
 ## Hair and Eye Color Data
@@ -1134,7 +1136,7 @@ Some questions:
 ]
 --
 * Which plot makes it easier to tell whether the proportion of
-  brown-eyed students is larger or smaller that the proportion of
+  brown-eyed students is larger or smaller than the proportion of
   blue-eyed students?
 
 {{content}}
@@ -1637,8 +1639,9 @@ Some data cleaning is needed.
 
 --
 
-Focus on the wind turbines in IOWA (19 is the [FIPS county
-code](https://en.wikipedia.org/wiki/FIPS_county_code) for Iowa):
+Focus on the wind turbines in IOWA (19 is the state component of the
+[FIPS county code](https://en.wikipedia.org/wiki/FIPS_county_code) for
+Iowa):
 
 ```{r}
 wt_IA <- filter(wind_turbines, t_fips %/% 1000 == 19)
