@@ -398,7 +398,7 @@ The variables are:
 
 --
 
-* `duration`: the duration of the eruption.
+* `duration`: the duration in minutes of the eruption.
 
 
 ---
@@ -423,6 +423,12 @@ ggplot(geyser) +
 {{content}}
 ]
 --
+This is [`ggplot`](https://ggplot2.tidyverse.org/) code for creating a
+histogram.
+
+{{content}}
+--
+
 A basic template for creating a plot with `ggplot`:
 
 ```r
@@ -563,6 +569,7 @@ geyser <- mutate(geyser, type = ifelse(duration < 3, "short", "long"))
 
 The summaries can then be computed as
 
+.pull-left[
 ```{r}
 sgd <- summarize(group_by(geyser, type),
                  mean = mean(duration),
@@ -570,6 +577,13 @@ sgd <- summarize(group_by(geyser, type),
                  n = n())
 (sgd <- mutate(sgd, prop = n / sum(n)))
 ```
+]
+--
+.pull-right[
+`summarize`, `group_by`, and `mutate` are from the `dplyr` package
+that implements a _grammar of data manipulation_.
+]
+
 
 ---
 ## Old Faithful Eruptions
@@ -648,12 +662,6 @@ sgd2 <-
 sgd2
 ```
 
---
-
-`summarize`, `group_by`, and `mutate` are from the `dplyr` package
-that implements a _grammar of data manipulation_.
-
-
 ---
 ## Old Faithful Eruptions
 
@@ -685,7 +693,7 @@ p
 ---
 ## Minnesota Barley Yields
 
-A classic data set:
+Another classic data set:
 
 --
 
