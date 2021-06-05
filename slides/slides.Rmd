@@ -23,6 +23,7 @@ options(htmltools.dir.version = FALSE)
 knitr::opts_chunk$set(collapse = TRUE, warning = FALSE)
 knitr::opts_chunk$set(fig.height = 5, fig.width = 6)
 xaringanExtra::use_clipboard()
+xaringanExtra::use_tile_view()
 library(ggplot2)
 theme_set(theme_minimal() +
           theme(text = element_text(size = 16)) +
