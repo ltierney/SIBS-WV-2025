@@ -1667,22 +1667,6 @@ wt_IA <- mutate(wt_IA, p_year = replace(p_year, p_year < 0, NA))
 To show the locations of wind turbines on a map, load some map data:
 
 .pull-left[
-```{r, eval = FALSE}
-iowa_sf <-
-    sf::st_as_sf(maps::map("county", "iowa",
-                           plot = FALSE,
-                           fill = TRUE))
-```
-]
-.pull-right[
-]
-
----
-## Wind Turbines in Iowa
-
-To show the locations of wind turbines on a map, load some map data:
-
-.pull-left[
 ```{r iowa_sf_map, eval = FALSE}
 iowa_sf <-
     sf::st_as_sf(maps::map("county", "iowa",
@@ -1695,6 +1679,7 @@ p <- ggplot() +
 p
 ```
 ]
+
 .pull-right[
 ```{r iowa_sf_map, echo = FALSE, fig.width = 8}
 ```
