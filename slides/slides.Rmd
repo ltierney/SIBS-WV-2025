@@ -277,7 +277,7 @@ project:
 library(nomnoml)
 ```
 <center>
-```{nomnoml, echo = FALSE, fig.height = 4}
+```{nomnoml, echo = FALSE, fig.height = 5, fig.width = 8}
 #padding: 25
 #fontsize: 18
 #fill: #E1DAFF; #D4A9FF
