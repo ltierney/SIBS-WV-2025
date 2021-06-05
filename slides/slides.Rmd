@@ -762,7 +762,7 @@ There is a lot of _interference_ between shape and color.
 ---
 ## Minnesota Barley Yields
 
-Can we also show `site` using symbol shape?
+Larger points may help:
 
 .pull-left[
 ```{r barley-color-sym-2, echo = FALSE, fig.width = 7}
@@ -777,17 +777,13 @@ ggplot(barley) +
 .pull-right[
 ```{r barley-color-sym-2, eval = FALSE}
 ```
-
-Possible improvements:
-
-* larger points
 ]
 
 
 ---
 ## Minnesota Barley Yields
 
-Can we also show `site` using symbol shape?
+_Jittering_ may also help:
 
 
 .pull-left[
@@ -798,17 +794,15 @@ ggplot(barley) +
                    color = year,
                    shape = site),
                size = 2.5,
-               position = position_jitter(height = 0.15, width = 0)) #<<
+               position =             #<<
+                   position_jitter(   #<<
+                       height = 0.15, #<<
+                       width = 0))    #<<
 ```
 ]
 .pull-right[
 ```{r barley-color-sym-3, eval = FALSE}
 ```
-
-Possible improvements:
-
-* larger points
-* jittering
 ]
 
 
