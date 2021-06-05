@@ -911,6 +911,7 @@ ggplot(barley_site_year,
 ]
 ]
 --
+
 .pull-right[
 This emphasizes the reversal for Morris.
 ]
@@ -1128,7 +1129,9 @@ How well do bar charts and pie charts work?
 cowplot::plot_grid(pb, pp)
 ```
 ]
+
 --
+
 .pull-right[
 Some questions:
 
