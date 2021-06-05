@@ -809,13 +809,21 @@ ggplot(barley) +
 ---
 ## Minnesota Barley Yields
 
+.pull-left[
 Another approach: _faceting_ to produce _small multiples_.
 
-```{r, fig.width = 10}
+```{r barley-facet, eval = FALSE}
 ggplot(barley) +
-    geom_point(aes(x = yield, y = variety, color = year)) +
-    facet_wrap(~site)
+    geom_point(aes(x = yield,
+                   y = variety,
+                   color = year)) +
+    facet_wrap(~site, ncol = 2)    #<<
 ```
+]
+.pull-right[
+```{r barley-facet, echo = FALSE, fig.width = 7, fig.height = 7}
+```
+]
 
 ---
 ## Minnesota Barley Yields
