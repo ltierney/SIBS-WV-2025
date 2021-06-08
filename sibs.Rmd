@@ -76,7 +76,7 @@ Useful references:
 
 > Claus O. Wilke (2019), [_Fundamentals of Data
 >  Visualization_](https://serialmentor.com/dataviz/), O'Reilly.
-  
+
 > Kieran Healy (2018) [_Data Visualization: A practical
 > introduction_](http://socviz.co/), Princeton
 
@@ -84,7 +84,6 @@ Useful references:
 > Analysis and Prediction Algorithms with
 > R_](https://rafalab.github.io/dsbook/), Chapman & Hall/CRC. ([Book
 > source on GitHub](https://github.com/rafalab/dsbook))
-
 
 **Ask questions any time!**
 
@@ -699,7 +698,7 @@ psb <- ggplot(eye) +
 psb
 ```
 
-A _pie chart_ can be seen as a stacked bar chart in polar coordinates:
+Changing to polar coordinates produces a _pie chart_:
 
 ```{r eye-pie}
 (pp <- psb + coord_polar("y"))
@@ -728,7 +727,7 @@ cowplot::plot_grid(pb, pp)
 ```
 
 Some questions:
-     
+
 * Which plot makes it easier to tell whether the proportion of
   brown-eyed students is larger or smaller than the proportion of
   blue-eyed students?
@@ -737,7 +736,7 @@ Some questions:
   larger or smaller than 1/2 or 1/4 or 1/3?
 
 Looking at the proportions within hair color and sex:
-      
+
 ```{r, fig.width = 10, class.source = "fold-hide"}
 eye_hairsex <-
     group_by(HairEyeDF, Hair, Sex) %>%
@@ -759,6 +758,8 @@ cowplot::plot_grid(p1, p2)
 
 <div class="alert alert-info"> A more complete `ggplot` template:
 
+<!-- # nolint start -->
+
 ```r
 ggplot(data = <DATA>) +
     <GEOM>(mapping = aes(<MAPPINGS>),
@@ -770,6 +771,9 @@ ggplot(data = <DATA>) +
     <FACETING> +
     <THEME_ADJUSTMENT>
 ```
+
+<!-- # nolint end -->
+
 </div>
 
 
@@ -834,15 +838,15 @@ Meaningful visual chunks are moved from iconic memory to short term memory.
 Long term visual memory is built up over a lifetime, though
 infrequently used visual chunks may become lost.
 
-<div class="alert alert-info">**Visual Design Implications**
+### Visual Design Implications
 
-* Try to make as much use of preattentive features as possible.
+Try to make as much use of preattentive features as possible.
 
-* Recognize when preattentive features might mislead.
+Recognize when preattentive features might mislead.
 
-* For features that require attentive processing keep in mind that
-  working memory is limited.
-</div>
+For features that require attentive processing, keep in mind that
+working memory is limited.
+
 
 ### Some Terms for Describing Visualizations
 
@@ -863,7 +867,6 @@ and visual channels.
 
 These ideas closely mirror the structure of the _grammar of graphics_
 as implemented in `ggplot`.
-
 
 > Munzner, T. (2014), [_Visualization Analysis and
 >  Design_](http://www.cs.ubc.ca/~tmm/vadbook/), CRC Press.
@@ -886,7 +889,7 @@ Some channels are better at conveying information than others.
 Munzner's ordering by accuracy:
 
 | Magnitude Channels (Ordered, Numerical) | Identity Channels (Categorical) |
-|---------------------------------------------------------------------------|
+|-----------------------------------------|---------------------------------|
 | Position on common scale                | Spatial grouping                |
 | Position on unaligned scale             | Color hue                       |
 | Length (1D size)                        | Shape                           |
@@ -973,8 +976,8 @@ into one.
 Package `tidyr` provides more verbs, such as `pivot_longer` and
 `pivot_wider` for reshaping data frames.
 
-The single table verbs can also be used with `group_by` to work a
-group at a time instead of applying to the entire data frame.
+The single table verbs can also be used with `group_by` to work
+separately on groups of rows.
 
 
 ## More Examples
@@ -982,16 +985,12 @@ group at a time instead of applying to the entire data frame.
 These examples start with raw data as you might receive it from a
 researcher, and involve reading and cleaning the data.
 
-
 Common data formats you might encounter include
-
 
 * [_CSV_ (comma-separated
   values)](https://en.wikipedia.org/wiki/Comma-separated_values) files.
 
-
 * Text files using other delimiters, such as tabs or `|` characters.
-
 
 * [JSON(JavaScript Object
   Notation)](https://en.wikipedia.org/wiki/JSON) files.
@@ -1000,9 +999,7 @@ Common data formats you might encounter include
 * [XML (Extensible Markup
   Language)](https://en.wikipedia.org/wiki/XML) files.
 
-
 * Excel spreadsheets.
-
 
 Tools are available for reading data in these formats into R.
 
@@ -1041,36 +1038,27 @@ Iowa):
 ```{r}
 wt_IA <- filter(wind_turbines, t_fips %/% 1000 == 19)
 ```
+
 Drop entries with missing longitude or latitude values:
 
 ```{r}
 wt_IA <- filter(wt_IA, ! is.na(xlong), ! is.na(ylat))
 ```
+
 Some missing year values are encoded as -9999; replace these with `NA`:
 
 ```{r}
 wt_IA <- mutate(wt_IA, p_year = replace(p_year, p_year < 0, NA))
 ```
+
 To show the locations of wind turbines on a map, load some map data:
 
-```{r iowa_sf_map, eval = FALSE}
+```{r iowa_sf_map}
 iowa_sf <-
     sf::st_as_sf(maps::map("county", "iowa",
                            plot = FALSE,
                            fill = TRUE))
 
-p <- ggplot() +
-    geom_sf(data = iowa_sf) +
-    ggthemes::theme_map()
-p
-```
-To show the locations of wind turbines on a map, load some map data:
-
-```{r, fig.width = 8}
-iowa_sf <-
-    sf::st_as_sf(maps::map("county", "iowa",
-                           plot = FALSE,
-                           fill = TRUE))
 p <- ggplot() +
     geom_sf(data = iowa_sf) +
     ggthemes::theme_map()
@@ -1289,6 +1277,7 @@ p <- ggplot(mdl) +
 
 plotly::ggplotly(p, tooltip = "text")
 ```
+
 The [`leaflet`](https://rstudio.github.io/leaflet/) package supports
 more sophisticated interactive maps:
 
@@ -1344,7 +1333,7 @@ lausUS <- read.table(lausURL,
                      stringsAsFactors = FALSE, strip.white = TRUE,
                      fill = TRUE)
 footstart <- grep("------", lausUS$LAUSAreaCode)
-lausUS <- lausUS[1:(footstart - 1),]
+lausUS <- lausUS[1 : (footstart - 1), ]
 ```
 
 It may be useful to be able to access the county name and state name
@@ -1381,6 +1370,7 @@ select(lausUS, cname, scode) %>%
     filter(is.na(scode)) %>%
     unique()
 ```
+
 <!--
 Missing values for `UnempRate` are all for Puerto Rico and September
 2017. Hurricane Maria made landfall on September 20. -->
@@ -1431,6 +1421,7 @@ added with
 ```{r}
 lausUS <- mutate(lausUS, fips = State * 1000 + County)
 ```
+
 Shape data for US counties can be obtained from a number of sources in a
 number of different formats.
 
@@ -1444,6 +1435,7 @@ county.fips <-
 counties_sf <- left_join(counties_sf, county.fips, c("ID" = "polyname"))
 states_sf <- sf::st_as_sf(maps::map("state", plot = FALSE, fill = TRUE))
 ```
+
 Some summaries over the period can be computed as
 
 ```{r}
@@ -1454,8 +1446,8 @@ summaryUS <- group_by(lausUS, County, State, fips) %>%
     ungroup()
 head(summaryUS)
 ```
-A choropleth map of the April 2020 unemployment rates:
 
+A choropleth map of the April 2020 unemployment rates:
 
 ```{r, class.source = "fold-hide"}
 left_join(counties_sf, summaryUS, "fips") %>%
@@ -1475,6 +1467,7 @@ in the unemployment data:
 ```{r}
 anti_join(counties_sf, summaryUS, "fips")
 ```
+
 Shannon County, SD (FIPS 46113), was renamed to [Oglala Lakota County](https://en.wikipedia.org/wiki/Oglala_Lakota_County,_South_Dakota) in June 2015 and given a new FIPS code, 46102.
 
 The geometry data table needs to be updated:
@@ -1539,7 +1532,7 @@ Additional data sets are [available](http://www.gapminder.org/data/).
   file](http://homepage.stat.uiowa.edu/~luke/data/gapminder-under5mortality.csv)
   or an [Excel
   file](http://homepage.stat.uiowa.edu/~luke/data/gapminder-under5mortality.xlsx).
-  
+
 * The Excel file is also available in the project data folder.
 
 * The numbers represent number of deaths within the first five years
