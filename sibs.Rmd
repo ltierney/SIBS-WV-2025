@@ -1,14 +1,17 @@
 ---
 title: "Basic Data Wrangling and Data Visualization in R"
 author: "Luke Tierney"
+institute: "University of Iowa"
 date: "21 June, 2021"
 output:
   html_document:
     toc: yes
+    code_folding: show
     code_download: true
 ---
 
-```{r global_options, include=FALSE}
+
+```{r setup, include = FALSE}
 knitr::opts_chunk$set(collapse = TRUE, warning = FALSE)
 xaringanExtra::use_clipboard()
 library(ggplot2)
@@ -18,6 +21,8 @@ theme_set(theme_minimal() +
 ```
 
 ## Introduction
+
+### Outline
 
 In this class I will
 
@@ -31,6 +36,7 @@ Materials for this class are available on GitHub at
 
 * You can access it as an RStudio project by following the menu selection
   **File > New Project > Version Control > Git** and specifying this URL.
+
 * You can use the `git` command line client with
     ```shell
 git clone https://github.com/ltierney/SIBS-WV-2021.git
@@ -38,15 +44,20 @@ git clone https://github.com/ltierney/SIBS-WV-2021.git
 
 Materials for our _Data Visualization and Data
 Technologies_ course are available at
- <http://www.stat.uiowa.edu/~luke/classes/STAT4580-2021/>
+
+<http://www.stat.uiowa.edu/~luke/classes/STAT4580-2021/>
+
 
 ### Tools
 
 Some tools I will be using:
 
 * The [RStudio](https://www.rstudion.com) IDE.
+
 * Many features from the basic [R](https://www.r-project.org) distribution.
+
 * Some tools from the [_tidyverse_](https://www.tidyverse.org/).
+
 * The [`ggplot`](https://ggplot2.tidyverse.org/) package based on
   the _Grammar of Graphics_ framework.
 
@@ -109,18 +120,23 @@ R is an Open Source project.
 R is designed for interactive data exploration.
 
 * Interaction is through a _read-eval-print loop (REPL)_.
+
 * This is also called a _command line interface (CLI)_.
 
 All computations are specified in the R language.
 
 * Even for simple tasks you need to know a little of the language.
+
 * After learning to do simple tasks you know some of the language.
 
 The language is used to
     
 * prepare data for analysis;
+
 * specify individual analyses;
+
 * program repeated or similar analyses;
+
 * program new methods of analysis.
 
 Specifying these tasks in a language supports _reproducible research_.
@@ -130,8 +146,11 @@ The R language operates on vectors and arrays.
 Commonly used data types are:
 
 * integer and numeric vectors;
+
 * logical vectors;
+
 * character vectors;
+
 * factors.
 
 All basic vector types support missing (`NA`) values.
@@ -204,7 +223,9 @@ made available in R packages.
 Data sets available in R packages include:
 
 * many classic data sets;
+
 * newer, often larger, data sets useful for learning;
+
 * current data obtained by querying web APIs.
 
 
@@ -231,11 +252,12 @@ geyser in Yellowstone National Park, Wyoming.
 The variables are:
 
 * `waiting`: the time in minutes since the previous eruption;
-* `duration`: the duration of the eruption.
+
+* `duration`: the duration in minutes of the eruption.
 
 The durations have a bimodal distribution:
 
-```{r}
+```{r geyser-hist}
 ggplot(geyser) +
     geom_histogram(aes(x = duration),
                    bins = 15,
@@ -243,11 +265,15 @@ ggplot(geyser) +
                    fill = "grey")
 ```
 
+This is [`ggplot`](https://ggplot2.tidyverse.org/) code for creating a
+histogram.
+
 <div class="alert alert-info"> A basic template for creating a plot
 with `ggplot`:
 
 ```r
-ggplot(data = <DATA>) + <GEOM>(mapping = aes(<MAPPINGS>))
+ggplot(data = <DATA>) +
+    <GEOM>(mapping = aes(<MAPPINGS>))
 ```
 </div>
 
@@ -257,7 +283,7 @@ when the _next_ eruption will occur.
 A plot of the _previous_ duration against the waiting time to the
 current eruption:
 
-```{r}
+```{r geyser-scatter}
 ggplot(geyser) +
     geom_point(aes(x = lag(duration),
                    y = waiting))
@@ -266,10 +292,13 @@ ggplot(geyser) +
 It looks like a useful rule would be to expect a shorter waiting time
 after a shorter eruption duration.
 
-An interesting feature: Many durations are recorded as 2 or 4 minutes.
+An interesting feature:
+
+Many durations are recorded as 2 or 4 minutes.
+
 This can also be seen in a histogram with a small bin width:
 
-```{r}
+```{r geyser-hist-narrow}
 p <- ggplot(geyser) +
     geom_histogram(aes(x = duration,
                        y = stat(density)),
@@ -285,6 +314,7 @@ object. Drawing only happens when the object is printed.  </div>
 Does this rounding matter?
 
 * For many analyses it probably doesn't.
+
 * It might if you wanted to fit normal distributions to the two groups.
 
 Taking 3 minutes as the divide between short and long durations we can
@@ -307,7 +337,8 @@ mean(d >= 3)
 ```
 
 An approach that scales better:
-Compute group summaries using tools from the `dplyr` `tidyverse`
+
+Compute group summaries using tools from the `dplyr` tidyverse
 package.
 
 First, add a `type` variable:
@@ -326,6 +357,10 @@ sgd <- summarize(group_by(geyser, type),
 (sgd <- mutate(sgd, prop = n / sum(n)))
 ```
 
+<div class="alert alert-info"> `summarize`, `group_by`, and `mutate`
+are from the `dplyr` package that implements a _grammar of data
+manipulation_.  </div>
+
 This computation can also be written using the _forward pipe operator_ `%>%`:
 
 ```{r}
@@ -336,6 +371,7 @@ sgd <-
               n = n()) %>%
     ungroup() %>%
     mutate(prop = n / sum(n))
+sgd
 ```
 
 <div class="alert alert-info"> The pipe operator allows a sequence of
@@ -346,7 +382,7 @@ the function called on the right. </div>
 
 One way to show the superimposed normal densities:
 
-```{r}
+```{r geyser-hist-dens}
 f1 <- function(x)
     sgd$prop[1] * dnorm(x, sgd$mean[1], sgd$sd[1])
 f2 <- function(x)
@@ -360,9 +396,9 @@ p
 <div class="alert alert-info"> A `ggplot` can consist of several
 _layers_.  </div>
 
-The means and standard deviations are affected by the
-rounding. Summaries that omit values equal to 2 or 4 minutes can be
-computed as
+The means and standard deviations are affected by the rounding.
+
+Summaries that omit values equal to 2 or 4 minutes can be computed as
 
 ```{r}
 geyser2 <- filter(geyser, duration != 2, duration != 4)
@@ -376,13 +412,9 @@ sgd2 <-
 sgd2
 ```
 
-<div class="alert alert-info"> `summarize`, `group_by`, and `mutate`
-are from the `dplyr` package that implements a _grammar of data
-manipulation_.  </div>
-
 A plot showing curves computed both ways:
 
-```{r}
+```{r geyser-hist-dens-2}
 f1_2 <- function(x)
     sgd2$prop[1] * dnorm(x, sgd2$mean[1], sgd2$sd[1])
 f2_2 <- function(x)
@@ -431,8 +463,10 @@ p
 
 ### Minnesota Barley Yields
 
-A classic data set: Total yield in bushels per acre for 10 varieties
-at 6 sites in Minnesota in each of two years, 1931 and 1932.
+Another classic data set:
+
+Total yield in bushels per acre for 10 varieties at 6 sites in
+Minnesota in each of two years, 1931 and 1932.
 
 The raw data:
 
@@ -460,7 +494,7 @@ cowplot::plot_grid(p1, p2)
 
 Can we also show `site` using symbol shape?
 
-```{r}
+```{r barley-color-sym}
 ggplot(barley) +
     geom_point(aes(x = yield,
                    y = variety,
@@ -470,43 +504,120 @@ ggplot(barley) +
 
 There is a lot of _interference_ between shape and color.
 
-Possible improvements:
+Larger points may help:
 
-* jittering;
-* larger points.
-
-```{r}
+```{r barley-color-sym-2}
 ggplot(barley) +
-    geom_point(aes(x = yield, y = variety, color = year, shape = site),
-               position = position_jitter(height = 0.15, width = 0),
-               size = 2)
+    geom_point(aes(x = yield,
+                   y = variety,
+                   color = year,
+                   shape = site),
+               size = 2.5)
+```
+
+_Jittering_ may also help:
+
+
+```{r barley-color-sym-3}
+ggplot(barley) +
+    geom_point(aes(x = yield,
+                   y = variety,
+                   color = year,
+                   shape = site),
+               size = 2.5,
+               position =
+                   position_jitter(
+                       height = 0.15,
+                       width = 0))
 ```
 
 Another approach: _faceting_ to produce _small multiples_.
 
-```{r, fig.width = 10}
+```{r barley-facet, fig.width = 10}
 ggplot(barley) +
-    geom_point(aes(x = yield, y = variety, color = year)) +
+    geom_point(aes(x = yield,
+                   y = variety,
+                   color = year)) +
     facet_wrap(~site)
 ```
 
-Focusing on summaries can help. _Bar charts_ are sometimes used for
-summaries, but _dot plots_ are usually a better choice.
+Focusing on summaries can help.
 
-```{r, fig.width = 10}
+A _dot plot_ of average yields for each site and year:
+
+```{r barley-avg-dot}
 barley_site_year <-
     group_by(barley, site, year) %>%
     summarize(yield = mean(yield)) %>%
     ungroup()
-p1 <- ggplot(barley_site_year) +
-    geom_point(aes(y = site, x = yield, color = year), size = 3)
-p2 <- ggplot(barley_site_year) +
-    geom_col(aes(x = site, y = yield, fill = year),
-             size = 3,
-             position = "dodge", width = .4) +
-    coord_flip()
-cowplot::plot_grid(p1, p2)
+
+ggplot(barley_site_year) +
+    geom_point(aes(y = site,
+                   x = yield,
+                   color = year),
+               size = 3)
 ```
+
+Adding lines can help comparing the changes. This is sometimes called
+a _dumbbell chart_:
+
+
+```{r barley-avg-dot-2}
+barley_site_year <-
+    group_by(barley, site, year) %>%
+    summarize(yield = mean(yield)) %>%
+    ungroup()
+
+ggplot(barley_site_year) +
+    geom_line(aes(y = site,
+                  x = yield,
+                  group = site),
+              color = "darkgrey",
+              size = 2) +
+    geom_point(aes(y = site,
+                   x = yield,
+                   color = year),
+               size = 4)
+```
+
+Another useful approach for showing repeated measurements is a _slope
+graph_:
+
+
+```{r, class.source = "fold-hide"}
+library(ggrepel)
+barley_site_year <-
+    mutate(barley_site_year, year = fct_rev(year))
+barley_site_year_1932 <-
+    filter(barley_site_year, year == "1932")
+ggplot(barley_site_year,
+       aes(x = year, y = yield, group = site)) +
+    geom_line() +
+    geom_text_repel(aes(label = site),
+                    data = barley_site_year_1932,
+                    hjust = "left",
+                    direction = "y") +
+    scale_x_discrete(expand = expansion(mult = c(0.1, .25)),
+                     position = "top") +
+    labs(x = NULL, y = "Average Yield")
+```
+
+This emphasizes the reversal for Morris.
+
+_Bar charts_ are sometimes used for summaries, but dot plots are
+usually a better choice.
+
+```{r barley-avg-bar, fig.width = 10}
+ggplot(barley_site_year) +
+    geom_col(aes(x = yield,
+                 y = site,
+                 fill = year),
+             size = 3,
+             position = "dodge",
+             width = .4)
+```
+
+### Bar Charts and the Zero Base Line
 
 Because of the way we perceive bars, it is important to use a [zero
 base line for bar
@@ -522,51 +633,66 @@ charts](https://flowingdata.com/2015/08/31/bar-chart-baselines-start-at-zero/).
 A data set recording the distribution of hair and eye color and sex in
 592 statistics students.
 
-The data set is available as a _cross-tabulation_; `as.data.frame`
-converts it to a data frame.
-
 ```{r}
 HairEyeDF <- as.data.frame(HairEyeColor)
 head(HairEyeDF)
 ```
 
+The data set is available as a _cross-tabulation_.
+
+`as.data.frame` converts it to a data frame.
+
 Looking at the distribution of eye color:
-	
-```{r}
+
+```{r eye-bar}
 eye <-
     group_by(HairEyeDF, Eye) %>%
     summarize(Freq = sum(Freq)) %>%
     ungroup()
+
 ggplot(eye) +
-    geom_col(aes(x = Eye, y = Freq), position = "dodge")
+    geom_col(aes(x = Eye,
+                 y = Freq),
+             position = "dodge")
 ```
 
-Mapping eye color to color in addition to the horizontal axis can help:
+Mapping eye color to bar color in addition to the horizontal axis
+position can help:
 
-```{r}
-ggplot(eye) + geom_col(aes(x = Eye, y = Freq, fill = Eye), position = "dodge")
+```{r eye-bar-2}
+ggplot(eye) +
+    geom_col(aes(x = Eye,
+                 y = Freq,
+                 fill = Eye),
+             position = "dodge")
 ```
 
-More sensible colors would be nice but requires a bit of work:
+More sensible colors would be nice but require a bit of work:
 
-```{r}
-hazel_rgb <- col2rgb("brown") * 0.75 + col2rgb("green") * 0.25
-hazel <- do.call(rgb, as.list(hazel_rgb / 255))
+```{r eye-bar-3}
+hazel_rgb <-
+    col2rgb("brown") * 0.75 + col2rgb("green") * 0.25
+hazel <-
+    do.call(rgb, as.list(hazel_rgb / 255))
 
-cols <- c(Blue = colorspace::lighten(colorspace::desaturate("blue", 0.3), 0.3),
-          Green = colorspace::lighten("forestgreen", 0.1),
-          Brown = colorspace::lighten("brown", 0.0001), ## 0.3?
-          Hazel = colorspace::lighten(hazel, 0.3))
+cols <-
+    c(Blue = colorspace::lighten(colorspace::desaturate("blue", 0.3), 0.3),
+      Green = colorspace::lighten("forestgreen", 0.1),
+      Brown = colorspace::lighten("brown", 0.0001), ## 0.3?
+      Hazel = colorspace::lighten(hazel, 0.3))
 
 pb <- ggplot(eye) +
-    geom_col(aes(x = Eye, y = Freq, fill = Eye), position = "dodge") +
+    geom_col(aes(x = Eye,
+                 y = Freq,
+                 fill = Eye),
+             position = "dodge") +
     scale_fill_manual(values = cols)
 pb
 ```
 
 A _stacked bar chart_ can also be useful:
 
-```{r}
+```{r eye-bar-stacked}
 psb <- ggplot(eye) +
     geom_col(aes(x = "", y = Freq, fill = Eye), color = "lightgrey") +
     scale_fill_manual(values = cols)
@@ -575,20 +701,21 @@ psb
 
 A _pie chart_ can be seen as a stacked bar chart in polar coordinates:
 
-```{r}
+```{r eye-pie}
 (pp <- psb + coord_polar("y"))
 ```
 
 The axis and grid are not helpful; a _theme_ adjustment can remove them:
 
-```{r}
+```{r eye-pie-2}
 (pp <- pp + theme_void())
 ```
 
 <div class="alert alert-info"> Themes are a way to customize the
 non-data components of plots: i.e. titles, labels, fonts, background,
-gridlines, and legends. Themes can be used to give plots a consistent
-customized look.
+gridlines, and legends.
+
+Themes can be used to give plots a consistent customized look.
 
 The `ggthemes` package provides a number of themes to emulate the
 style of different publications, for example `theme_wsj` and
@@ -603,27 +730,29 @@ cowplot::plot_grid(pb, pp)
 Some questions:
      
 * Which plot makes it easier to tell whether the proportion of
-  brown-eyed students is larger or smaller that the proportion of
-  blue-eyed students.
+  brown-eyed students is larger or smaller than the proportion of
+  blue-eyed students?
 
 * Which plot makes it easier to tell whether these proportions are
   larger or smaller than 1/2 or 1/4 or 1/3?
 
 Looking at the proportions within hair color and sex:
       
-```{r, fig.width = 10}
+```{r, fig.width = 10, class.source = "fold-hide"}
 eye_hairsex <-
     group_by(HairEyeDF, Hair, Sex) %>%
     mutate(Prop = Freq / sum(Freq)) %>%
     ungroup()
+
 p1 <- ggplot(eye_hairsex) +
     geom_col(aes(x = Eye, y = Prop, fill = Eye)) +
     scale_fill_manual(values = cols) +
-    facet_grid(Hair~Sex)
+    facet_grid(Hair ~ Sex)
 p2 <- ggplot(eye_hairsex) +
     geom_col(aes(x = "", y = Prop, fill = Eye)) +
     scale_fill_manual(values = cols) +
-    coord_polar("y")+facet_grid(Hair~Sex) +
+    coord_polar("y") +
+    facet_grid(Hair ~ Sex) +
     theme_void()
 cowplot::plot_grid(p1, p2)
 ```
@@ -644,9 +773,15 @@ ggplot(data = <DATA>) +
 </div>
 
 
-## Perception and the Grammar of Graphics
+## Visual Perception and the Grammar of Graphics
 
-```{r}
+### Monthly River Flows
+
+Monthly flow volumes recorded for a river in the pacific north-west.
+
+An initial plot using default settings:
+
+```{r, class.source = "fold-hide"}
 river <- scan("data/river.dat")
 rd <- data.frame(flow = river, month = seq_along(river))
 (pp <- ggplot(rd) + geom_point(aes(x = month, y = flow)))
@@ -670,13 +805,17 @@ The eyes acquire an image, which is processed through three stages of
 memory:
 
 * Iconic memory
+
 * Working memory, or short-term memory
+
 * Long-term memory
 
 The first processing stage of an image happens in iconic memory.
 
 * Images remain in iconic memory for less than a second.
+
 * Processing in iconic memory is massively parallel and automatic.
+
 * This is called _preattentive processing_.
 
 Preattentive processing is a fast recognition process.
@@ -684,8 +823,11 @@ Preattentive processing is a fast recognition process.
 Meaningful visual chunks are moved from iconic memory to short term memory.
 
 * These chunks are used by conscious, or attentive, processing.
+
 * Attentive processing often involves conscious comparisons or search.
+
 * Short term memory is limited;
+
     * information is retained for only a few seconds;
     * only three or fours chunks can be held at a time.
 
@@ -704,17 +846,17 @@ infrequently used visual chunks may become lost.
 
 ### Some Terms for Describing Visualizations
 
-- Data to be visualized contains _variables_ or _attributes_ measured
-  on individual _items_ or _cases_.
+Data to be visualized contains _variables_ or _attributes_ measured on
+individual _items_ or _cases_.
 
-* _Links_ are relationships that may exist among items, e.g. months
-  within a year or countries within a continent.
+_Links_ are relationships that may exist among items, e.g. months
+within a year or countries within a continent.
 
-* _Marks_ are individual geometric entities used to represent items:
-  points. bars, etc.
+_Marks_ are individual geometric entities used to represent items:
+points. bars, etc.
 
-* _Aesthetics_ or _visual channels_ are the visual features of marks
-  that can be used to encode attributes.
+_Aesthetics_ or _visual channels_ are the visual features of marks
+that can be used to encode attributes.
 
 The `aes(...)` expressions establish the mapping between attributes
 and visual channels.
@@ -730,6 +872,7 @@ as implemented in `ggplot`.
 
 
 ### Channels and their Accuracy
+
 A useful distinction among channels:
 
 * _Magnitude channels_ can reflect order and numeric values,
@@ -742,16 +885,16 @@ Some channels are better at conveying information than others.
 
 Munzner's ordering by accuracy:
 
-Magnitude Channels (Ordered, Numerical)    Identity Channels (Categorical)
-----------                                 -----
-Position on common scale                   Spatial grouping
-Position on unaligned scale                Color hue
-Length (1D size)                           Shape
-Tilt, angle
-Area (2D size)
-Depth (3D position)
-Color luminance, saturation
-Curvature, volume (3D size)
+| Magnitude Channels (Ordered, Numerical) | Identity Channels (Categorical) |
+|---------------------------------------------------------------------------|
+| Position on common scale                | Spatial grouping                |
+| Position on unaligned scale             | Color hue                       |
+| Length (1D size)                        | Shape                           |
+| Tilt, angle                             |                                 |
+| Area (2D size)                          |                                 |
+| Depth (3D position)                     |                                 |
+| Color luminance, saturation             |                                 |
+| Curvature, volume (3D size)             |                                 |
 
 Line width is another channel; not sure there is agreement on its
 accuracy, but it is not high.
@@ -786,10 +929,10 @@ Some of the issues:
 
 Color perception is relative:
 
-![](img/chess1.png) ![](img/chess2.png)
+![](img/chess1.png)
+![](img/chess2.png)
 
-A note on [rainbow colors](
-https://eeecon.uibk.ac.at/~zeileis/news/endrainbow/).
+Groups of colors that work well together are called _palettes_.
 
 Some tools for selecting palettes include:
 
@@ -799,32 +942,39 @@ Some tools for selecting palettes include:
 * [HCL Wizard](http://www.hclwizard.org/); also available as `hclwizard`
   in the `colorspace` package.
 
+A note on [rainbow colors](
+https://eeecon.uibk.ac.at/~zeileis/news/endrainbow/).
+
 
 ## A Grammar of Data Manipulation
 
 The `dplyr` package provides a language, or grammar, for data
 manipulation.
 
+The design of `dplyr` is strongly motivated by SQL.
+
 The language contains a number of _verbs_ that operate on tables.
 
 The most commonly used verbs operate on a single data frame:
 
 * `select`: pick variables by their names
+
 * `filter`: choose rows that satisfy some criteria
+
 * `mutate`: create transformed or derived variables
+
 * `arrange`: reorder the rows
+
 * `summarize`: collapse rows down to summaries
 
 There are also a number of `join` verbs that merge several data frames
 into one.
 
-The `tidyr` package provides additional verbs, such as `pivot_longer`
-and `pivot_wider` for reshaping data frames.
+Package `tidyr` provides more verbs, such as `pivot_longer` and
+`pivot_wider` for reshaping data frames.
 
 The single table verbs can also be used with `group_by` to work a
 group at a time instead of applying to the entire data frame.
-
-The design of `dplyr` is strongly motivated by SQL.
 
 
 ## More Examples
@@ -833,13 +983,39 @@ These examples start with raw data as you might receive it from a
 researcher, and involve reading and cleaning the data.
 
 
+Common data formats you might encounter include
+
+
+* [_CSV_ (comma-separated
+  values)](https://en.wikipedia.org/wiki/Comma-separated_values) files.
+
+
+* Text files using other delimiters, such as tabs or `|` characters.
+
+
+* [JSON(JavaScript Object
+  Notation)](https://en.wikipedia.org/wiki/JSON) files.
+  
+
+* [XML (Extensible Markup
+  Language)](https://en.wikipedia.org/wiki/XML) files.
+
+
+* Excel spreadsheets.
+
+
+Tools are available for reading data in these formats into R.
+
 ### Wind Turbines in Iowa
 
-There are many wind turbines in Iowa.  Data is available from the
-[U.S. Wind Turbine Database](https://eerscmap.usgs.gov/uswtdb/).  A
-snapshot is available is [here](data/us_wind.csv) as a CSV file.
+There are many wind turbines in Iowa.
 
-CSV files are a common form of data exchange.
+Data is available from the [U.S. Wind Turbine
+Database](https://eerscmap.usgs.gov/uswtdb/).
+
+A snapshot is available is [here](data/us_wind.csv) as a CSV file.
+
+* CSV files are a common form of data exchange.
 
 * They are simple text files that are intended to be written and read
   by a computer.
@@ -858,8 +1034,9 @@ wind_turbines <- read.csv("data/us_wind.csv", comment = "#")
 ```
 Some data cleaning is needed.
 
-Focus on the wind turbines in IOWA (19 is the [FIPS county
-code](https://en.wikipedia.org/wiki/FIPS_county_code) for Iowa):
+Focus on the wind turbines in IOWA (19 is the state component of the
+[FIPS county code](https://en.wikipedia.org/wiki/FIPS_county_code) for
+Iowa):
 
 ```{r}
 wt_IA <- filter(wind_turbines, t_fips %/% 1000 == 19)
@@ -876,8 +1053,16 @@ wt_IA <- mutate(wt_IA, p_year = replace(p_year, p_year < 0, NA))
 ```
 To show the locations of wind turbines on a map, load some map data:
 
-```{r, eval = FALSE}
-iowa_sf <- sf::st_as_sf(maps::map("county", "iowa", plot = FALSE, fill = TRUE))
+```{r iowa_sf_map, eval = FALSE}
+iowa_sf <-
+    sf::st_as_sf(maps::map("county", "iowa",
+                           plot = FALSE,
+                           fill = TRUE))
+
+p <- ggplot() +
+    geom_sf(data = iowa_sf) +
+    ggthemes::theme_map()
+p
 ```
 To show the locations of wind turbines on a map, load some map data:
 
@@ -894,14 +1079,15 @@ p
 
 Locations for all wind turbines in iowa:
 
-```{r, fig.width = 8}
-p + geom_point(aes(xlong, ylat), data = wt_IA)
+```{r wt-IA-all, fig.width = 8}
+p + geom_point(aes(xlong, ylat),
+               data = wt_IA)
 ```
 
 Using color to show when the wind turbines were  built:
 
-```{r, fig.width = 8}
-year_brk <-c(0, 2005, 2010, 2015, 2020)
+```{r wt-IA-color, fig.width = 8}
+year_brk <- c(0, 2005, 2010, 2015, 2020)
 year_lab <- c("before 2005",
               "2005-2009",
               "2010-2014",
@@ -940,18 +1126,31 @@ anim_save("foo.gif", animate(pa, fps = 10, nframes = 100))
 
 The website <http://www.cancer-rates.info/ia> provides data on
 cancer incidence for a number of different cancers in Iowa.
-The data for lung and bronchus cancer in 2011 are available
-in a [csv file](data/Invasive-Cancer-Incidence-Rates-by-County-in-Iowa-Lung-and-Bronchus-2011.csv) in the project.
+
+<!-- # nolint start -->
+
+```{r, include = FALSE}
+cancer_data_file <- "data/Invasive-Cancer-Incidence-Rates-by-County-in-Iowa-Lung-and-Bronchus-2011.csv"
+```
+
+<!-- # nolint end -->
+
+The data for lung and bronchus cancer in 2011 are available in a [csv
+file](`r cancer_data_file`) in the project.
 
 We can read the file with `read_csv` from the `readr` package.
 
 Looking at the file shows some things that need to be cleaned up:
 
-* Two header lines at the beginning
+* Two header lines at the beginning.
+
 * Some footer lines.
+
 * Some values codes as `~`.
 
 The header can be handled by using `skip = 2` in the `read_csv` call:
+
+<!-- # nolint start -->
 
 ```{r, message = FALSE}
 fname <- "data/Invasive-Cancer-Incidence-Rates-by-County-in-Iowa-Lung-and-Bronchus-2011.csv"
@@ -959,10 +1158,12 @@ d <- read_csv(fname, skip = 2)
 head(d)
 ```
 
+<!-- # nolint end -->
+
 Let's focus on a few variables and give them more convenient names:
 
 ```{r}
-d <- select(d, county = 1, population = 2, count = 3, crude_rate = 4)
+d <- select(d, county = 1, population = 2, count = 3)
 ```
 
 The footer needs to be removed:
@@ -976,20 +1177,21 @@ One way to remove the footer:
 ```{r}
 d <- filter(d, ! is.na(population))
 d <- filter(d, county != "STATE")
-tail(d)
 ```
 
-Changing `count` and `crude_rate` to numeric changes the `~` entries
-to missing values (`NA`) values:
+Changing `count` to numeric changes the `~` entries to missing values
+(`NA`) values:
 
 ```{r}
-d <- mutate(d, count = as.numeric(count), crude_rate = as.numeric(crude_rate))
+d <- mutate(d, count = as.numeric(count))
 ```
 
 In this case there are no zero case values; two ways to check:
 
 ```{r}
 count(d, count == 0)
+```
+```{r}
 any(d$count == 0, na.rm = TRUE)
 ```
 
@@ -997,7 +1199,7 @@ It _might_ be reasonable to assume these values where zero, so replace
 them with zeros:
 
 ```{r}
-d <- replace_na(d, list(count = 0, crude_rate = 0))
+d <- replace_na(d, list(count = 0))
 ```
 
 A _choropleth map_ uses color or shading to represent values measured
@@ -1006,18 +1208,34 @@ for different geographic regions.
 We will need to merge, or _left join_, the cancer data with the map
 date we loaded for the wind turbine map.
 
-For Iowa this can be done with the county name, but some care is needed.
+This requires a _key_ on which to match the records in the cancer data
+and the map data.
+
+For Iowa this can be done with the county name, but some care is needed:
 
 ```{r}
 d$county[1]
 iowa_sf$ID[1]
+```
 
+Fixing case differences and dropping the `iowa,` prefix:
+
+```{r}
 d <- mutate(d, cname = county, county = tolower(county))
-iowa_sf <- mutate(iowa_sf, county = sub("iowa,", "", ID))
+iowa_sf <- mutate(iowa_sf, ID = sub("iowa,", "", ID))
+iowa_sf <- rename(iowa_sf, county = ID)
+```
 
+Still not quite there:
+
+```{r}
 setdiff(d$county, iowa_sf$county)
 setdiff(iowa_sf$county, d$county)
+```
 
+Drop the apostrophe in O'Brien:
+
+```{r}
 d <- mutate(d, county = sub("'", "", county))
 
 setdiff(d$county, iowa_sf$county)
@@ -1025,7 +1243,7 @@ setdiff(iowa_sf$county, d$county)
 ```
 
 Define `rate1K` variable as the number of cases per 1000 inhabitants
-and left join the data to the polygons:
+and left join the cancer data to the map data:
 
 ```{r}
 d <- mutate(d, rate1K = 1000 * (count / population))
@@ -1035,15 +1253,16 @@ head(md)
 
 A simple map:
 
-```{r}
+```{r cancer-map-1}
 library(ggthemes)
 library(viridis)
-ggplot(md) + geom_sf(aes(fill = rate1K))
+ggplot(md) +
+    geom_sf(aes(fill = rate1K))
 ```
 
 An improved version:
 
-```{r}
+```{r cancer-map-2}
 library(ggthemes)
 library(viridis)
 ggplot(md) +
@@ -1055,12 +1274,15 @@ ggplot(md) +
 
 A simple interactive version using [`plotly`](https://plot.ly/r/):
 
-```{r}
+```{r cancer-map-plotly}
 mdl <- mutate(md,
-              label = paste(cname, round(rate1K, 1), population, sep = "\n"))
+              label = paste(cname,
+                            round(rate1K, 1),
+                            population,
+                            sep = "\n"))
 p <- ggplot(mdl) +
     geom_sf(aes(fill = rate1K,
-                text = label), 
+                text = label),
             color = "grey") +
     scale_fill_viridis(name = "Rate per 1000") +
     theme_map()
@@ -1071,12 +1293,10 @@ The [`leaflet`](https://rstudio.github.io/leaflet/) package supports
 more sophisticated interactive maps:
 
 <!-- http://rstudio.github.io/leaflet/legends.html-->
-```{r}
+```{r, class.source = "fold-hide"}
 library(leaflet)
-pal <- colorNumeric(
-    palette = "viridis",
-    domain = md$rate1K)
-lab <- lapply(paste0(tools::toTitleCase(md$county), "<BR>",
+pal <- colorNumeric(palette = "viridis", domain = md$rate1K)
+lab <- lapply(paste0(md$cname, "<BR>",
                      "Rate: ", round(md$rate1K, 1), "<BR>",
                      "Pop: ", scales::comma(md$population,
                                             accuracy = 1)),
@@ -1086,12 +1306,11 @@ leaflet(sf::st_transform(md, 4326)) %>%
                 color = "grey",
                 fillColor = ~ pal(rate1K),
                 fillOpacity = 1,
-                highlightOptions =
-                    highlightOptions(color = "white",
-                                     weight = 2,
-                                     bringToFront = TRUE),
+                highlightOptions = highlightOptions(color = "white",
+                                                    weight = 2,
+                                                    bringToFront = TRUE),
                 label = lab) %>%
-    addLegend(pal = pal, values = ~ rate1K)
+    addLegend(pal = pal, values = ~ rate1K, opacity = 1)
 ```
 
 
@@ -1099,8 +1318,10 @@ leaflet(sf::st_transform(md, 4326)) %>%
 
 [Local Area Unemployment Statistics page](https://www.bls.gov/lau/)
 from the Bureau of Labor Statistics makes available county-level
-monthly unemployment data for a 14-month window. The file for February
-2020 through March 2021 is available is available at
+monthly unemployment data for a 14-month window.
+
+The file for February 2020 through March 2021 is available is
+available at
 <http://www.stat.uiowa.edu/~luke/data/laus/laucntycur14-2020.txt> and
 in the project data folder.
 
@@ -1132,6 +1353,12 @@ separately:
 ```{r}
 lausUS <- separate(lausUS, Title, c("cname", "scode"),
                    sep = ", ", fill = "right")
+```
+
+Check the variable types:
+
+```{r}
+sapply(lausUS, class)
 ```
 
 The `UnempRate` variable is read as character data because of missing
@@ -1177,9 +1404,11 @@ lausUS <- mutate(lausUS,
 ```
 
 Unemployment during this period was affected significantly by the
-COVID-19 pandemic.  A plot shows a large spike in April 2020:
+COVID-19 pandemic.
 
-```{r}
+A plot shows a large spike in April 2020:
+
+```{r, class.source = "fold-hide"}
 group_by(lausUS, Period) %>%
     summarize(Unemployed = sum(Unemployed, na.rm = TRUE),
               LaborForce = sum(LaborForce, na.rm = TRUE),
@@ -1213,7 +1442,7 @@ county.fips <-
     mutate(maps::county.fips, polyname = sub(":.*", "", polyname)) %>%
     unique()
 counties_sf <- left_join(counties_sf, county.fips, c("ID" = "polyname"))
-states_sf <-  sf::st_as_sf(maps::map("state", plot = FALSE, fill = TRUE))
+states_sf <- sf::st_as_sf(maps::map("state", plot = FALSE, fill = TRUE))
 ```
 Some summaries over the period can be computed as
 
@@ -1228,7 +1457,7 @@ head(summaryUS)
 A choropleth map of the April 2020 unemployment rates:
 
 
-```{r}
+```{r, class.source = "fold-hide"}
 left_join(counties_sf, summaryUS, "fips") %>%
     ggplot() +
     geom_sf(aes(fill = apr_unemp)) +
@@ -1256,7 +1485,7 @@ counties_sf <- mutate(counties_sf, fips = replace(fips, fips == 46113, 46102))
 
 With the updated data the map is now complete:
 
-```{r}
+```{r, class.source = "fold-hide"}
 left_join(counties_sf, summaryUS, "fips") %>%
     ggplot() +
     geom_sf(aes(fill = apr_unemp)) +
@@ -1281,26 +1510,37 @@ m_sf <- ggpoly2sf(socviz::county_map, c("long", "lat"), "group", "id")
 m_sf <- mutate(m_sf, fips = as.numeric(id))
 m_sf <- mutate(m_sf, fips = replace(fips, fips == 46113, 46102))
 ggplot(m_sf) + geom_sf()
-au <- group_by(lausUS, fips) %>% summarize(avg_ur = mean(UnempRate, na.rm = TRUE))
-mu <- group_by(lausUS, fips) %>% summarize(max_ur = max(UnempRate, na.rm = TRUE))
+au <- group_by(lausUS, fips) %>%
+    summarize(avg_ur = mean(UnempRate, na.rm = TRUE))
+mu <- group_by(lausUS, fips) %>%
+    summarize(max_ur = max(UnempRate, na.rm = TRUE))
 da <- left_join(m_sf, au, "fips")
 dm <- left_join(m_sf, mu, "fips")
-ggplot(da, aes(fill = avg_ur)) + geom_sf(size = 0.1) + scale_fill_viridis(name = "Rate", na.value = "red")
-ggplot(dm, aes(fill = max_ur)) + geom_sf(size = 0.1) + scale_fill_viridis(name = "Rate", na.value = "red")
-ggplot(left_join(m_sf, filter(lausUS, Period == "Apr-20"), "fips"), aes(fill = UnempRate)) + geom_sf(size = 0.1) + scale_fill_viridis(name = "Rate", na.value = "red")
+ggplot(da, aes(fill = avg_ur)) +
+    geom_sf(size = 0.1) +
+    scale_fill_viridis(name = "Rate", na.value = "red")
+ggplot(dm, aes(fill = max_ur)) +
+    geom_sf(size = 0.1) +
+    scale_fill_viridis(name = "Rate", na.value = "red")
+ggplot(left_join(m_sf, filter(lausUS, Period == "Apr-20"), "fips"),
+       aes(fill = UnempRate)) +
+    geom_sf(size = 0.1) +
+    scale_fill_viridis(name = "Rate", na.value = "red")
 ```
 
 ### Gapminder Childhood Mortality Data
 
 The `gapminder` package provides a subset of the data from the
-[Gapminder](http://www.gapminder.org/) web site. Additional data sets
-are [available](http://www.gapminder.org/data/).
+[Gapminder](http://www.gapminder.org/) web site.
+
+Additional data sets are [available](http://www.gapminder.org/data/).
 
 * A data set on childhood mortality is available locally as a [csv
   file](http://homepage.stat.uiowa.edu/~luke/data/gapminder-under5mortality.csv)
   or an [Excel
-  file](http://homepage.stat.uiowa.edu/~luke/data/gapminder-under5mortality.xlsx). The
-  Excel file is also available in the project data folder.
+  file](http://homepage.stat.uiowa.edu/~luke/data/gapminder-under5mortality.xlsx).
+  
+* The Excel file is also available in the project data folder.
 
 * The numbers represent number of deaths within the first five years
   per 1000 births.
@@ -1325,46 +1565,68 @@ names(gcm)[1] <- "country"
 head(gcm)
 ```
 
-This data set is in _wide_ format.
+This data set is in _wide_ format, with one column per year.
 
-A _long_ version is useful for working with `ggplot`.
+A _long_ version with a year and a value column is useful for working
+with `ggplot`.
+
+A better first variable name:
 
 ```{r}
-tgcm <- pivot_longer(gcm, -1, names_to = "year", values_to = "u5mort")
-head(tgcm)
-tgcm <- mutate(tgcm, year = as.numeric(year))
-head(tgcm)
+names(gcm)[1] <- "country"
+```
+
+Convert to long format:
+
+```{r}
+tgcm <-
+    pivot_longer(gcm, -1, names_to = "year", values_to = "u5mort") %>%
+    mutate(year = as.numeric(year))
+head(tgcm, 3)
 ```
 
 
 Some explorations:
-```{r}
+
+```{r u5-1}
 p <- ggplot(tgcm) +
-    geom_line(aes(year, u5mort, group = country), alpha = 0.3)
-p
+    geom_line(aes(year,
+                  u5mort,
+                  group = country),
+              alpha = 0.3)
 plotly::ggplotly(p)
 ```
 
 Some selected countries:
 
-```{r}
-countries <- c("United States", "United Kingdom", "Germany", "China", "Egypt")
+```{r u5-2}
+countries <- c("United States",
+               "United Kingdom",
+               "Germany",
+               "China",
+               "Egypt")
 filter(tgcm, country %in% countries) %>%
     ggplot() +
-    geom_line(aes(x = year, y = u5mort, color = country))
+    geom_line(aes(x = year,
+                  y = u5mort,
+                  color = country))
 ```
 
 Examining the missing values:
 
-```{r}
+```{r u5-3}
 tgcm_miss <-
     group_by(tgcm, country) %>%
-    summarize(anyNA = any(is.na(u5mort))) %>%
+    summarize(anyNA = anyNA(u5mort)) %>%
     filter(anyNA) %>%
     pull(country)
 
-p <- ggplot(filter(tgcm, country %in% tgcm_miss)) +
-    geom_line(aes(x = year, y = u5mort, group = country), na.rm = TRUE)
-p
+p <- filter(tgcm,
+            country %in% tgcm_miss) %>%
+    ggplot(aes(x = year,
+               y = u5mort,
+               group = country)) +
+    geom_line(na.rm = TRUE) +
+    xlim(c(1940, 2020))
 plotly::ggplotly(p)
 ```
