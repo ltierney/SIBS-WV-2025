@@ -10,7 +10,6 @@ output:
     code_download: true
 ---
 
-
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(collapse = TRUE, warning = FALSE)
 xaringanExtra::use_clipboard()
@@ -30,7 +29,7 @@ In this class I will
 
 * Using some examples briefly show how to do data wrangling
   and visualize data in R.
- 
+
 Materials for this class are available on GitHub at
 <https://github.com/ltierney/SIBS-WV-2021.git>.
 
@@ -129,7 +128,7 @@ All computations are specified in the R language.
 * After learning to do simple tasks you know some of the language.
 
 The language is used to
-    
+
 * prepare data for analysis;
 
 * specify individual analyses;
@@ -239,10 +238,11 @@ dim(geyser)
 head(geyser, 4)
 ```
 
-<div class="alert alert-info"> `head` and `tail` return the first and
-last few rows of a data frame.
+<div class="alert alert-info">
+`head` and `tail` return the first and last few rows of a data frame.
 
-They are useful for quick sanity checks.  </div>
+They are useful for quick sanity checks.
+</div>
 
 The rows represent measurements recorded for eruptions of the [_Old
 Faithful_](https://www.yellowstonepark.com/things-to-do/geysers-hot-springs/about-old-faithful/)
@@ -267,13 +267,17 @@ ggplot(geyser) +
 This is [`ggplot`](https://ggplot2.tidyverse.org/) code for creating a
 histogram.
 
-<div class="alert alert-info"> A basic template for creating a plot
-with `ggplot`:
+<div class="alert alert-info">
+A basic template for creating a plot with `ggplot`:
+
+<!-- # nolint start -->
 
 ```r
 ggplot(data = <DATA>) +
     <GEOM>(mapping = aes(<MAPPINGS>))
 ```
+
+<!-- # nolint end -->
 </div>
 
 An interesting question is whether the duration can be used to predict
@@ -307,8 +311,11 @@ p <- ggplot(geyser) +
 p
 ```
 
-<div class="alert alert-info"> `ggplot` produces a plot
-object. Drawing only happens when the object is printed.  </div>
+<div class="alert alert-info"> 
+`ggplot` produces a plot object.
+
+Drawing only happens when the object is printed.
+</div>
 
 Does this rounding matter?
 
@@ -356,9 +363,10 @@ sgd <- summarize(group_by(geyser, type),
 (sgd <- mutate(sgd, prop = n / sum(n)))
 ```
 
-<div class="alert alert-info"> `summarize`, `group_by`, and `mutate`
-are from the `dplyr` package that implements a _grammar of data
-manipulation_.  </div>
+<div class="alert alert-info">
+`summarize`, `group_by`, and `mutate` are from the `dplyr` package
+that implements a _grammar of data manipulation_.
+</div>
 
 This computation can also be written using the _forward pipe operator_ `%>%`:
 
@@ -373,11 +381,12 @@ sgd <-
 sgd
 ```
 
-<div class="alert alert-info"> The pipe operator allows a sequence of
-operations to be chained together.
+<div class="alert alert-info">
+The pipe operator allows a sequence of operations to be chained together.
 
 The left-hand operation is passed implicitly as the first argument to
-the function called on the right. </div>
+the function called on the right.
+</div>
 
 One way to show the superimposed normal densities:
 
@@ -392,8 +401,9 @@ p <- p +
 p
 ```
 
-<div class="alert alert-info"> A `ggplot` can consist of several
-_layers_.  </div>
+<div class="alert alert-info"> 
+A `ggplot` can consist of several _layers_.
+</div>
 
 The means and standard deviations are affected by the rounding.
 
@@ -710,15 +720,16 @@ The axis and grid are not helpful; a _theme_ adjustment can remove them:
 (pp <- pp + theme_void())
 ```
 
-<div class="alert alert-info"> Themes are a way to customize the
-non-data components of plots: i.e. titles, labels, fonts, background,
-gridlines, and legends.
+<div class="alert alert-info">
+Themes provide a way to customize the non-data components of plots:
+i.e. titles, labels, fonts, background, grid lines, and legends.
 
 Themes can be used to give plots a consistent customized look.
 
 The `ggthemes` package provides a number of themes to emulate the
 style of different publications, for example `theme_wsj` and
-`theme_economist`.  </div>
+`theme_economist`.
+</div>
 
 How well do bar charts and pie charts work?
 
@@ -756,7 +767,8 @@ p2 <- ggplot(eye_hairsex) +
 cowplot::plot_grid(p1, p2)
 ```
 
-<div class="alert alert-info"> A more complete `ggplot` template:
+<div class="alert alert-info">
+A more complete `ggplot` template:
 
 <!-- # nolint start -->
 
@@ -771,7 +783,6 @@ ggplot(data = <DATA>) +
     <FACETING> +
     <THEME_ADJUSTMENT>
 ```
-
 <!-- # nolint end -->
 
 </div>
@@ -1314,11 +1325,16 @@ available at
 <http://www.stat.uiowa.edu/~luke/data/laus/laucntycur14-2020.txt> and
 in the project data folder.
 
-<div class="alert alert-info"> This file is a text file but uses a
-non-standard separator. It is designed for human readability and uses
-a comma as a _thousands separator_ or _grouping mark_.  It also
-includes header and footer information. It is still reasonably easy to
-read in.  </div>
+<div class="alert alert-info">
+This file is a text file but uses a non-standard separator.
+
+It is designed for human readability and uses
+a comma as a _thousands separator_ or _grouping mark_.
+
+It also includes header and footer information.
+
+It is still reasonably easy to read in.
+</div>
 
 One way to read the data into R is:
 
@@ -1538,15 +1554,18 @@ Additional data sets are [available](http://www.gapminder.org/data/).
 * The numbers represent number of deaths within the first five years
   per 1000 births.
 
-<div class="alert alert-info"> Many researchers like to manage their
-data in a spreadsheet. Being able to read such a sheet directly
-greatly helps keeping the workflow reproducible.
+<div class="alert alert-info">
+Many researchers like to manage their data in a spreadsheet.
 
-Many spreadsheets contain header, footers, and other annotations to
-aid a human viewer.
+* Being able to read such a sheet directly greatly helps keeping the
+  workflow reproducible.
 
-As long as the data are in a rectangular region it is usually not hard
-to extract them programmatically.  </div>
+* Many spreadsheets contain header, footers, and other annotations to
+  aid a human viewer.
+
+* As long as the data are in a rectangular region it is usually not
+  hard to extract them programmatically.
+</div>
 
 Loading the data:
 
@@ -1555,7 +1574,7 @@ library(readxl)
 gcm <- read_excel("data/gapminder-under5mortality.xlsx")
 names(gcm)[1]
 names(gcm)[1] <- "country"
-head(gcm)
+head(gcm, 3)
 ```
 
 This data set is in _wide_ format, with one column per year.
@@ -1577,7 +1596,6 @@ tgcm <-
     mutate(year = as.numeric(year))
 head(tgcm, 3)
 ```
-
 
 Some explorations:
 
