@@ -47,7 +47,7 @@ In this class I will
 
 * Using some examples briefly show how to do data wrangling
   and visualize data in R.
- 
+
 --
 
 Materials for this class are available on GitHub at
@@ -208,7 +208,7 @@ All computations are specified in the R language.
 --
 
 The language is used to
-    
+
 --
 
 * prepare data for analysis;
@@ -510,8 +510,7 @@ p
 
 {{content}}
 --
-Drawing only happens when the object
-is printed.
+Drawing only happens when the object is printed.
 
 
 ---
@@ -833,7 +832,7 @@ ggplot(barley) +
 ---
 ## Minnesota Barley Yields
 
-Focusing on summaries can help. 
+Focusing on summaries can help.
 
 --
 A _dot plot_ of average yields for each site and year:
@@ -2347,7 +2346,7 @@ Additional data sets are [available](http://www.gapminder.org/data/).
   file](http://homepage.stat.uiowa.edu/~luke/data/gapminder-under5mortality.csv)
   or an [Excel
   file](http://homepage.stat.uiowa.edu/~luke/data/gapminder-under5mortality.xlsx).
-  
+
 --
 
 * The Excel file is also available in the project data folder.
