@@ -455,7 +455,7 @@ current eruption:
 --
 
 .pull-left[
-```{r geyser-scatter, echo = FALSE, warning = FALSE}
+```{r geyser-scatter, echo = FALSE}
 ggplot(geyser) +
     geom_point(aes(x = lag(duration),
                    y = waiting))
@@ -2009,7 +2009,7 @@ plotly::ggplotly(p, tooltip = "text")
 ]
 --
 .pull-right[
-```{r cancer-map-plotly, echo = FALSE, warning = FALSE, fig.width = 8}
+```{r cancer-map-plotly, echo = FALSE, fig.width = 8}
 ```
 ]
 
