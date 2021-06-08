@@ -168,7 +168,7 @@ project:
 library(nomnoml)
 ```
 <center>
-```{nomnoml, echo = FALSE, fig.height = 3.5}
+```{nomnoml, echo = FALSE, fig.height = 5, fig.width = 8}
 #padding: 25
 #fontsize: 18
 #fill: #E1DAFF; #D4A9FF
@@ -256,12 +256,14 @@ The variables are:
 
 The durations have a bimodal distribution:
 
-```{r geyser-hist}
+```{r geyser-hist, echo = FALSE}
 ggplot(geyser) +
     geom_histogram(aes(x = duration),
                    bins = 15,
                    color = "black",
                    fill = "grey")
+```
+```{r geyser-hist, eval = FALSE}
 ```
 
 This is [`ggplot`](https://ggplot2.tidyverse.org/) code for creating a
@@ -286,10 +288,13 @@ when the _next_ eruption will occur.
 A plot of the _previous_ duration against the waiting time to the
 current eruption:
 
-```{r geyser-scatter}
+```{r geyser-scatter, echo = FALSE}
 ggplot(geyser) +
     geom_point(aes(x = lag(duration),
                    y = waiting))
+```
+
+```{r geyser-scatter, eval = FALSE}
 ```
 
 It looks like a useful rule would be to expect a shorter waiting time
@@ -301,7 +306,7 @@ Many durations are recorded as 2 or 4 minutes.
 
 This can also be seen in a histogram with a small bin width:
 
-```{r geyser-hist-narrow}
+```{r geyser-hist-narrow, echo = FALSE}
 p <- ggplot(geyser) +
     geom_histogram(aes(x = duration,
                        y = stat(density)),
@@ -309,6 +314,8 @@ p <- ggplot(geyser) +
                    color = "black",
                    binwidth = 0.1)
 p
+```
+```{r geyser-hist-narrow, eval = FALSE}
 ```
 
 <div class="alert alert-info"> 
@@ -390,7 +397,7 @@ the function called on the right.
 
 One way to show the superimposed normal densities:
 
-```{r geyser-hist-dens}
+```{r geyser-hist-dens, echo = FALSE}
 f1 <- function(x)
     sgd$prop[1] * dnorm(x, sgd$mean[1], sgd$sd[1])
 f2 <- function(x)
@@ -399,6 +406,8 @@ p <- p +
     stat_function(color = "red", fun = f1) +
     stat_function(color = "blue", fun = f2)
 p
+```
+```{r geyser-hist-dens, eval = FALSE}
 ```
 
 <div class="alert alert-info"> 
@@ -423,7 +432,7 @@ sgd2
 
 A plot showing curves computed both ways:
 
-```{r geyser-hist-dens-2}
+```{r geyser-hist-dens-2, echo = FALSE}
 f1_2 <- function(x)
     sgd2$prop[1] * dnorm(x, sgd2$mean[1], sgd2$sd[1])
 f2_2 <- function(x)
@@ -436,6 +445,8 @@ p <- p +
                   linetype = 2,
                   fun = f2_2)
 p
+```
+```{r geyser-hist-dens-2, eval = FALSE}
 ```
 
 ```{r, eval = FALSE, echo = FALSE}
@@ -494,7 +505,7 @@ cowplot::plot_grid(p1, p2)
 
 Using color to separate yields in the two years:
 
-```{r, fig.width = 10}
+```{r, fig.width = 12}
 p1 <- ggplot(barley) + geom_point(aes(x = yield, y = variety, color = year))
 p2 <- ggplot(barley) + geom_point(aes(x = yield, y = site, color = year))
 cowplot::plot_grid(p1, p2)
@@ -503,19 +514,21 @@ cowplot::plot_grid(p1, p2)
 
 Can we also show `site` using symbol shape?
 
-```{r barley-color-sym}
+```{r barley-color-sym, echo = FALSE, fig.width = 7}
 ggplot(barley) +
     geom_point(aes(x = yield,
                    y = variety,
                    color = year,
                    shape = site))
 ```
+```{r barley-color-sym, eval = FALSE}
+```
 
 There is a lot of _interference_ between shape and color.
 
 Larger points may help:
 
-```{r barley-color-sym-2}
+```{r barley-color-sym-2, echo = FALSE, fig.width = 7}
 ggplot(barley) +
     geom_point(aes(x = yield,
                    y = variety,
@@ -523,11 +536,13 @@ ggplot(barley) +
                    shape = site),
                size = 2.5)
 ```
+```{r barley-color-sym-2, eval = FALSE}
+```
 
 _Jittering_ may also help:
 
 
-```{r barley-color-sym-3}
+```{r barley-color-sym-3, echo = FALSE, fig.width = 7}
 ggplot(barley) +
     geom_point(aes(x = yield,
                    y = variety,
@@ -539,22 +554,26 @@ ggplot(barley) +
                        height = 0.15,
                        width = 0))
 ```
+```{r barley-color-sym-3, eval = FALSE}
+```
 
 Another approach: _faceting_ to produce _small multiples_.
 
-```{r barley-facet, fig.width = 10}
+```{r barley-facet, eval = FALSE}
 ggplot(barley) +
     geom_point(aes(x = yield,
                    y = variety,
                    color = year)) +
-    facet_wrap(~site)
+    facet_wrap(~site, ncol = 2)
+```
+```{r barley-facet, echo = FALSE, fig.width = 7, fig.height = 7}
 ```
 
 Focusing on summaries can help.
 
 A _dot plot_ of average yields for each site and year:
 
-```{r barley-avg-dot}
+```{r barley-avg-dot, echo = FALSE, message = FALSE, fig.width = 7}
 barley_site_year <-
     group_by(barley, site, year) %>%
     summarize(yield = mean(yield)) %>%
@@ -566,12 +585,14 @@ ggplot(barley_site_year) +
                    color = year),
                size = 3)
 ```
+```{r barley-avg-dot, eval = FALSE}
+```
 
 Adding lines can help comparing the changes. This is sometimes called
 a _dumbbell chart_:
 
 
-```{r barley-avg-dot-2}
+```{r barley-avg-dot-2, echo = FALSE, message = FALSE, fig.width = 7}
 barley_site_year <-
     group_by(barley, site, year) %>%
     summarize(yield = mean(yield)) %>%
@@ -587,6 +608,8 @@ ggplot(barley_site_year) +
                    x = yield,
                    color = year),
                size = 4)
+```
+```{r barley-avg-dot-2, eval = FALSE}
 ```
 
 Another useful approach for showing repeated measurements is a _slope
@@ -616,7 +639,7 @@ This emphasizes the reversal for Morris.
 _Bar charts_ are sometimes used for summaries, but dot plots are
 usually a better choice.
 
-```{r barley-avg-bar, fig.width = 10}
+```{r barley-avg-bar, echo = FALSE, message = FALSE, fig.width = 7}
 ggplot(barley_site_year) +
     geom_col(aes(x = yield,
                  y = site,
@@ -624,6 +647,8 @@ ggplot(barley_site_year) +
              size = 3,
              position = "dodge",
              width = .4)
+```
+```{r barley-avg-bar, eval = FALSE}
 ```
 
 ### Bar Charts and the Zero Base Line
@@ -653,7 +678,7 @@ The data set is available as a _cross-tabulation_.
 
 Looking at the distribution of eye color:
 
-```{r eye-bar}
+```{r eye-bar, echo = FALSE}
 eye <-
     group_by(HairEyeDF, Eye) %>%
     summarize(Freq = sum(Freq)) %>%
@@ -664,11 +689,13 @@ ggplot(eye) +
                  y = Freq),
              position = "dodge")
 ```
+```{r eye-bar, eval = FALSE}
+```
 
 Mapping eye color to bar color in addition to the horizontal axis
 position can help:
 
-```{r eye-bar-2}
+```{r eye-bar-2, echo = FALSE}
 ggplot(eye) +
     geom_col(aes(x = Eye,
                  y = Freq,
@@ -678,7 +705,7 @@ ggplot(eye) +
 
 More sensible colors would be nice but require a bit of work:
 
-```{r eye-bar-3}
+```{r eye-bar-3, echo = FALSE}
 hazel_rgb <-
     col2rgb("brown") * 0.75 + col2rgb("green") * 0.25
 hazel <-
@@ -698,26 +725,34 @@ pb <- ggplot(eye) +
     scale_fill_manual(values = cols)
 pb
 ```
+```{r eye-bar-3, eval = FALSE}
+```
 
 A _stacked bar chart_ can also be useful:
 
-```{r eye-bar-stacked}
+```{r eye-bar-stacked, echo = FALSE}
 psb <- ggplot(eye) +
     geom_col(aes(x = "", y = Freq, fill = Eye), color = "lightgrey") +
     scale_fill_manual(values = cols)
 psb
 ```
+```{r eye-bar-stacked, eval = FALSE}
+```
 
 Changing to polar coordinates produces a _pie chart_:
 
-```{r eye-pie}
+```{r eye-pie, echo = FALSE}
 (pp <- psb + coord_polar("y"))
+```
+```{r eye-pie, eval = FALSE}
 ```
 
 The axis and grid are not helpful; a _theme_ adjustment can remove them:
 
-```{r eye-pie-2}
+```{r eye-pie-2, echo = FALSE}
 (pp <- pp + theme_void())
+```
+```{r eye-pie-2, eval = FALSE}
 ```
 
 <div class="alert alert-info">
@@ -733,7 +768,7 @@ style of different publications, for example `theme_wsj` and
 
 How well do bar charts and pie charts work?
 
-```{r, fig.width = 10}
+```{r, echo = FALSE, fig.width = 10}
 cowplot::plot_grid(pb, pp)
 ```
 
@@ -796,22 +831,30 @@ Monthly flow volumes recorded for a river in the pacific north-west.
 
 An initial plot using default settings:
 
-```{r, class.source = "fold-hide"}
+```{r, fig.width = 8, class.source = "fold-hide"}
 river <- scan("data/river.dat")
 rd <- data.frame(flow = river, month = seq_along(river))
 (pp <- ggplot(rd) + geom_point(aes(x = month, y = flow)))
 ```
 
-```{r, eval = FALSE}
-(pl <- ggplot(rd) + geom_line(aes(x = month, y = flow)))
-```
+Changing the _aspect ratio_:
 
 ```{r, eval = FALSE}
 pp + coord_fixed(3.5)
 ```
 
+Time series are often visualized with a line plot:
+
 ```{r, eval = FALSE}
+pl <- ggplot(rd) + geom_line(aes(x = month, y = flow))
 pl + coord_fixed(3.5)
+```
+
+The seasonal variation can be seen with a line plot in the original
+aspect ratio:
+
+```{r, eval = FALSE}
+pl
 ```
 
 ### A Simple Model of Visual Perception
@@ -913,7 +956,8 @@ Munzner's ordering by accuracy:
 Line width is another channel; not sure there is agreement on its
 accuracy, but it is not high.
 
-<div class="alert alert-info">**Visual Design Implications**
+<div class="alert alert-info">
+**Visual Design Implications**
 
 Try to map the most important variables to the strongest channels.
 </div>
@@ -1064,7 +1108,7 @@ wt_IA <- mutate(wt_IA, p_year = replace(p_year, p_year < 0, NA))
 
 To show the locations of wind turbines on a map, load some map data:
 
-```{r iowa_sf_map}
+```{r iowa_sf_map, eval = FALSE}
 iowa_sf <-
     sf::st_as_sf(maps::map("county", "iowa",
                            plot = FALSE,
@@ -1076,16 +1120,21 @@ p <- ggplot() +
 p
 ```
 
+```{r iowa_sf_map, echo = FALSE, fig.width = 8}
+```
+
 Locations for all wind turbines in iowa:
 
-```{r wt-IA-all, fig.width = 8}
+```{r wt-IA-all, eval = FALSE}
 p + geom_point(aes(xlong, ylat),
                data = wt_IA)
+```
+```{r wt-IA-all, echo = FALSE, fig.width = 8}
 ```
 
 Using color to show when the wind turbines were  built:
 
-```{r wt-IA-color, fig.width = 8}
+```{r wt-IA-color, eval = FALSE}
 year_brk <- c(0, 2005, 2010, 2015, 2020)
 year_lab <- c("before 2005",
               "2005-2009",
@@ -1102,6 +1151,8 @@ p + geom_point(aes(xlong,
                    color = year),
                data = wt_IA,
                size = 3)
+```
+```{r wt-IA-color, echo = FALSE, fig.width = 8}
 ```
 
 ```{r eval = FALSE, echo = FALSE}
@@ -1252,16 +1303,16 @@ head(md)
 
 A simple map:
 
-```{r cancer-map-1}
-library(ggthemes)
-library(viridis)
+```{r cancer-map-1, eval = FALSE}
 ggplot(md) +
     geom_sf(aes(fill = rate1K))
+```
+```{r cancer-map-1, echo = FALSE, fig.width = 8}
 ```
 
 An improved version:
 
-```{r cancer-map-2}
+```{r cancer-map-2, eval = FALSE}
 library(ggthemes)
 library(viridis)
 ggplot(md) +
@@ -1270,10 +1321,12 @@ ggplot(md) +
     scale_fill_viridis(name = "Rate per 1000") +
     theme_map()
 ```
+```{r cancer-map-2, echo = FALSE, fig.width = 8, message = FALSE}
+```
 
 A simple interactive version using [`plotly`](https://plot.ly/r/):
 
-```{r cancer-map-plotly}
+```{r cancer-map-plotly, eval = FALSE}
 mdl <- mutate(md,
               label = paste(cname,
                             round(rate1K, 1),
@@ -1287,6 +1340,8 @@ p <- ggplot(mdl) +
     theme_map()
 
 plotly::ggplotly(p, tooltip = "text")
+```
+```{r cancer-map-plotly, echo = FALSE, fig.width = 8}
 ```
 
 The [`leaflet`](https://rstudio.github.io/leaflet/) package supports
@@ -1465,7 +1520,7 @@ head(summaryUS)
 
 A choropleth map of the April 2020 unemployment rates:
 
-```{r, class.source = "fold-hide"}
+```{r, fig.width = 9, fig.height = 6, class.source = "fold-hide"}
 left_join(counties_sf, summaryUS, "fips") %>%
     ggplot() +
     geom_sf(aes(fill = apr_unemp)) +
@@ -1494,7 +1549,7 @@ counties_sf <- mutate(counties_sf, fips = replace(fips, fips == 46113, 46102))
 
 With the updated data the map is now complete:
 
-```{r, class.source = "fold-hide"}
+```{r, fig.width = 9, fig.height = 6, class.source = "fold-hide"}
 left_join(counties_sf, summaryUS, "fips") %>%
     ggplot() +
     geom_sf(aes(fill = apr_unemp)) +
@@ -1572,8 +1627,11 @@ Loading the data:
 ```{r}
 library(readxl)
 gcm <- read_excel("data/gapminder-under5mortality.xlsx")
-names(gcm)[1]
-names(gcm)[1] <- "country"
+```
+
+A first look:
+
+```{r}
 head(gcm, 3)
 ```
 
@@ -1599,7 +1657,7 @@ head(tgcm, 3)
 
 Some explorations:
 
-```{r u5-1}
+```{r u5-1, eval = FALSE}
 p <- ggplot(tgcm) +
     geom_line(aes(year,
                   u5mort,
@@ -1607,10 +1665,12 @@ p <- ggplot(tgcm) +
               alpha = 0.3)
 plotly::ggplotly(p)
 ```
+```{r u5-1, echo = FALSE, fig.height = 6, fig.width = 8}
+```
 
 Some selected countries:
 
-```{r u5-2}
+```{r u5-2, eval = FALSE}
 countries <- c("United States",
                "United Kingdom",
                "Germany",
@@ -1622,10 +1682,12 @@ filter(tgcm, country %in% countries) %>%
                   y = u5mort,
                   color = country))
 ```
+```{r u5-2, echo = FALSE, fig.height = 6, fig.width = 8}
+```
 
 Examining the missing values:
 
-```{r u5-3}
+```{r u5-3, eval = FALSE}
 tgcm_miss <-
     group_by(tgcm, country) %>%
     summarize(anyNA = anyNA(u5mort)) %>%
@@ -1640,4 +1702,6 @@ p <- filter(tgcm,
     geom_line(na.rm = TRUE) +
     xlim(c(1940, 2020))
 plotly::ggplotly(p)
+```
+```{r u5-3, echo = FALSE, fig.height = 6, fig.width = 7}
 ```
