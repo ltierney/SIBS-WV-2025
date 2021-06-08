@@ -702,6 +702,8 @@ ggplot(eye) +
                  fill = Eye),
              position = "dodge")
 ```
+```{r eye-bar-2, eval = FALSE}
+```
 
 More sensible colors would be nice but require a bit of work:
 
@@ -832,7 +834,7 @@ Monthly flow volumes recorded for a river in the pacific north-west.
 An initial plot using default settings:
 
 ```{r, fig.width = 8, class.source = "fold-hide"}
-river <- scan("data/river.dat")
+river <- scan(here::here("data/river.dat"))
 rd <- data.frame(flow = river, month = seq_along(river))
 (pp <- ggplot(rd) + geom_point(aes(x = month, y = flow)))
 ```
@@ -892,7 +894,7 @@ Meaningful visual chunks are moved from iconic memory to short term memory.
 Long term visual memory is built up over a lifetime, though
 infrequently used visual chunks may become lost.
 
-### Visual Design Implications
+#### Visual Design Implications
 
 Try to make as much use of preattentive features as possible.
 
@@ -957,7 +959,7 @@ Line width is another channel; not sure there is agreement on its
 accuracy, but it is not high.
 
 <div class="alert alert-info">
-**Visual Design Implications**
+#### Visual Design Implications
 
 Try to map the most important variables to the strongest channels.
 </div>
@@ -1082,7 +1084,7 @@ A snapshot is available is [here](data/us_wind.csv) as a CSV file.
 Reading the wind turbine data:
 
 ```{r}
-wind_turbines <- read.csv("data/us_wind.csv", comment = "#")
+wind_turbines <- read.csv(here::here("data/us_wind.csv"), comment = "#")
 ```
 Some data cleaning is needed.
 
@@ -1180,7 +1182,7 @@ cancer incidence for a number of different cancers in Iowa.
 <!-- # nolint start -->
 
 ```{r, include = FALSE}
-cancer_data_file <- "data/Invasive-Cancer-Incidence-Rates-by-County-in-Iowa-Lung-and-Bronchus-2011.csv"
+cancer_data_file <- here::here("data/Invasive-Cancer-Incidence-Rates-by-County-in-Iowa-Lung-and-Bronchus-2011.csv")
 ```
 
 <!-- # nolint end -->
@@ -1203,7 +1205,7 @@ The header can be handled by using `skip = 2` in the `read_csv` call:
 <!-- # nolint start -->
 
 ```{r, message = FALSE}
-fname <- "data/Invasive-Cancer-Incidence-Rates-by-County-in-Iowa-Lung-and-Bronchus-2011.csv"
+fname <- here::here("data/Invasive-Cancer-Incidence-Rates-by-County-in-Iowa-Lung-and-Bronchus-2011.csv")
 d <- read_csv(fname, skip = 2)
 head(d)
 ```
@@ -1394,7 +1396,7 @@ It is still reasonably easy to read in.
 One way to read the data into R is:
 
 ```{r}
-lausURL <- "data/laucntycur14-2020.txt"
+lausURL <- here::here("data/laucntycur14-2020.txt")
 lausUS <- read.table(lausURL,
                      col.names = c("LAUSAreaCode", "State", "County",
                                    "Title", "Period",
@@ -1626,7 +1628,7 @@ Loading the data:
 
 ```{r}
 library(readxl)
-gcm <- read_excel("data/gapminder-under5mortality.xlsx")
+gcm <- read_excel(here::here("data/gapminder-under5mortality.xlsx"))
 ```
 
 A first look:
