@@ -17,6 +17,8 @@ library(ggplot2)
 theme_set(theme_minimal() +
           theme(text = element_text(size = 16)) +
           theme(panel.border = element_rect(color = "grey30", fill = NA)))
+here_rel <- function(path)
+    if (file.exists(path)) path else file.path("..", path)
 ```
 
 ## Introduction
@@ -657,9 +659,8 @@ Because of the way we perceive bars, it is important to use a [zero
 base line for bar
 charts](https://flowingdata.com/2015/08/31/bar-chart-baselines-start-at-zero/).
 
-![](img/viz3-520x294.jpg)
-
-![](img/viz5-520x280.jpg)
+![](`r here_rel("img/viz3-520x294.jpg")`)
+![](`r here_rel("img/viz5-520x280.jpg")`)
 
 
 ### Hair and Eye Color Data
@@ -989,8 +990,8 @@ Some of the issues:
 
 Color perception is relative:
 
-![](img/chess1.png)
-![](img/chess2.png)
+![](`r here_rel("img/chess1.png")`)
+![](`r here_rel("img/chess2.png")`)
 
 Groups of colors that work well together are called _palettes_.
 

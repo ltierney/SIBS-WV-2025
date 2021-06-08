@@ -28,6 +28,8 @@ library(ggplot2)
 theme_set(theme_minimal() +
           theme(text = element_text(size = 16)) +
           theme(panel.border = element_rect(color = "grey30", fill = NA)))
+here_rel <- function(path)
+    if (file.exists(path)) path else file.path("..", path)
 ```
 
 ```{css, echo = FALSE}
@@ -950,9 +952,9 @@ charts](https://flowingdata.com/2015/08/31/bar-chart-baselines-start-at-zero/).
 
 --
 
-![](`r here::here("img/viz3-520x294.jpg")`)
+![](`r here_rel("img/viz3-520x294.jpg")`)
 --
-![](`r here::here("img/viz5-520x280.jpg")`)
+![](`r here_rel("img/viz5-520x280.jpg")`)
 
 ---
 ## Hair and Eye Color Data
@@ -1470,9 +1472,9 @@ Color perception is relative:
 
 --
 
-![](`r here::here("img/chess1.png")`)
+![](`r here_rel("img/chess1.png")`)
 --
-![](`r here::here("img/chess2.png")`)
+![](`r here_rel("img/chess2.png")`)
 
 --
 
@@ -1610,7 +1612,7 @@ Database](https://eerscmap.usgs.gov/uswtdb/).
 
 --
 
-A snapshot is available is [here](`r here::here("data/us_wind.csv")`)
+A snapshot is available is [here](`r here_rel("data/us_wind.csv")`)
 as a CSV file.
 
 --
@@ -1771,7 +1773,7 @@ cancer incidence for a number of different cancers in Iowa.
 <!-- # nolint start -->
 
 ```{r, include = FALSE}
-cancer_data_file <- here::here("data/Invasive-Cancer-Incidence-Rates-by-County-in-Iowa-Lung-and-Bronchus-2011.csv")
+cancer_data_file <- here_rel("data/Invasive-Cancer-Incidence-Rates-by-County-in-Iowa-Lung-and-Bronchus-2011.csv")
 ```
 
 <!-- # nolint end -->
@@ -2175,7 +2177,7 @@ COVID-19 pandemic.
 A plot shows a large spike in April 2020:
 
 .hide-code[
-```{r}
+```{r, fig.width = 10}
 group_by(lausUS, Period) %>%
     summarize(Unemployed = sum(Unemployed, na.rm = TRUE),
               LaborForce = sum(LaborForce, na.rm = TRUE),
