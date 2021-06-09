@@ -21,6 +21,20 @@ here_rel <- function(path)
     if (file.exists(path)) path else file.path("..", path)
 ```
 
+```{css, echo = FALSE}
+.content-box-blue { background-color: lightblue; }
+.note {
+	padding: 15px;
+	margin-bottom: 20px;
+	border: 1px solid transparent;
+	border-radius: 4px;
+	background-color: #d9edf7;
+	border-color: #bce8f1;
+	color: #31708f;
+}
+```
+
+
 ## Introduction
 
 ### Outline
@@ -240,7 +254,7 @@ dim(geyser)
 head(geyser, 4)
 ```
 
-<div class="alert alert-info">
+<div class = "note">
 `head` and `tail` return the first and last few rows of a data frame.
 
 They are useful for quick sanity checks.
@@ -271,18 +285,18 @@ ggplot(geyser) +
 This is [`ggplot`](https://ggplot2.tidyverse.org/) code for creating a
 histogram.
 
-<div class="alert alert-info">
+<!-- # nolint start -->
+<div class = "note">
 A basic template for creating a plot with `ggplot`:
 
-<!-- # nolint start -->
 
 ```r
 ggplot(data = <DATA>) +
     <GEOM>(mapping = aes(<MAPPINGS>))
 ```
 
-<!-- # nolint end -->
 </div>
+<!-- # nolint end -->
 
 An interesting question is whether the duration can be used to predict
 when the _next_ eruption will occur.
@@ -320,7 +334,7 @@ p
 ```{r geyser-hist-narrow, eval = FALSE}
 ```
 
-<div class="alert alert-info"> 
+<div class = "note"> 
 `ggplot` produces a plot object.
 
 Drawing only happens when the object is printed.
@@ -372,9 +386,9 @@ sgd <- summarize(group_by(geyser, type),
 (sgd <- mutate(sgd, prop = n / sum(n)))
 ```
 
-<div class="alert alert-info">
-`summarize`, `group_by`, and `mutate` are from the `dplyr` package
-that implements a _grammar of data manipulation_.
+<div class = "note">
+The functions `summarize`, `group_by`, and `mutate` are from the
+`dplyr` package that implements a _grammar of data manipulation_.
 </div>
 
 This computation can also be written using the _forward pipe operator_ `%>%`:
@@ -390,7 +404,7 @@ sgd <-
 sgd
 ```
 
-<div class="alert alert-info">
+<div class = "note">
 The pipe operator allows a sequence of operations to be chained together.
 
 The left-hand operation is passed implicitly as the first argument to
@@ -412,7 +426,7 @@ p
 ```{r geyser-hist-dens, eval = FALSE}
 ```
 
-<div class="alert alert-info"> 
+<div class = "note"> 
 A `ggplot` can consist of several _layers_.
 </div>
 
@@ -758,7 +772,7 @@ The axis and grid are not helpful; a _theme_ adjustment can remove them:
 ```{r eye-pie-2, eval = FALSE}
 ```
 
-<div class="alert alert-info">
+<div class = "note">
 Themes provide a way to customize the non-data components of plots:
 i.e. titles, labels, fonts, background, grid lines, and legends.
 
@@ -805,8 +819,8 @@ p2 <- ggplot(eye_hairsex) +
 cowplot::plot_grid(p1, p2)
 ```
 
-<div class="alert alert-info">
-A more complete `ggplot` template:
+
+### A more complete `ggplot` template
 
 <!-- # nolint start -->
 
@@ -822,8 +836,6 @@ ggplot(data = <DATA>) +
     <THEME_ADJUSTMENT>
 ```
 <!-- # nolint end -->
-
-</div>
 
 
 ## Visual Perception and the Grammar of Graphics
@@ -895,7 +907,8 @@ Meaningful visual chunks are moved from iconic memory to short term memory.
 Long term visual memory is built up over a lifetime, though
 infrequently used visual chunks may become lost.
 
-#### Visual Design Implications
+<div class = "note">
+**Visual Design Implications**
 
 Try to make as much use of preattentive features as possible.
 
@@ -903,6 +916,7 @@ Recognize when preattentive features might mislead.
 
 For features that require attentive processing, keep in mind that
 working memory is limited.
+</div>
 
 
 ### Some Terms for Describing Visualizations
@@ -959,8 +973,8 @@ Munzner's ordering by accuracy:
 Line width is another channel; not sure there is agreement on its
 accuracy, but it is not high.
 
-<div class="alert alert-info">
-#### Visual Design Implications
+<div class = "note">
+**Visual Design Implications**
 
 Try to map the most important variables to the strongest channels.
 </div>
@@ -1068,7 +1082,8 @@ There are many wind turbines in Iowa.
 Data is available from the [U.S. Wind Turbine
 Database](https://eerscmap.usgs.gov/uswtdb/).
 
-A snapshot is available is [here](data/us_wind.csv) as a CSV file.
+A snapshot is available is [here](`r here_rel("data/us_wind.csv")`)
+as a CSV file.
 
 * CSV files are a common form of data exchange.
 
@@ -1183,7 +1198,7 @@ cancer incidence for a number of different cancers in Iowa.
 <!-- # nolint start -->
 
 ```{r, include = FALSE}
-cancer_data_file <- here::here("data/Invasive-Cancer-Incidence-Rates-by-County-in-Iowa-Lung-and-Bronchus-2011.csv")
+cancer_data_file <- here_rel("data/Invasive-Cancer-Incidence-Rates-by-County-in-Iowa-Lung-and-Bronchus-2011.csv")
 ```
 
 <!-- # nolint end -->
@@ -1383,7 +1398,7 @@ available at
 <http://www.stat.uiowa.edu/~luke/data/laus/laucntycur14-2020.txt> and
 in the project data folder.
 
-<div class="alert alert-info">
+<div class = "note">
 This file is a text file but uses a non-standard separator.
 
 It is designed for human readability and uses
@@ -1612,7 +1627,7 @@ Additional data sets are [available](http://www.gapminder.org/data/).
 * The numbers represent number of deaths within the first five years
   per 1000 births.
 
-<div class="alert alert-info">
+<div class="note">
 Many researchers like to manage their data in a spreadsheet.
 
 * Being able to read such a sheet directly greatly helps keeping the
