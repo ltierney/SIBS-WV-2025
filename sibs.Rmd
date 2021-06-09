@@ -11,8 +11,13 @@ output:
 ---
 
 ```{r setup, include = FALSE}
+if ("xaringan" %in% loadedNamespaces()) {
+    options(htmltools.dir.version = FALSE)
+    knitr::opts_chunk$set(fig.height = 5, fig.width = 6)
+    xaringanExtra::use_tile_view()
+    xaringanExtra::use_clipboard()
+}
 knitr::opts_chunk$set(collapse = TRUE, warning = FALSE)
-xaringanExtra::use_clipboard()
 library(ggplot2)
 theme_set(theme_minimal() +
           theme(text = element_text(size = 16)) +
@@ -23,6 +28,7 @@ here_rel <- function(path)
 
 ```{css, echo = FALSE}
 .content-box-blue { background-color: lightblue; }
+.small-font { font-size: 70%; }
 .note {
 	padding: 15px;
 	margin-bottom: 20px;
@@ -33,7 +39,6 @@ here_rel <- function(path)
 	color: #31708f;
 }
 ```
-
 
 ## Introduction
 
@@ -61,7 +66,6 @@ Materials for our _Data Visualization and Data
 Technologies_ course are available at
 
 <http://www.stat.uiowa.edu/~luke/classes/STAT4580-2021/>
-
 
 ### Tools
 
@@ -100,9 +104,14 @@ Useful references:
 > R_](https://rafalab.github.io/dsbook/), Chapman & Hall/CRC. ([Book
 > source on GitHub](https://github.com/rafalab/dsbook))
 
+```{r, include = FALSE}
+tutorial <- here_rel("tutorial/penguins.Rmd")
+```
+
+There is also a small interactive [tutorial](`r tutorial`) available.
+
 **Ask questions any time!**
 
- 
 ## The R Language
 
 ### Background
@@ -174,7 +183,6 @@ Arithmetic operations are vectorized to operate element-wise on vectors.
 Data vectors are usually combined into table-like objects called _data
 frames_.
 
-
 ### The Data Analysis Process
 
 A figure that shows the steps usually involved in a data analysis
@@ -204,7 +212,6 @@ library(nomnoml)
 These steps are often repeated many times, so it is important to make
 your work reproducible.
 
-
 ### Reproducible Data Analysis
 
 Making your work reproducible:
@@ -222,7 +229,6 @@ often will!).
 
 A good resource for setting up your tools to support this is [_Happy
 Git and GitHub for the useR_](https://happygitwithr.com/).
-
 
 ## Some Examples
 
@@ -242,7 +248,6 @@ Data sets available in R packages include:
 
 * current data obtained by querying web APIs.
 
-
 ### Old Faithful Eruptions
 
 A simple classic data set is the `geyser` data frame available in
@@ -253,12 +258,12 @@ data(geyser, package = "MASS")
 dim(geyser)
 head(geyser, 4)
 ```
-
 <div class = "note">
 `head` and `tail` return the first and last few rows of a data frame.
 
 They are useful for quick sanity checks.
 </div>
+<!-- foobar - don't ask -->
 
 The rows represent measurements recorded for eruptions of the [_Old
 Faithful_](https://www.yellowstonepark.com/things-to-do/geysers-hot-springs/about-old-faithful/)
@@ -284,17 +289,15 @@ ggplot(geyser) +
 
 This is [`ggplot`](https://ggplot2.tidyverse.org/) code for creating a
 histogram.
-
 <!-- # nolint start -->
+
 <div class = "note">
 A basic template for creating a plot with `ggplot`:
-
 
 ```r
 ggplot(data = <DATA>) +
     <GEOM>(mapping = aes(<MAPPINGS>))
 ```
-
 </div>
 <!-- # nolint end -->
 
@@ -309,7 +312,6 @@ ggplot(geyser) +
     geom_point(aes(x = lag(duration),
                    y = waiting))
 ```
-
 ```{r geyser-scatter, eval = FALSE}
 ```
 
@@ -334,11 +336,12 @@ p
 ```{r geyser-hist-narrow, eval = FALSE}
 ```
 
-<div class = "note"> 
+<div class = "note">
 `ggplot` produces a plot object.
 
 Drawing only happens when the object is printed.
 </div>
+<!-- foobar - don't ask -->
 
 Does this rounding matter?
 
@@ -354,7 +357,6 @@ d <- geyser$duration
 d_short <- d[d < 3]
 d_long <- d[d >= 3]
 ```
-
 Then compute the means and standard deviations as
 
 ```{r}
@@ -385,11 +387,11 @@ sgd <- summarize(group_by(geyser, type),
                  n = n())
 (sgd <- mutate(sgd, prop = n / sum(n)))
 ```
-
 <div class = "note">
 The functions `summarize`, `group_by`, and `mutate` are from the
 `dplyr` package that implements a _grammar of data manipulation_.
 </div>
+<!-- foobar - don't ask -->
 
 This computation can also be written using the _forward pipe operator_ `%>%`:
 
@@ -410,6 +412,7 @@ The pipe operator allows a sequence of operations to be chained together.
 The left-hand operation is passed implicitly as the first argument to
 the function called on the right.
 </div>
+<!-- foobar - don't ask -->
 
 One way to show the superimposed normal densities:
 
@@ -426,9 +429,10 @@ p
 ```{r geyser-hist-dens, eval = FALSE}
 ```
 
-<div class = "note"> 
+<div class = "note">
 A `ggplot` can consist of several _layers_.
 </div>
+<!-- foobar - don't ask -->
 
 The means and standard deviations are affected by the rounding.
 
@@ -496,7 +500,6 @@ p <- p +
 p
 ```
 
-
 ### Minnesota Barley Yields
 
 Another classic data set:
@@ -557,7 +560,6 @@ ggplot(barley) +
 
 _Jittering_ may also help:
 
-
 ```{r barley-color-sym-3, echo = FALSE, fig.width = 7}
 ggplot(barley) +
     geom_point(aes(x = yield,
@@ -607,7 +609,6 @@ ggplot(barley_site_year) +
 Adding lines can help comparing the changes. This is sometimes called
 a _dumbbell chart_:
 
-
 ```{r barley-avg-dot-2, echo = FALSE, message = FALSE, fig.width = 7}
 barley_site_year <-
     group_by(barley, site, year) %>%
@@ -630,7 +631,6 @@ ggplot(barley_site_year) +
 
 Another useful approach for showing repeated measurements is a _slope
 graph_:
-
 
 ```{r, class.source = "fold-hide"}
 library(ggrepel)
@@ -676,7 +676,6 @@ charts](https://flowingdata.com/2015/08/31/bar-chart-baselines-start-at-zero/).
 ![](`r here_rel("img/viz3-520x294.jpg")`)
 ![](`r here_rel("img/viz5-520x280.jpg")`)
 
-
 ### Hair and Eye Color Data
 
 A data set recording the distribution of hair and eye color and sex in
@@ -686,7 +685,6 @@ A data set recording the distribution of hair and eye color and sex in
 HairEyeDF <- as.data.frame(HairEyeColor)
 head(HairEyeDF)
 ```
-
 The data set is available as a _cross-tabulation_.
 
 `as.data.frame` converts it to a data frame.
@@ -711,6 +709,11 @@ Mapping eye color to bar color in addition to the horizontal axis
 position can help:
 
 ```{r eye-bar-2, echo = FALSE}
+eye <-
+    group_by(HairEyeDF, Eye) %>%
+    summarize(Freq = sum(Freq)) %>%
+    ungroup()
+
 ggplot(eye) +
     geom_col(aes(x = Eye,
                  y = Freq,
@@ -782,10 +785,11 @@ The `ggthemes` package provides a number of themes to emulate the
 style of different publications, for example `theme_wsj` and
 `theme_economist`.
 </div>
+<!-- foobar - don't ask -->
 
 How well do bar charts and pie charts work?
 
-```{r, echo = FALSE, fig.width = 10}
+```{r, echo = FALSE, fig.height = 4, fig.width = 8}
 cowplot::plot_grid(pb, pp)
 ```
 
@@ -800,7 +804,7 @@ Some questions:
 
 Looking at the proportions within hair color and sex:
 
-```{r, fig.width = 10, class.source = "fold-hide"}
+```{r, fig.width = 14, fig.height = 6, class.source = "fold-hide"}
 eye_hairsex <-
     group_by(HairEyeDF, Hair, Sex) %>%
     mutate(Prop = Freq / sum(Freq)) %>%
@@ -819,7 +823,6 @@ p2 <- ggplot(eye_hairsex) +
 cowplot::plot_grid(p1, p2)
 ```
 
-
 ### A more complete `ggplot` template
 
 <!-- # nolint start -->
@@ -837,7 +840,6 @@ ggplot(data = <DATA>) +
 ```
 <!-- # nolint end -->
 
-
 ## Visual Perception and the Grammar of Graphics
 
 ### Monthly River Flows
@@ -854,13 +856,13 @@ rd <- data.frame(flow = river, month = seq_along(river))
 
 Changing the _aspect ratio_:
 
-```{r, eval = FALSE}
+```{r, fig.width = 12, fig.height = 4, class.source = "fold-hide"}
 pp + coord_fixed(3.5)
 ```
 
 Time series are often visualized with a line plot:
 
-```{r, eval = FALSE}
+```{r, fig.width = 12, fig.height = 4, class.source = "fold-hide"}
 pl <- ggplot(rd) + geom_line(aes(x = month, y = flow))
 pl + coord_fixed(3.5)
 ```
@@ -868,7 +870,7 @@ pl + coord_fixed(3.5)
 The seasonal variation can be seen with a line plot in the original
 aspect ratio:
 
-```{r, eval = FALSE}
+```{r, fig.width = 8, class.source = "fold-hide"}
 pl
 ```
 
@@ -917,7 +919,7 @@ Recognize when preattentive features might mislead.
 For features that require attentive processing, keep in mind that
 working memory is limited.
 </div>
-
+<!-- foobar - don't ask -->
 
 ### Some Terms for Describing Visualizations
 
@@ -943,7 +945,6 @@ as implemented in `ggplot`.
 >  Design_](http://www.cs.ubc.ca/~tmm/vadbook/), CRC Press.
 
 > Wilkinson, L. (2005), _The Grammar of Graphics_, 2nd ed, Springer.
-
 
 ### Channels and their Accuracy
 
@@ -978,7 +979,7 @@ accuracy, but it is not high.
 
 Try to map the most important variables to the strongest channels.
 </div>
-
+<!-- foobar - don't ask -->
 
 ### Color
 
@@ -1020,8 +1021,9 @@ Some tools for selecting palettes include:
 A note on [rainbow colors](
 https://eeecon.uibk.ac.at/~zeileis/news/endrainbow/).
 
-
 ## A Grammar of Data Manipulation
+
+### The `dplyr` Package
 
 The `dplyr` package provides a language, or grammar, for data
 manipulation.
@@ -1051,8 +1053,9 @@ Package `tidyr` provides more verbs, such as `pivot_longer` and
 The single table verbs can also be used with `group_by` to work
 separately on groups of rows.
 
-
 ## More Examples
+
+### Raw Data
 
 These examples start with raw data as you might receive it from a
 researcher, and involve reading and cleaning the data.
@@ -1102,6 +1105,7 @@ Reading the wind turbine data:
 ```{r}
 wind_turbines <- read.csv(here::here("data/us_wind.csv"), comment = "#")
 ```
+
 Some data cleaning is needed.
 
 Focus on the wind turbines in IOWA (19 is the state component of the
@@ -1262,10 +1266,8 @@ count(d, count == 0)
 ```{r}
 any(d$count == 0, na.rm = TRUE)
 ```
-
 It _might_ be reasonable to assume these values where zero, so replace
 them with zeros:
-
 ```{r}
 d <- replace_na(d, list(count = 0))
 ```
@@ -1366,7 +1368,7 @@ The [`leaflet`](https://rstudio.github.io/leaflet/) package supports
 more sophisticated interactive maps:
 
 <!-- http://rstudio.github.io/leaflet/legends.html-->
-```{r, class.source = "fold-hide"}
+```{r, fig.height = 6.5, fig.width = 9, class.source = "fold-hide"}
 library(leaflet)
 pal <- colorNumeric(palette = "viridis", domain = md$rate1K)
 lab <- lapply(paste0(md$cname, "<BR>",
@@ -1385,7 +1387,6 @@ leaflet(sf::st_transform(md, 4326)) %>%
                 label = lab) %>%
     addLegend(pal = pal, values = ~ rate1K, opacity = 1)
 ```
-
 
 ### Unemployment Map
 
@@ -1408,6 +1409,7 @@ It also includes header and footer information.
 
 It is still reasonably easy to read in.
 </div>
+<!-- foobar - don't ask -->
 
 One way to read the data into R is:
 
@@ -1487,7 +1489,7 @@ COVID-19 pandemic.
 
 A plot shows a large spike in April 2020:
 
-```{r, class.source = "fold-hide"}
+```{r, fig.width = 10, class.source = "fold-hide"}
 group_by(lausUS, Period) %>%
     summarize(Unemployed = sum(Unemployed, na.rm = TRUE),
               LaborForce = sum(LaborForce, na.rm = TRUE),
@@ -1609,7 +1611,6 @@ ggplot(left_join(m_sf, filter(lausUS, Period == "Apr-20"), "fips"),
     geom_sf(size = 0.1) +
     scale_fill_viridis(name = "Rate", na.value = "red")
 ```
-
 ### Gapminder Childhood Mortality Data
 
 The `gapminder` package provides a subset of the data from the
@@ -1639,6 +1640,7 @@ Many researchers like to manage their data in a spreadsheet.
 * As long as the data are in a rectangular region it is usually not
   hard to extract them programmatically.
 </div>
+<!-- foobar - don't ask -->
 
 Loading the data:
 
