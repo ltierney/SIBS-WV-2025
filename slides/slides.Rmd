@@ -142,6 +142,13 @@ Useful references:
 > R_](https://rafalab.github.io/dsbook/), Chapman & Hall/CRC. ([Book
 > source on GitHub](https://github.com/rafalab/dsbook))
 
+--
+
+```{r, include = FALSE}
+tutorial <- here_rel("tutorial/penguins.Rmd")
+```
+
+There is also a small interactive [tutorial](`r tutorial`) available.
 
 --
 
