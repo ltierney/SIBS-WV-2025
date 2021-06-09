@@ -15,6 +15,7 @@ library(learnr)
 library(tidyverse)
 knitr::opts_chunk$set(echo = FALSE, comment = "", warning = FALSE)
 library(palmerpenguins)
+<<mylabs>>
 ```
 
 ## Palmer Penguins
