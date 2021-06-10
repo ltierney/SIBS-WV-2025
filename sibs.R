@@ -1,6 +1,11 @@
 ## ----setup, include = FALSE---------------------------------------------------
+if ("xaringan" %in% loadedNamespaces()) {
+    options(htmltools.dir.version = FALSE)
+    knitr::opts_chunk$set(fig.height = 5, fig.width = 6)
+    xaringanExtra::use_tile_view()
+    xaringanExtra::use_clipboard()
+}
 knitr::opts_chunk$set(collapse = TRUE, warning = FALSE)
-xaringanExtra::use_clipboard()
 library(ggplot2)
 theme_set(theme_minimal() +
           theme(text = element_text(size = 16)) +
@@ -10,6 +15,8 @@ here_rel <- function(path)
 
 
 ## .content-box-blue { background-color: lightblue; }
+
+## .small-font { font-size: 70%; }
 
 ## .note {
 
@@ -32,6 +39,10 @@ here_rel <- function(path)
 
 ## ---- message = FALSE---------------------------------------------------------
 library(tidyverse)
+
+
+## ---- include = FALSE---------------------------------------------------------
+tutorial <- here_rel("tutorial/penguins.Rmd")
 
 
 ## ---- include = FALSE---------------------------------------------------------
@@ -89,7 +100,6 @@ ggplot(geyser) +
 ggplot(geyser) +
     geom_point(aes(x = lag(duration),
                    y = waiting))
-
 
 ## ----geyser-scatter, eval = FALSE---------------------------------------------
 ## ggplot(geyser) +
@@ -462,6 +472,11 @@ ggplot(eye) +
 
 
 ## ----eye-bar-2, echo = FALSE--------------------------------------------------
+eye <-
+    group_by(HairEyeDF, Eye) %>%
+    summarize(Freq = sum(Freq)) %>%
+    ungroup()
+
 ggplot(eye) +
     geom_col(aes(x = Eye,
                  y = Freq,
@@ -469,6 +484,11 @@ ggplot(eye) +
              position = "dodge")
 
 ## ----eye-bar-2, eval = FALSE--------------------------------------------------
+## eye <-
+##     group_by(HairEyeDF, Eye) %>%
+##     summarize(Freq = sum(Freq)) %>%
+##     ungroup()
+## 
 ## ggplot(eye) +
 ##     geom_col(aes(x = Eye,
 ##                  y = Freq,
@@ -544,11 +564,11 @@ psb
 ## (pp <- pp + theme_void())
 
 
-## ---- echo = FALSE, fig.width = 10--------------------------------------------
+## ---- echo = FALSE, fig.height = 4, fig.width = 8-----------------------------
 cowplot::plot_grid(pb, pp)
 
 
-## ---- fig.width = 10, class.source = "fold-hide"------------------------------
+## ---- fig.width = 14, fig.height = 6, class.source = "fold-hide"--------------
 eye_hairsex <-
     group_by(HairEyeDF, Hair, Sex) %>%
     mutate(Prop = Freq / sum(Freq)) %>%
@@ -573,17 +593,17 @@ rd <- data.frame(flow = river, month = seq_along(river))
 (pp <- ggplot(rd) + geom_point(aes(x = month, y = flow)))
 
 
-## ---- eval = FALSE------------------------------------------------------------
-## pp + coord_fixed(3.5)
+## ---- fig.width = 12, fig.height = 4, class.source = "fold-hide"--------------
+pp + coord_fixed(3.5)
 
 
-## ---- eval = FALSE------------------------------------------------------------
-## pl <- ggplot(rd) + geom_line(aes(x = month, y = flow))
-## pl + coord_fixed(3.5)
+## ---- fig.width = 12, fig.height = 4, class.source = "fold-hide"--------------
+pl <- ggplot(rd) + geom_line(aes(x = month, y = flow))
+pl + coord_fixed(3.5)
 
 
-## ---- eval = FALSE------------------------------------------------------------
-## pl
+## ---- fig.width = 8, class.source = "fold-hide"-------------------------------
+pl
 
 
 ## -----------------------------------------------------------------------------
@@ -815,7 +835,7 @@ p <- ggplot(mdl) +
 plotly::ggplotly(p, tooltip = "text")
 
 
-## ---- class.source = "fold-hide"----------------------------------------------
+## ---- fig.height = 6.5, fig.width = 9, class.source = "fold-hide"-------------
 library(leaflet)
 pal <- colorNumeric(palette = "viridis", domain = md$rate1K)
 lab <- lapply(paste0(md$cname, "<BR>",
@@ -885,7 +905,7 @@ lausUS <- mutate(lausUS,
                  Unemployed = as.numeric(gsub(",", "", Unemployed)))
 
 
-## ---- class.source = "fold-hide"----------------------------------------------
+## ---- fig.width = 10, class.source = "fold-hide"------------------------------
 group_by(lausUS, Period) %>%
     summarize(Unemployed = sum(Unemployed, na.rm = TRUE),
               LaborForce = sum(LaborForce, na.rm = TRUE),
