@@ -1278,6 +1278,7 @@ An initial plot using default settings:
 
 .hide-code[
 ```{r, fig.width = 8}
+library(ggplot2)
 river <- scan(here::here("data/river.dat"))
 rd <- data.frame(flow = river, month = seq_along(river))
 (pp <- ggplot(rd) + geom_point(aes(x = month, y = flow)))
@@ -1639,7 +1640,7 @@ researcher, and involve reading and cleaning the data.
 
 --
 
-Common data formats you might encounter include
+Common data formats you might encounter include:
 
 --
 
