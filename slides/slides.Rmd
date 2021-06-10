@@ -24,6 +24,7 @@ if ("xaringan" %in% loadedNamespaces()) {
     knitr::opts_chunk$set(fig.height = 5, fig.width = 6)
     xaringanExtra::use_tile_view()
     xaringanExtra::use_clipboard()
+    xaringanExtra::use_search(show_icon = TRUE)
 }
 knitr::opts_chunk$set(collapse = TRUE, warning = FALSE)
 library(ggplot2)
