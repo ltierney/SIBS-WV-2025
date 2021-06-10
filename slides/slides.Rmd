@@ -207,7 +207,9 @@ R is an Open Source project.
   similar repositories.
 
 ---
+layout: true
 ## Working with R
+---
 
 R is designed for interactive data exploration.
 
@@ -256,7 +258,6 @@ The language is used to
 Specifying these tasks in a language supports _reproducible research_.
 
 ---
-## Working with R
 
 The R language operates on vectors and arrays.
 
@@ -295,7 +296,6 @@ frames_.
 
 
 ---
-## Working with R
 
 Some simple examples:
 
@@ -345,7 +345,6 @@ The result is returned _invisibly_.
 
 
 ---
-## Working with R
 
 .pull-left.width-20[
 Vector arithmetic:
@@ -398,7 +397,6 @@ x[1 : 2]
 ]
 
 ---
-## Working with R
 
 .pull-left.width-20[
 Logical indexing:
@@ -435,6 +433,7 @@ d$x
 ]
 
 ---
+layout: false
 ## The Data Analysis Process
 
 A figure that shows the steps usually involved in a data analysis
@@ -530,7 +529,9 @@ Data sets available in R packages include:
 
 
 ---
+layout: true
 ## Old Faithful Eruptions
+---
 
 A simple classic data set is the `geyser` data frame available in
 package `MASS`.
@@ -572,7 +573,6 @@ The variables are:
 
 
 ---
-## Old Faithful Eruptions
 
 The durations have a bimodal distribution:
 
@@ -611,7 +611,6 @@ ggplot(data = <DATA>) +
 <!-- # nolint end -->
 
 ---
-## Old Faithful Eruptions
 
 An interesting question is whether the duration can be used to predict
 when the _next_ eruption will occur.
@@ -643,7 +642,6 @@ after a shorter eruption duration.
 
 
 ---
-## Old Faithful Eruptions
 
 An interesting feature:
 
@@ -683,7 +681,6 @@ Drawing only happens when the object is printed.
 <!-- foobar - don't ask -->
 
 ---
-## Old Faithful Eruptions
 
 Does this rounding matter?
 
@@ -721,7 +718,6 @@ mean(d >= 3)
 ]
 
 ---
-## Old Faithful Eruptions
 
 An approach that scales better:
 
@@ -761,7 +757,6 @@ The functions `summarize`, `group_by`, and `mutate` are from the
 ]
 
 ---
-## Old Faithful Eruptions
 
 This computation can also be written using the _forward pipe operator_ `%>%`:
 
@@ -790,7 +785,6 @@ the function called on the right.
 <!-- foobar - don't ask -->
 
 ---
-## Old Faithful Eruptions
 
 One way to show the superimposed normal densities:
 
@@ -821,7 +815,6 @@ A `ggplot` can consist of several _layers_.
 <!-- foobar - don't ask -->
 
 ---
-## Old Faithful Eruptions
 
 The means and standard deviations are affected by the rounding.
 
@@ -842,7 +835,6 @@ sgd2
 ```
 
 ---
-## Old Faithful Eruptions
 
 A plot showing curves computed both ways:
 
@@ -901,7 +893,9 @@ p
 ```
 
 ---
+layout: true
 ## Minnesota Barley Yields
+---
 
 Another classic data set:
 
@@ -920,7 +914,6 @@ head(barley)
 ```
 
 ---
-## Minnesota Barley Yields
 
 Some initial plots:
 
@@ -931,7 +924,6 @@ cowplot::plot_grid(p1, p2)
 ```
 
 ---
-## Minnesota Barley Yields
 
 Using color to separate yields in the two years:
 
@@ -943,7 +935,6 @@ cowplot::plot_grid(p1, p2)
 ```
 
 ---
-## Minnesota Barley Yields
 
 Can we also show `site` using symbol shape?
 
@@ -970,7 +961,6 @@ There is a lot of _interference_ between shape and color.
 
 
 ---
-## Minnesota Barley Yields
 
 Larger points may help:
 
@@ -991,7 +981,6 @@ ggplot(barley) +
 
 
 ---
-## Minnesota Barley Yields
 
 _Jittering_ may also help:
 
@@ -1017,7 +1006,6 @@ ggplot(barley) +
 
 
 ---
-## Minnesota Barley Yields
 
 .pull-left[
 Another approach: _faceting_ to produce _small multiples_.
@@ -1036,7 +1024,6 @@ ggplot(barley) +
 ]
 
 ---
-## Minnesota Barley Yields
 
 Focusing on summaries can help.
 
@@ -1064,7 +1051,6 @@ ggplot(barley_site_year) +
 ]
 
 ---
-## Minnesota Barley Yields
 
 Adding lines can help comparing the changes. This is sometimes called
 a _dumbbell chart_:
@@ -1094,7 +1080,6 @@ ggplot(barley_site_year) +
 ]
 
 ---
-## Minnesota Barley Yields
 
 Another useful approach for showing repeated measurements is a _slope
 graph_:
@@ -1127,7 +1112,6 @@ This emphasizes the reversal for Morris.
 ]
 
 ---
-## Minnesota Barley Yields
 
 _Bar charts_ are sometimes used for summaries, but dot plots are
 usually a better choice.
@@ -1149,6 +1133,7 @@ ggplot(barley_site_year) +
 ]
 
 ---
+layout: false
 ## Bar Charts and the Zero Base Line
 
 Because of the way we perceive bars, it is important to use a [zero
@@ -1162,7 +1147,9 @@ charts](https://flowingdata.com/2015/08/31/bar-chart-baselines-start-at-zero/).
 ![](`r here_rel("img/viz5-520x280.jpg")`)
 
 ---
+layout: true
 ## Hair and Eye Color Data
+---
 
 A data set recording the distribution of hair and eye color and sex in
 592 statistics students.
@@ -1184,7 +1171,6 @@ The data set is available as a _cross-tabulation_.
 `as.data.frame` converts it to a data frame.
 
 ---
-## Hair and Eye Color Data
 
 Looking at the distribution of eye color:
 
@@ -1209,7 +1195,6 @@ ggplot(eye) +
 ]
 
 ---
-## Hair and Eye Color Data
 
 Mapping eye color to bar color in addition to the horizontal axis
 position can help:
@@ -1234,7 +1219,6 @@ ggplot(eye) +
 ]
 
 ---
-## Hair and Eye Color Data
 
 More sensible colors would be nice but require a bit of work:
 
@@ -1266,7 +1250,6 @@ pb
 ]
 
 ---
-## Hair and Eye Color Data
 
 A _stacked bar chart_ can also be useful:
 
@@ -1284,7 +1267,6 @@ psb
 ]
 
 ---
-## Hair and Eye Color Data
 
 Changing to polar coordinates produces a _pie chart_:
 
@@ -1299,7 +1281,6 @@ Changing to polar coordinates produces a _pie chart_:
 ]
 
 ---
-## Hair and Eye Color Data
 
 The axis and grid are not helpful; a _theme_ adjustment can remove them:
 
@@ -1332,7 +1313,6 @@ style of different publications, for example `theme_wsj` and
 <!-- foobar - don't ask -->
 
 ---
-## Hair and Eye Color Data
 
 How well do bar charts and pie charts work?
 
@@ -1362,7 +1342,6 @@ Some questions:
   larger or smaller than 1/2 or 1/4 or 1/3?
 
 ---
-## Hair and Eye Color Data
 
 Looking at the proportions within hair color and sex:
 
@@ -1388,6 +1367,7 @@ cowplot::plot_grid(p1, p2)
 ]
 
 ---
+layout: false
 ## A more complete `ggplot` template
 
 <!-- # nolint start -->
@@ -1463,9 +1443,9 @@ pl
 ]
 
 ---
-layout: false
-
+layout: true
 ## A Simple Model of Visual Perception
+---
 
 The eyes acquire an image, which is processed through three stages of
 memory:
@@ -1503,7 +1483,6 @@ The first processing stage of an image happens in iconic memory.
 Preattentive processing is a fast recognition process.
 
 ---
-## A Simple Model of Visual Perception
 
 Meaningful visual chunks are moved from iconic memory to short term memory.
 
@@ -1546,6 +1525,7 @@ working memory is limited.
 
 
 ---
+layout: false
 ## Some Terms for Describing Visualizations
 
 Data to be visualized contains _variables_ or _attributes_ measured on
@@ -1585,7 +1565,9 @@ as implemented in `ggplot`.
 
 
 ---
+layout: true
 ## Channels and their Accuracy
+---
 
 A useful distinction among channels:
 
@@ -1604,7 +1586,6 @@ A useful distinction among channels:
 Some channels are better at conveying information than others.
 
 ---
-## Channels and their Accuracy
 
 Munzner's ordering by accuracy:
 
@@ -1638,7 +1619,9 @@ Try to map the most important variables to the strongest channels.
 <!-- foobar - don't ask -->
 
 ---
+layout: true
 ## Color
+---
 
 Color is very effective when used well.
 
@@ -1679,7 +1662,6 @@ Some of the issues:
 * Cultural significance may vary among cultures and with time.
 
 ---
-## Color
 
 Color perception is relative:
 
@@ -1713,12 +1695,15 @@ A note on [rainbow colors](
 https://eeecon.uibk.ac.at/~zeileis/news/endrainbow/).
 
 ---
+layout: false
 class: center, middle
 
 # A Grammar of Data Manipulation
 
 ---
+layout: true
 ## The `dplyr` Package
+---
 
 The `dplyr` package provides a language, or grammar, for data
 manipulation.
@@ -1756,7 +1741,6 @@ The most commonly used verbs operate on a single data frame:
 * `summarize`: collapse rows down to summaries
 
 ---
-## The `dplyr` Package
 
 There are also a number of `join` verbs that merge several data frames
 into one.
@@ -1772,6 +1756,7 @@ The single table verbs can also be used with `group_by` to work
 separately on groups of rows.
 
 ---
+layout: false
 class: center, middle
 
 # More Examples
@@ -1815,7 +1800,9 @@ Common data formats you might encounter include:
 Tools are available for reading data in these formats into R.
 
 ---
+layout: true
 ## Wind Turbines in Iowa
+---
 
 There are many wind turbines in Iowa.
 
@@ -1860,7 +1847,6 @@ wind_turbines <- read.csv(here::here("data/us_wind.csv"), comment = "#")
 ```
 
 ---
-## Wind Turbines in Iowa
 
 Some data cleaning is needed.
 
@@ -1889,7 +1875,6 @@ wt_IA <- mutate(wt_IA, p_year = replace(p_year, p_year < 0, NA))
 ```
 
 ---
-## Wind Turbines in Iowa
 
 To show the locations of wind turbines on a map, load some map data:
 
@@ -1913,7 +1898,6 @@ p
 ]
 
 ---
-## Wind Turbines in Iowa
 
 Locations for all wind turbines in iowa:
 
@@ -1929,7 +1913,6 @@ p + geom_point(aes(xlong, ylat),
 ]
 
 ---
-## Wind Turbines in Iowa
 
 Using color to show when the wind turbines were  built:
 
@@ -1977,7 +1960,9 @@ anim_save("foo.gif", animate(pa, fps = 10, nframes = 100))
 ```
 
 ---
+layout: true
 ## Cancer Map
+---
 
 The website <http://www.cancer-rates.info/ia> provides data on
 cancer incidence for a number of different cancers in Iowa.
@@ -2017,7 +2002,6 @@ Looking at the file shows some things that need to be cleaned up:
 
 
 ---
-## Cancer Map
 
 The header can be handled by using `skip = 2` in the `read_csv` call:
 
@@ -2032,7 +2016,6 @@ head(d)
 <!-- # nolint end -->
 
 ---
-## Cancer Map
 
 Let's focus on a few variables and give them more convenient names:
 
@@ -2058,7 +2041,6 @@ d <- filter(d, county != "STATE")
 ```
 
 ---
-## Cancer Map
 
 Changing `count` to numeric changes the `~` entries to missing values
 (`NA`) values:
@@ -2095,7 +2077,6 @@ d <- replace_na(d, list(count = 0))
 ]
 
 ---
-## Cancer Map
 
 A _choropleth map_ uses color or shading to represent values measured
 for different geographic regions.
@@ -2131,7 +2112,6 @@ iowa_sf <- rename(iowa_sf, county = ID)
 ```
 
 ---
-## Cancer Map
 
 Still not quite there:
 
@@ -2151,7 +2131,6 @@ setdiff(iowa_sf$county, d$county)
 
 
 ---
-## Cancer Map
 
 Define `rate1K` variable as the number of cases per 1000 inhabitants
 and left join the cancer data to the map data:
@@ -2163,7 +2142,6 @@ head(md)
 ```
 
 ---
-## Cancer Map
 
 A simple map:
 
@@ -2180,7 +2158,6 @@ ggplot(md) +
 ]
 
 ---
-## Cancer Map
 
 An improved version:
 
@@ -2202,7 +2179,6 @@ ggplot(md) +
 ]
 
 ---
-## Cancer Map
 
 A simple interactive version using [`plotly`](https://plot.ly/r/):
 
@@ -2230,7 +2206,6 @@ plotly::ggplotly(p, tooltip = "text")
 ]
 
 ---
-## Cancer Map
 
 The [`leaflet`](https://rstudio.github.io/leaflet/) package supports
 more sophisticated interactive maps:
@@ -2260,7 +2235,9 @@ leaflet(sf::st_transform(md, 4326)) %>%
 
 
 ---
+layout: true
 ## Unemployment Map
+---
 
 [Local Area Unemployment Statistics page](https://www.bls.gov/lau/)
 from the Bureau of Labor Statistics makes available county-level
@@ -2294,7 +2271,6 @@ It is still reasonably easy to read in.
 <!-- foobar - don't ask -->
 
 ---
-## Unemployment Map
 
 One way to read the data into R is:
 
@@ -2313,7 +2289,6 @@ lausUS <- lausUS[1 : (footstart - 1), ]
 ```
 
 ---
-## Unemployment Map
 
 It may be useful to be able to access the county name and state name
 separately:
@@ -2341,7 +2316,6 @@ lausUS <- mutate(lausUS, UnempRate = as.numeric(UnempRate))
 ```
 
 ---
-## Unemployment Map
 
 Check for missing values:
 
@@ -2373,7 +2347,6 @@ select(lausUS, scode, Period, UnempRate) %>%
 ```
 
 ---
-## Unemployment Map
 
 To compute the national monthly unemployment rates over this period we
 need some more data cleaning:
@@ -2386,7 +2359,6 @@ lausUS <- mutate(lausUS,
 ```
 
 ---
-## Unemployment Map
 
 Unemployment during this period was affected significantly by the
 COVID-19 pandemic.
@@ -2405,7 +2377,6 @@ group_by(lausUS, Period) %>%
 ]
 
 ---
-## Unemployment Map
 
 A choropleth map can be used to look at how the impact was distributed
 across the country.
@@ -2444,7 +2415,6 @@ states_sf <- sf::st_as_sf(maps::map("state", plot = FALSE, fill = TRUE))
 ```
 
 ---
-## Unemployment Map
 
 Some summaries over the period can be computed as
 
@@ -2458,7 +2428,6 @@ head(summaryUS)
 ```
 
 ---
-## Unemployment Map
 
 A choropleth map of the April 2020 unemployment rates:
 
@@ -2474,7 +2443,6 @@ left_join(counties_sf, summaryUS, "fips") %>%
 ]
 
 ---
-## Unemployment Map
 
 Using a very visible color for missing data is useful, at least during
 exploration.
@@ -2501,7 +2469,6 @@ counties_sf <- mutate(counties_sf, fips = replace(fips, fips == 46113, 46102))
 ```
 
 ---
-## Unemployment Map
 
 With the updated data the map is now complete:
 
@@ -2550,7 +2517,9 @@ ggplot(left_join(m_sf, filter(lausUS, Period == "Apr-20"), "fips"),
     scale_fill_viridis(name = "Rate", na.value = "red")
 ```
 ---
+layout: true
 ## Gapminder Childhood Mortality Data
+---
 
 The `gapminder` package provides a subset of the data from the
 [Gapminder](http://www.gapminder.org/) web site.
@@ -2599,7 +2568,6 @@ Many researchers like to manage their data in a spreadsheet.
 
 
 ---
-## Gapminder Childhood Mortality Data
 
 Loading the data:
 
@@ -2616,7 +2584,6 @@ head(gcm, 3)
 ```
 
 ---
-## Gapminder Childhood Mortality Data
 
 This data set is in _wide_ format, with one column per year.
 
@@ -2645,7 +2612,6 @@ head(tgcm, 3)
 ```
 
 ---
-## Gapminder Childhood Mortality Data
 
 Some explorations:
 
@@ -2665,7 +2631,7 @@ plotly::ggplotly(p)
 ]
 
 ---
-## Gapminder Childhood Mortality Data
+
 Some selected countries:
 
 .pull-left[
@@ -2688,7 +2654,7 @@ filter(tgcm, country %in% countries) %>%
 ]
 
 ---
-## Gapminder Childhood Mortality Data
+
 Examining the missing values:
 
 .pull-left[
