@@ -67,6 +67,9 @@ Materials for this class are available on GitHub at
 git clone https://github.com/ltierney/SIBS-WV-2021.git
     ```
 
+Materials are also available at
+<https://www.stat.uiowa.edu/~luke/SIBS-R/SIBS-WV-2021/>.
+
 Materials for our _Data Visualization and Data
 Technologies_ course are available at
 

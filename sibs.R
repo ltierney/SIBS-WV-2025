@@ -4,6 +4,7 @@ if ("xaringan" %in% loadedNamespaces()) {
     knitr::opts_chunk$set(fig.height = 5, fig.width = 6)
     xaringanExtra::use_tile_view()
     xaringanExtra::use_clipboard()
+    xaringanExtra::use_search(show_icon = TRUE)
 }
 knitr::opts_chunk$set(collapse = TRUE, warning = FALSE)
 library(ggplot2)
@@ -17,6 +18,14 @@ here_rel <- function(path)
 ## .content-box-blue { background-color: lightblue; }
 
 ## .small-font { font-size: 70%; }
+
+## .width-20 { width: 20% }
+
+## .width-30 { width: 30% }
+
+## .width-60 { width: 60% }
+
+## .width-70 { width: 70% }
 
 ## .note {
 
@@ -43,6 +52,54 @@ library(tidyverse)
 
 ## ---- include = FALSE---------------------------------------------------------
 tutorial <- here_rel("tutorial/penguins.Rmd")
+
+
+## ---- prompt = TRUE, comment = ""---------------------------------------------
+1 + 2
+
+
+## ----prompt = TRUE, comment = ""----------------------------------------------
+c(2, 4, 6)
+
+## ----prompt = TRUE, comment = ""----------------------------------------------
+1 : 4
+
+
+## ---- prompt = TRUE, comment = ""---------------------------------------------
+x <- c(2, 4, 6)
+
+
+## ----prompt = TRUE, comment = ""----------------------------------------------
+x + 1
+
+
+## ----prompt = TRUE, comment = ""----------------------------------------------
+x + x
+
+
+## ----prompt = TRUE, comment = ""----------------------------------------------
+log(x)
+
+
+## ----prompt = TRUE, comment = ""----------------------------------------------
+x[[1]]
+
+
+## ----prompt = TRUE, comment = ""----------------------------------------------
+x[1 : 2]
+
+
+## ---- prompt = TRUE, comment = ""---------------------------------------------
+x[x > 2]
+
+
+## ---- prompt = TRUE, comment = ""---------------------------------------------
+d <- data.frame(x, y = log(x))
+d
+
+
+## ---- prompt = TRUE, comment = ""---------------------------------------------
+d$x
 
 
 ## ---- include = FALSE---------------------------------------------------------
@@ -588,6 +645,7 @@ cowplot::plot_grid(p1, p2)
 
 
 ## ---- fig.width = 8, class.source = "fold-hide"-------------------------------
+library(ggplot2)
 river <- scan(here::here("data/river.dat"))
 rd <- data.frame(flow = river, month = seq_along(river))
 (pp <- ggplot(rd) + geom_point(aes(x = month, y = flow)))
