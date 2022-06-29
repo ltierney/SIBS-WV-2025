@@ -2,7 +2,7 @@
 title: "Basic Data Wrangling and Data Visualization in R"
 author: "Luke Tierney"
 institute: "University of Iowa"
-date: "21 June, 2021"
+date: "1 July, 2022"
 output:
   html_document:
     toc: yes
@@ -480,6 +480,8 @@ The pipe operator allows a sequence of operations to be chained together.
 
 The left-hand operation is passed implicitly as the first argument to
 the function called on the right.
+
+In R 4.1.0 and later versions you can also use the base R pipe operator `|>`.
 </div>
 <!-- foobar - don't ask -->
 
@@ -487,9 +489,11 @@ One way to show the superimposed normal densities:
 
 ```{r geyser-hist-dens, echo = FALSE}
 f1 <- function(x)
-    sgd$prop[1] * dnorm(x, sgd$mean[1], sgd$sd[1])
+    sgd$prop[1] *
+        dnorm(x, sgd$mean[1], sgd$sd[1])
 f2 <- function(x)
-    sgd$prop[2] * dnorm(x, sgd$mean[2], sgd$sd[2])
+    sgd$prop[2] *
+        dnorm(x, sgd$mean[2], sgd$sd[2])
 p <- p +
     stat_function(color = "red", fun = f1) +
     stat_function(color = "blue", fun = f2)
@@ -523,9 +527,11 @@ A plot showing curves computed both ways:
 
 ```{r geyser-hist-dens-2, echo = FALSE}
 f1_2 <- function(x)
-    sgd2$prop[1] * dnorm(x, sgd2$mean[1], sgd2$sd[1])
+    sgd2$prop[1] *
+        dnorm(x, sgd2$mean[1], sgd2$sd[1])
 f2_2 <- function(x)
-    sgd2$prop[2] * dnorm(x, sgd2$mean[2], sgd2$sd[2])
+    sgd2$prop[2] *
+        dnorm(x, sgd2$mean[2], sgd2$sd[2])
 p <- p +
     stat_function(color = "red",
                   linetype = 2,
@@ -588,7 +594,8 @@ Some initial plots:
 ```{r, fig.width = 10}
 p1 <- ggplot(barley) + geom_point(aes(x = yield, y = variety))
 p2 <- ggplot(barley) + geom_point(aes(x = yield, y = site))
-cowplot::plot_grid(p1, p2)
+library(patchwork)
+p1 + p2
 ```
 
 Using color to separate yields in the two years:
@@ -596,7 +603,7 @@ Using color to separate yields in the two years:
 ```{r, fig.width = 12}
 p1 <- ggplot(barley) + geom_point(aes(x = yield, y = variety, color = year))
 p2 <- ggplot(barley) + geom_point(aes(x = yield, y = site, color = year))
-cowplot::plot_grid(p1, p2)
+p1 + p2
 
 ```
 
@@ -821,7 +828,10 @@ A _stacked bar chart_ can also be useful:
 
 ```{r eye-bar-stacked, echo = FALSE}
 psb <- ggplot(eye) +
-    geom_col(aes(x = "", y = Freq, fill = Eye), color = "lightgrey") +
+    geom_col(aes(x = "",
+                 y = Freq,
+                 fill = Eye),
+             color = "lightgrey") +
     scale_fill_manual(values = cols)
 psb
 ```
@@ -1085,7 +1095,7 @@ Some tools for selecting palettes include:
 * [ColorBrewer](http://colorbrewer2.org); available in the
   `RColorBrewer` package.
 
-* [HCL Wizard](http://www.hclwizard.org/); also available as `hclwizard`
+* [HCL Wizard](http://hclwizard.org/); also available as `hclwizard`
   in the `colorspace` package.
 
 A note on [rainbow colors](
@@ -1155,7 +1165,7 @@ There are many wind turbines in Iowa.
 Data is available from the [U.S. Wind Turbine
 Database](https://eerscmap.usgs.gov/uswtdb/).
 
-A snapshot is available is [here](`r here_rel("data/us_wind.csv")`)
+A snapshot is available [here](`r here_rel("data/us_wind.csv")`)
 as a CSV file.
 
 * CSV files are a common form of data exchange.
@@ -1346,7 +1356,7 @@ A _choropleth map_ uses color or shading to represent values measured
 for different geographic regions.
 
 We will need to merge, or _left join_, the cancer data with the map
-date we loaded for the wind turbine map.
+data we loaded for the wind turbine map.
 
 This requires a _key_ on which to match the records in the cancer data
 and the map data.
@@ -1633,8 +1643,14 @@ Shannon County, SD (FIPS 46113), was renamed to [Oglala Lakota County](https://e
 
 The geometry data table needs to be updated:
 
-```{r}
+```{r, eval = FALSE, echo = FALSE}
+## old version
 counties_sf <- mutate(counties_sf, fips = replace(fips, fips == 46113, 46102))
+```
+
+```{r}
+counties_sf <- mutate(counties_sf,
+                      fips = replace(fips, grepl("oglala", ID), 46102))
 ```
 
 With the updated data the map is now complete:
@@ -1681,6 +1697,7 @@ ggplot(left_join(m_sf, filter(lausUS, Period == "Apr-20"), "fips"),
     geom_sf(size = 0.1) +
     scale_fill_viridis(name = "Rate", na.value = "red")
 ```
+
 ### Gapminder Childhood Mortality Data
 
 The `gapminder` package provides a subset of the data from the

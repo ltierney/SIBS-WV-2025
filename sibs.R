@@ -223,9 +223,11 @@ sgd
 
 ## ----geyser-hist-dens, echo = FALSE-------------------------------------------
 f1 <- function(x)
-    sgd$prop[1] * dnorm(x, sgd$mean[1], sgd$sd[1])
+    sgd$prop[1] *
+        dnorm(x, sgd$mean[1], sgd$sd[1])
 f2 <- function(x)
-    sgd$prop[2] * dnorm(x, sgd$mean[2], sgd$sd[2])
+    sgd$prop[2] *
+        dnorm(x, sgd$mean[2], sgd$sd[2])
 p <- p +
     stat_function(color = "red", fun = f1) +
     stat_function(color = "blue", fun = f2)
@@ -233,9 +235,11 @@ p
 
 ## ----geyser-hist-dens, eval = FALSE-------------------------------------------
 ## f1 <- function(x)
-##     sgd$prop[1] * dnorm(x, sgd$mean[1], sgd$sd[1])
+##     sgd$prop[1] *
+##         dnorm(x, sgd$mean[1], sgd$sd[1])
 ## f2 <- function(x)
-##     sgd$prop[2] * dnorm(x, sgd$mean[2], sgd$sd[2])
+##     sgd$prop[2] *
+##         dnorm(x, sgd$mean[2], sgd$sd[2])
 ## p <- p +
 ##     stat_function(color = "red", fun = f1) +
 ##     stat_function(color = "blue", fun = f2)
@@ -256,9 +260,11 @@ sgd2
 
 ## ----geyser-hist-dens-2, echo = FALSE-----------------------------------------
 f1_2 <- function(x)
-    sgd2$prop[1] * dnorm(x, sgd2$mean[1], sgd2$sd[1])
+    sgd2$prop[1] *
+        dnorm(x, sgd2$mean[1], sgd2$sd[1])
 f2_2 <- function(x)
-    sgd2$prop[2] * dnorm(x, sgd2$mean[2], sgd2$sd[2])
+    sgd2$prop[2] *
+        dnorm(x, sgd2$mean[2], sgd2$sd[2])
 p <- p +
     stat_function(color = "red",
                   linetype = 2,
@@ -270,9 +276,11 @@ p
 
 ## ----geyser-hist-dens-2, eval = FALSE-----------------------------------------
 ## f1_2 <- function(x)
-##     sgd2$prop[1] * dnorm(x, sgd2$mean[1], sgd2$sd[1])
+##     sgd2$prop[1] *
+##         dnorm(x, sgd2$mean[1], sgd2$sd[1])
 ## f2_2 <- function(x)
-##     sgd2$prop[2] * dnorm(x, sgd2$mean[2], sgd2$sd[2])
+##     sgd2$prop[2] *
+##         dnorm(x, sgd2$mean[2], sgd2$sd[2])
 ## p <- p +
 ##     stat_function(color = "red",
 ##                   linetype = 2,
@@ -322,13 +330,14 @@ head(barley)
 ## ---- fig.width = 10----------------------------------------------------------
 p1 <- ggplot(barley) + geom_point(aes(x = yield, y = variety))
 p2 <- ggplot(barley) + geom_point(aes(x = yield, y = site))
-cowplot::plot_grid(p1, p2)
+library(patchwork)
+p1 + p2
 
 
 ## ---- fig.width = 12----------------------------------------------------------
 p1 <- ggplot(barley) + geom_point(aes(x = yield, y = variety, color = year))
 p2 <- ggplot(barley) + geom_point(aes(x = yield, y = site, color = year))
-cowplot::plot_grid(p1, p2)
+p1 + p2
 
 
 
@@ -597,13 +606,19 @@ pb
 
 ## ----eye-bar-stacked, echo = FALSE--------------------------------------------
 psb <- ggplot(eye) +
-    geom_col(aes(x = "", y = Freq, fill = Eye), color = "lightgrey") +
+    geom_col(aes(x = "",
+                 y = Freq,
+                 fill = Eye),
+             color = "lightgrey") +
     scale_fill_manual(values = cols)
 psb
 
 ## ----eye-bar-stacked, eval = FALSE--------------------------------------------
 ## psb <- ggplot(eye) +
-##     geom_col(aes(x = "", y = Freq, fill = Eye), color = "lightgrey") +
+##     geom_col(aes(x = "",
+##                  y = Freq,
+##                  fill = Eye),
+##              color = "lightgrey") +
 ##     scale_fill_manual(values = cols)
 ## psb
 
@@ -1008,8 +1023,14 @@ left_join(counties_sf, summaryUS, "fips") %>%
 anti_join(counties_sf, summaryUS, "fips")
 
 
+## ---- eval = FALSE, echo = FALSE----------------------------------------------
+## ## old version
+## counties_sf <- mutate(counties_sf, fips = replace(fips, fips == 46113, 46102))
+
+
 ## -----------------------------------------------------------------------------
-counties_sf <- mutate(counties_sf, fips = replace(fips, fips == 46113, 46102))
+counties_sf <- mutate(counties_sf,
+                      fips = replace(fips, grepl("oglala", ID), 46102))
 
 
 ## ---- fig.width = 9, fig.height = 6, class.source = "fold-hide"---------------
