@@ -57,23 +57,23 @@ In this class I will
   and visualize data in R.
 
 Materials for this class are available on GitHub at
-<https://github.com/ltierney/SIBS-WV-2021.git>.
+<https://github.com/ltierney/SIBS-WV-2022.git>.
 
 * You can access it as an RStudio project by following the menu selection
   **File > New Project > Version Control > Git** and specifying this URL.
 
 * You can use the `git` command line client with
     ```shell
-git clone https://github.com/ltierney/SIBS-WV-2021.git
+git clone https://github.com/ltierney/SIBS-WV-2022.git
     ```
 
 Materials are also available at
-<https://www.stat.uiowa.edu/~luke/SIBS-R/SIBS-WV-2021/>.
+<https://www.stat.uiowa.edu/~luke/SIBS-R/SIBS-WV-2022/>.
 
 Materials for our _Data Visualization and Data
 Technologies_ course are available at
 
-<http://www.stat.uiowa.edu/~luke/classes/STAT4580-2021/>
+<http://www.stat.uiowa.edu/~luke/classes/STAT4580-2022/>
 
 ### Tools
 
