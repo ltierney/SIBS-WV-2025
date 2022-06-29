@@ -21,7 +21,7 @@ library(palmerpenguins)
 ## Palmer Penguins
 
 ```{r, out.width = 500, fig.align = "center", fig.cap = "Artwork by @allison_horst"}
-knitr::include_graphics("https://allisonhorst.github.io/palmerpenguins/man/figures/lter_penguins.png")
+knitr::include_graphics("https://allisonhorst.github.io/palmerpenguins/reference/figures/lter_penguins.png")
 ```
 The [**palmerpenguins** package](https://allisonhorst.github.io/palmerpenguins/)
 includes data for adult foraging Adélie, Chinstrap, and Gentoo
