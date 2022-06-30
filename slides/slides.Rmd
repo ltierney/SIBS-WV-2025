@@ -2709,3 +2709,52 @@ plotly::ggplotly(p)
 ```
 ]
 
+---
+layout: false
+class: center, middle
+
+# Wrapping Up
+
+---
+
+## Final Notes
+
+In this class I gave
+
+--
+
+* a brief outline of R and its history;
+
+--
+
+* some examples of using R to do data wrangling;
+
+--
+
+* some examples of visualizing data with `ggplot`.
+
+--
+
+The slides/notes were created with
+[Rmarkdown](https://rmarkdown.rstudio.com/), a framework for creating
+fully reproducible documents.
+
+--
+
+Materials for this class are available on GitHub at
+<https://github.com/ltierney/SIBS-WV-2022.git>.
+
+--
+
+[GitHub](https://github.com) is a social coding platform built around
+the [Git](https://git-scm.com/) version control system.
+
+--
+
+Feel free to contact me if you have questions.
+
+---
+layout: false
+class: center, middle
+
+# Have a great time with the rest of your program!

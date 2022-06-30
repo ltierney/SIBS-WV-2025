@@ -45,9 +45,11 @@ here_rel <- function(path)
 }
 ```
 
-## Introduction
 
-### Outline
+# Introduction
+
+
+## Outline
 
 In this class I will
 
@@ -75,7 +77,8 @@ Technologies_ course are available at
 
 <http://www.stat.uiowa.edu/~luke/classes/STAT4580-2022/>
 
-### Tools
+
+## Tools
 
 Some tools I will be using:
 
@@ -94,7 +97,8 @@ Most of the packages are loaded by loading the `tidyverse` package:
 library(tidyverse)
 ```
 
-### References
+
+## References
 
 Useful references:
 
@@ -120,9 +124,11 @@ There is also a small interactive [tutorial](`r tutorial`) available.
 
 **Ask questions any time!**
 
-## The R Language
 
-### Background
+# The R Language
+
+
+## Background
 
 R is a language for data analysis and graphics.
 
@@ -146,7 +152,8 @@ R is an Open Source project.
 * Many (now over 17,000) extension packages are available through CRAN or
   similar repositories.
 
-### Working with R
+
+## Working with R
 
 R is designed for interactive data exploration.
 
@@ -252,7 +259,8 @@ Accessing variables in data frames:
 d$x
 ```
 
-### The Data Analysis Process
+
+## The Data Analysis Process
 
 A figure that shows the steps usually involved in a data analysis
 project:
@@ -281,7 +289,8 @@ library(nomnoml)
 These steps are often repeated many times, so it is important to make
 your work reproducible.
 
-### Reproducible Data Analysis
+
+## Reproducible Data Analysis
 
 Making your work reproducible:
 
@@ -299,9 +308,11 @@ often will!).
 A good resource for setting up your tools to support this is [_Happy
 Git and GitHub for the useR_](https://happygitwithr.com/).
 
-## Some Examples
 
-### Example Data Sets
+# Some Examples
+
+
+## Example Data Sets
 
 When working with research data, a first step is usually to read and
 clean the data.
@@ -317,7 +328,8 @@ Data sets available in R packages include:
 
 * current data obtained by querying web APIs.
 
-### Old Faithful Eruptions
+
+## Old Faithful Eruptions
 
 A simple classic data set is the `geyser` data frame available in
 package `MASS`.
@@ -575,7 +587,8 @@ p <- p +
 p
 ```
 
-### Minnesota Barley Yields
+
+## Minnesota Barley Yields
 
 Another classic data set:
 
@@ -743,7 +756,8 @@ ggplot(barley_site_year) +
 ```{r barley-avg-bar, eval = FALSE}
 ```
 
-### Bar Charts and the Zero Base Line
+
+## Bar Charts and the Zero Base Line
 
 Because of the way we perceive bars, it is important to use a [zero
 base line for bar
@@ -752,7 +766,8 @@ charts](https://flowingdata.com/2015/08/31/bar-chart-baselines-start-at-zero/).
 ![](`r here_rel("img/viz3-520x294.jpg")`)
 ![](`r here_rel("img/viz5-520x280.jpg")`)
 
-### Hair and Eye Color Data
+
+## Hair and Eye Color Data
 
 A data set recording the distribution of hair and eye color and sex in
 592 statistics students.
@@ -902,7 +917,8 @@ p2 <- ggplot(eye_hairsex) +
 cowplot::plot_grid(p1, p2)
 ```
 
-### A more complete `ggplot` template
+
+## A more complete `ggplot` template
 
 <!-- # nolint start -->
 
@@ -919,9 +935,11 @@ ggplot(data = <DATA>) +
 ```
 <!-- # nolint end -->
 
-## Visual Perception and the Grammar of Graphics
 
-### Monthly River Flows
+# Visual Perception and the Grammar of Graphics
+
+
+## Monthly River Flows
 
 Monthly flow volumes recorded for a river in the pacific north-west.
 
@@ -954,7 +972,8 @@ aspect ratio:
 pl
 ```
 
-### A Simple Model of Visual Perception
+
+## A Simple Model of Visual Perception
 
 The eyes acquire an image, which is processed through three stages of
 memory:
@@ -1001,7 +1020,8 @@ working memory is limited.
 </div>
 <!-- foobar - don't ask -->
 
-### Some Terms for Describing Visualizations
+
+## Some Terms for Describing Visualizations
 
 Data to be visualized contains _variables_ or _attributes_ measured on
 individual _items_ or _cases_.
@@ -1026,7 +1046,8 @@ as implemented in `ggplot`.
 
 > Wilkinson, L. (2005), _The Grammar of Graphics_, 2nd ed, Springer.
 
-### Channels and their Accuracy
+
+## Channels and their Accuracy
 
 A useful distinction among channels:
 
@@ -1061,7 +1082,8 @@ Try to map the most important variables to the strongest channels.
 </div>
 <!-- foobar - don't ask -->
 
-### Color
+
+## Color
 
 Color is very effective when used well.
 
@@ -1101,9 +1123,11 @@ Some tools for selecting palettes include:
 A note on [rainbow colors](
 https://eeecon.uibk.ac.at/~zeileis/news/endrainbow/).
 
-## A Grammar of Data Manipulation
 
-### The `dplyr` Package
+# A Grammar of Data Manipulation
+
+
+## The `dplyr` Package
 
 The `dplyr` package provides a language, or grammar, for data
 manipulation.
@@ -1133,9 +1157,11 @@ Package `tidyr` provides more verbs, such as `pivot_longer` and
 The single table verbs can also be used with `group_by` to work
 separately on groups of rows.
 
-## More Examples
 
-### Raw Data
+# More Examples
+
+
+## Raw Data
 
 These examples start with raw data as you might receive it from a
 researcher, and involve reading and cleaning the data.
@@ -1158,7 +1184,8 @@ Common data formats you might encounter include:
 
 Tools are available for reading data in these formats into R.
 
-### Wind Turbines in Iowa
+
+## Wind Turbines in Iowa
 
 There are many wind turbines in Iowa.
 
@@ -1274,7 +1301,8 @@ pa <- p + geom_sf(data = wt_IA_sf) +
 anim_save("foo.gif", animate(pa, fps = 10, nframes = 100))
 ```
 
-### Cancer Map
+
+## Cancer Map
 
 The website <http://www.cancer-rates.info/ia> provides data on
 cancer incidence for a number of different cancers in Iowa.
@@ -1468,7 +1496,8 @@ leaflet(sf::st_transform(md, 4326)) %>%
     addLegend(pal = pal, values = ~ rate1K, opacity = 1)
 ```
 
-### Unemployment Map
+
+## Unemployment Map
 
 [Local Area Unemployment Statistics page](https://www.bls.gov/lau/)
 from the Bureau of Labor Statistics makes available county-level
@@ -1698,7 +1727,7 @@ ggplot(left_join(m_sf, filter(lausUS, Period == "Apr-20"), "fips"),
     scale_fill_viridis(name = "Rate", na.value = "red")
 ```
 
-### Gapminder Childhood Mortality Data
+## Gapminder Childhood Mortality Data
 
 The `gapminder` package provides a subset of the data from the
 [Gapminder](http://www.gapminder.org/) web site.
@@ -1812,3 +1841,32 @@ plotly::ggplotly(p)
 ```
 ```{r u5-3, echo = FALSE, fig.height = 6, fig.width = 7}
 ```
+
+
+# Wrapping Up
+
+
+## Final Notes
+
+In this class I gave
+
+* a brief outline of R and its history;
+
+* some examples of using R to do data wrangling;
+
+* some examples of visualizing data with `ggplot`.
+
+The slides/notes were created with
+[Rmarkdown](https://rmarkdown.rstudio.com/), a framework for creating
+fully reproducible documents.
+
+Materials for this class are available on GitHub at
+<https://github.com/ltierney/SIBS-WV-2022.git>.
+
+[GitHub](https://github.com) is a social coding platform built around
+the [Git](https://git-scm.com/) version control system.
+
+Feel free to contact me if you have questions.
+
+
+# Have a great time with the rest of your program!
