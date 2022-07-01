@@ -141,7 +141,7 @@ R is a language for data analysis and graphics.
 R is an Open Source project.
 
 * Since 1997 R is developed and maintained by the R-core group,
-  with around 20 members located in maor than 10 different countries.
+  with around 20 members located in more than 10 different countries.
 
 * R is widely used in the field of statistics and beyond, especially in
   university environments.
@@ -1030,7 +1030,7 @@ _Links_ are relationships that may exist among items, e.g. months
 within a year or countries within a continent.
 
 _Marks_ are individual geometric entities used to represent items:
-points. bars, etc.
+points, bars, etc.
 
 _Aesthetics_ or _visual channels_ are the visual features of marks
 that can be used to encode attributes.

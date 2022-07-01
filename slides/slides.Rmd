@@ -194,7 +194,7 @@ R is an Open Source project.
 --
 
 * Since 1997 R is developed and maintained by the R-core group,
-  with around 20 members located in maor than 10 different countries.
+  with around 20 members located in more than 10 different countries.
 
 --
 
@@ -1562,7 +1562,7 @@ within a year or countries within a continent.
 --
 
 _Marks_ are individual geometric entities used to represent items:
-points. bars, etc.
+points, bars, etc.
 
 --
 
