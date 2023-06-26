@@ -2,7 +2,7 @@
 title: "Basic Data Wrangling and Data Visualization in R"
 author: "Luke Tierney"
 institute: "University of Iowa"
-date: "1 July, 2022"
+date: "29 June, 2023"
 output:
   html_document:
     toc: yes
