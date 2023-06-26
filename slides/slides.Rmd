@@ -70,7 +70,7 @@ In this class I will
 --
 
 Materials for this class are available on GitHub at
-<https://github.com/ltierney/SIBS-WV-2022.git>.
+<https://github.com/ltierney/SIBS-WV-2023.git>.
 
 --
 
@@ -81,20 +81,20 @@ Materials for this class are available on GitHub at
 
 * You can use the `git` command line client with
     ```shell
-git clone https://github.com/ltierney/SIBS-WV-2022.git
+git clone https://github.com/ltierney/SIBS-WV-2023.git
     ```
 
 --
 
 Materials are also available at
-<https://www.stat.uiowa.edu/~luke/SIBS-R/SIBS-WV-2022/>.
+<https://www.stat.uiowa.edu/~luke/SIBS-R/SIBS-WV-2023/>.
 
 --
 
 Materials for our _Data Visualization and Data
 Technologies_ course are available at
 
-<http://www.stat.uiowa.edu/~luke/classes/STAT4580-2022/>
+<http://www.stat.uiowa.edu/~luke/classes/STAT4580-2023/>
 
 
 ---
@@ -2742,7 +2742,7 @@ fully reproducible documents.
 --
 
 Materials for this class are available on GitHub at
-<https://github.com/ltierney/SIBS-WV-2022.git>.
+<https://github.com/ltierney/SIBS-WV-2023.git>.
 
 --
 
