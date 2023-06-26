@@ -51,6 +51,9 @@ here_rel <- function(path)
 	border-color: #bce8f1;
 	color: #31708f;
 }
+.hljs-comment {
+	color: navy !important;
+}
 ```
 
 # Introduction
@@ -137,6 +140,7 @@ Useful references:
 
 > Hadley Wickham and Garrett Grolemund (2016), [_R for Data
 > Science_](http://r4ds.had.co.nz/), O'Reilly.
+> ([Second edition in progress.](http://r4ds.hadley.nz/))
 
 --
 
@@ -208,7 +212,7 @@ R is an Open Source project.
 
 --
 
-* Many (now over 17,000) extension packages are available through CRAN or
+* Many (now over 20,000) extension packages are available through CRAN or
   similar repositories.
 
 ---

@@ -45,6 +45,12 @@ here_rel <- function(path)
 
 ## }
 
+## .hljs-comment {
+
+## 	color: navy !important;
+
+## }
+
 
 ## ---- message = FALSE---------------------------------------------------------
 library(tidyverse)
