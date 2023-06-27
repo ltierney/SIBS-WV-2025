@@ -1450,7 +1450,8 @@ library(viridis)
 ggplot(md) +
     geom_sf(aes(fill = rate1K),
             color = "grey") +
-    scale_fill_viridis(name = "Rate per 1000") +
+    scale_fill_viridis(
+        name = "Rate per 1000") +
     theme_map()
 ```
 ```{r cancer-map-2, echo = FALSE, fig.width = 8, message = FALSE}
@@ -1468,7 +1469,8 @@ p <- ggplot(mdl) +
     geom_sf(aes(fill = rate1K,
                 text = label),
             color = "grey") +
-    scale_fill_viridis(name = "Rate per 1000") +
+    scale_fill_viridis(
+        name = "Rate per 1000") +
     theme_map()
 
 plotly::ggplotly(p, tooltip = "text")
