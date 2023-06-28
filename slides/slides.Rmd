@@ -720,8 +720,12 @@ Then compute the means and standard deviations as
 ```{r}
 mean(d_short)
 sd(d_short)
+```
+```{r}
 mean(d_long)
 sd(d_long)
+```
+```{r}
 mean(d >= 3)
 ```
 ]
@@ -794,7 +798,7 @@ The pipe operator allows a sequence of operations to be chained together.
 ]
 --
 
-The left-hand operation is passed implicitly as the first argument to
+The left-hand result is passed implicitly as the first argument to
 the function called on the right.
 
 {{content}}
@@ -844,9 +848,9 @@ The means and standard deviations are affected by the rounding.
 Summaries that omit values equal to 2 or 4 minutes can be computed as
 
 ```{r}
-geyser2 <- filter(geyser, duration != 2, duration != 4)
 sgd2 <-
-    group_by(geyser2, type) %>%
+    filter(geyser, duration != 2, duration != 4) %>%
+    group_by(type) %>%
     summarize(mean = mean(duration),
               sd = sd(duration),
               n = n()) %>%
@@ -1698,7 +1702,8 @@ Color perception is relative:
 --
 ![](`r here_rel("img/chess2.png")`)
 
---
+
+---
 
 Groups of colors that work well together are called _palettes_.
 
@@ -2078,7 +2083,7 @@ d <- mutate(d, count = as.numeric(count))
 
 --
 
-In this case there are no zero case values; two ways to check:
+In this case there are no zero counts values; two ways to check:
 
 .pull-left[
 ```{r}
@@ -2093,7 +2098,7 @@ any(d$count == 0, na.rm = TRUE)
 ]
 --
 .pull-left[
-It _might_ be reasonable to assume these values where zero, so replace
+It _might_ be reasonable to assume these values were zeros, so replace
 them with zeros:
 ]
 --
@@ -2200,7 +2205,7 @@ ggplot(md) +
     theme_map()
 ```
 ]
---
+
 .pull-right[
 ```{r cancer-map-2, echo = FALSE, fig.width = 8, message = FALSE}
 ```
@@ -2228,7 +2233,7 @@ p <- ggplot(mdl) +
 plotly::ggplotly(p, tooltip = "text")
 ```
 ]
---
+
 .pull-right[
 ```{r cancer-map-plotly, echo = FALSE, fig.width = 8}
 ```
