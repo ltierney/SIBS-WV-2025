@@ -199,8 +199,12 @@ d_long <- d[d >= 3]
 ## -----------------------------------------------------------------------------
 mean(d_short)
 sd(d_short)
+
+## -----------------------------------------------------------------------------
 mean(d_long)
 sd(d_long)
+
+## -----------------------------------------------------------------------------
 mean(d >= 3)
 
 
@@ -253,9 +257,9 @@ p
 
 
 ## -----------------------------------------------------------------------------
-geyser2 <- filter(geyser, duration != 2, duration != 4)
 sgd2 <-
-    group_by(geyser2, type) %>%
+    filter(geyser, duration != 2, duration != 4) %>%
+    group_by(type) %>%
     summarize(mean = mean(duration),
               sd = sd(duration),
               n = n()) %>%
@@ -871,8 +875,10 @@ ggplot(md) +
 ## ggplot(md) +
 ##     geom_sf(aes(fill = rate1K),
 ##             color = "grey") +
-##     scale_fill_viridis(name = "Rate per 1000") +
+##     scale_fill_viridis(
+##         name = "Rate per 1000") +
 ##     theme_map()
+
 
 ## ----cancer-map-2, echo = FALSE, fig.width = 8, message = FALSE---------------
 library(ggthemes)
@@ -880,7 +886,8 @@ library(viridis)
 ggplot(md) +
     geom_sf(aes(fill = rate1K),
             color = "grey") +
-    scale_fill_viridis(name = "Rate per 1000") +
+    scale_fill_viridis(
+        name = "Rate per 1000") +
     theme_map()
 
 
@@ -894,10 +901,12 @@ ggplot(md) +
 ##     geom_sf(aes(fill = rate1K,
 ##                 text = label),
 ##             color = "grey") +
-##     scale_fill_viridis(name = "Rate per 1000") +
+##     scale_fill_viridis(
+##         name = "Rate per 1000") +
 ##     theme_map()
 ## 
 ## plotly::ggplotly(p, tooltip = "text")
+
 
 ## ----cancer-map-plotly, echo = FALSE, fig.width = 8---------------------------
 mdl <- mutate(md,
@@ -909,7 +918,8 @@ p <- ggplot(mdl) +
     geom_sf(aes(fill = rate1K,
                 text = label),
             color = "grey") +
-    scale_fill_viridis(name = "Rate per 1000") +
+    scale_fill_viridis(
+        name = "Rate per 1000") +
     theme_map()
 
 plotly::ggplotly(p, tooltip = "text")
