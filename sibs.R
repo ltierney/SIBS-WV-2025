@@ -16,51 +16,33 @@ here_rel <- function(path)
 
 
 ## .content-box-blue { background-color: lightblue; }
-
 ## .small-font { font-size: 70%; }
-
 ## .width-20 { width: 20% }
-
 ## .width-30 { width: 30% }
-
 ## .width-60 { width: 60% }
-
 ## .width-70 { width: 70% }
-
 ## .note {
-
 ## 	padding: 15px;
-
 ## 	margin-bottom: 20px;
-
 ## 	border: 1px solid transparent;
-
 ## 	border-radius: 4px;
-
 ## 	background-color: #d9edf7;
-
 ## 	border-color: #bce8f1;
-
 ## 	color: #31708f;
-
 ## }
-
 ## .hljs-comment {
-
 ## 	color: navy !important;
-
 ## }
 
-
-## ---- message = FALSE---------------------------------------------------------
+## ----message = FALSE----------------------------------------------------------
 library(tidyverse)
 
 
-## ---- include = FALSE---------------------------------------------------------
+## ----include = FALSE----------------------------------------------------------
 tutorial <- here_rel("tutorial/penguins.Rmd")
 
 
-## ---- prompt = TRUE, comment = ""---------------------------------------------
+## ----prompt = TRUE, comment = ""----------------------------------------------
 1 + 2
 
 
@@ -71,7 +53,7 @@ c(2, 4, 6)
 1 : 4
 
 
-## ---- prompt = TRUE, comment = ""---------------------------------------------
+## ----prompt = TRUE, comment = ""----------------------------------------------
 x <- c(2, 4, 6)
 
 
@@ -95,49 +77,36 @@ x[[1]]
 x[1 : 2]
 
 
-## ---- prompt = TRUE, comment = ""---------------------------------------------
+## ----prompt = TRUE, comment = ""----------------------------------------------
 x[x > 2]
 
 
-## ---- prompt = TRUE, comment = ""---------------------------------------------
+## ----prompt = TRUE, comment = ""----------------------------------------------
 d <- data.frame(x, y = log(x))
 d
 
 
-## ---- prompt = TRUE, comment = ""---------------------------------------------
+## ----prompt = TRUE, comment = ""----------------------------------------------
 d$x
 
 
-## ---- include = FALSE---------------------------------------------------------
+## ----include = FALSE----------------------------------------------------------
 library(nomnoml)
 
 
 ## #padding: 25
-
 ## #fontsize: 18
-
 ## #fill: #E1DAFF; #D4A9FF
-
 ## #stroke: #8515C7
-
 ## #linewidth: 2
-
 ## 
-
 ## [Import] -> [Understand]
-
 ## [Understand |
-
 ##   [Wrangle] -> [Visualize]
-
 ##   [Visualize] -> [Model]
-
 ##   [Model] -> [Wrangle]
-
 ## ]
-
 ## [Understand] -> [Communicate]
-
 
 ## -----------------------------------------------------------------------------
 data(geyser, package = "MASS")
@@ -301,7 +270,7 @@ p
 ## p
 
 
-## ---- eval = FALSE, echo = FALSE----------------------------------------------
+## ----eval = FALSE, echo = FALSE-----------------------------------------------
 ## ## Fancier version that gets a color legend.
 ## ## Could also get a line type legend.
 ## p <- ggplot(geyser) +
@@ -337,14 +306,14 @@ data(barley, package = "lattice")
 head(barley)
 
 
-## ---- fig.width = 10----------------------------------------------------------
+## ----fig.width = 10-----------------------------------------------------------
 p1 <- ggplot(barley) + geom_point(aes(x = yield, y = variety))
 p2 <- ggplot(barley) + geom_point(aes(x = yield, y = site))
 library(patchwork)
 p1 + p2
 
 
-## ---- fig.width = 12----------------------------------------------------------
+## ----fig.width = 12-----------------------------------------------------------
 p1 <- ggplot(barley) + geom_point(aes(x = yield, y = variety, color = year))
 p2 <- ggplot(barley) + geom_point(aes(x = yield, y = site, color = year))
 p1 + p2
@@ -483,7 +452,7 @@ ggplot(barley_site_year) +
 ##                size = 4)
 
 
-## ---- class.source = "fold-hide"----------------------------------------------
+## ----class.source = "fold-hide"-----------------------------------------------
 library(ggrepel)
 barley_site_year <-
     mutate(barley_site_year, year = fct_rev(year))
@@ -647,11 +616,11 @@ psb
 ## (pp <- pp + theme_void())
 
 
-## ---- echo = FALSE, fig.height = 4, fig.width = 8-----------------------------
+## ----echo = FALSE, fig.height = 4, fig.width = 8------------------------------
 cowplot::plot_grid(pb, pp)
 
 
-## ---- fig.width = 14, fig.height = 6, class.source = "fold-hide"--------------
+## ----fig.width = 14, fig.height = 6, class.source = "fold-hide"---------------
 eye_hairsex <-
     group_by(HairEyeDF, Hair, Sex) %>%
     mutate(Prop = Freq / sum(Freq)) %>%
@@ -670,23 +639,23 @@ p2 <- ggplot(eye_hairsex) +
 cowplot::plot_grid(p1, p2)
 
 
-## ---- fig.width = 8, class.source = "fold-hide"-------------------------------
+## ----fig.width = 8, class.source = "fold-hide"--------------------------------
 library(ggplot2)
 river <- scan(here::here("data/river.dat"))
 rd <- data.frame(flow = river, month = seq_along(river))
 (pp <- ggplot(rd) + geom_point(aes(x = month, y = flow)))
 
 
-## ---- fig.width = 12, fig.height = 4, class.source = "fold-hide"--------------
+## ----fig.width = 12, fig.height = 4, class.source = "fold-hide"---------------
 pp + coord_fixed(3.5)
 
 
-## ---- fig.width = 12, fig.height = 4, class.source = "fold-hide"--------------
+## ----fig.width = 12, fig.height = 4, class.source = "fold-hide"---------------
 pl <- ggplot(rd) + geom_line(aes(x = month, y = flow))
 pl + coord_fixed(3.5)
 
 
-## ---- fig.width = 8, class.source = "fold-hide"-------------------------------
+## ----fig.width = 8, class.source = "fold-hide"--------------------------------
 pl
 
 
@@ -793,11 +762,11 @@ p + geom_point(aes(xlong,
 ## anim_save("foo.gif", animate(pa, fps = 10, nframes = 100))
 
 
-## ---- include = FALSE---------------------------------------------------------
+## ----include = FALSE----------------------------------------------------------
 cancer_data_file <- here_rel("data/Invasive-Cancer-Incidence-Rates-by-County-in-Iowa-Lung-and-Bronchus-2011.csv")
 
 
-## ---- message = FALSE---------------------------------------------------------
+## ----message = FALSE----------------------------------------------------------
 fname <- here::here("data/Invasive-Cancer-Incidence-Rates-by-County-in-Iowa-Lung-and-Bronchus-2011.csv")
 d <- read_csv(fname, skip = 2)
 head(d)
@@ -925,7 +894,7 @@ p <- ggplot(mdl) +
 plotly::ggplotly(p, tooltip = "text")
 
 
-## ---- fig.height = 6.5, fig.width = 9, class.source = "fold-hide"-------------
+## ----fig.height = 6.5, fig.width = 9, class.source = "fold-hide"--------------
 library(leaflet)
 pal <- colorNumeric(palette = "viridis", domain = md$rate1K)
 lab <- lapply(paste0(md$cname, "<BR>",
@@ -995,7 +964,7 @@ lausUS <- mutate(lausUS,
                  Unemployed = as.numeric(gsub(",", "", Unemployed)))
 
 
-## ---- fig.width = 10, class.source = "fold-hide"------------------------------
+## ----fig.width = 10, class.source = "fold-hide"-------------------------------
 group_by(lausUS, Period) %>%
     summarize(Unemployed = sum(Unemployed, na.rm = TRUE),
               LaborForce = sum(LaborForce, na.rm = TRUE),
@@ -1026,7 +995,7 @@ summaryUS <- group_by(lausUS, County, State, fips) %>%
 head(summaryUS)
 
 
-## ---- fig.width = 9, fig.height = 6, class.source = "fold-hide"---------------
+## ----fig.width = 9, fig.height = 6, class.source = "fold-hide"----------------
 left_join(counties_sf, summaryUS, "fips") %>%
     ggplot() +
     geom_sf(aes(fill = apr_unemp)) +
@@ -1039,7 +1008,7 @@ left_join(counties_sf, summaryUS, "fips") %>%
 anti_join(counties_sf, summaryUS, "fips")
 
 
-## ---- eval = FALSE, echo = FALSE----------------------------------------------
+## ----eval = FALSE, echo = FALSE-----------------------------------------------
 ## ## old version
 ## counties_sf <- mutate(counties_sf, fips = replace(fips, fips == 46113, 46102))
 
@@ -1049,7 +1018,7 @@ counties_sf <- mutate(counties_sf,
                       fips = replace(fips, grepl("oglala", ID), 46102))
 
 
-## ---- fig.width = 9, fig.height = 6, class.source = "fold-hide"---------------
+## ----fig.width = 9, fig.height = 6, class.source = "fold-hide"----------------
 left_join(counties_sf, summaryUS, "fips") %>%
     ggplot() +
     geom_sf(aes(fill = apr_unemp)) +
@@ -1058,7 +1027,7 @@ left_join(counties_sf, summaryUS, "fips") %>%
     geom_sf(data = states_sf, col = "grey", fill = NA)
 
 
-## ---- echo = FALSE, eval = FALSE----------------------------------------------
+## ----echo = FALSE, eval = FALSE-----------------------------------------------
 ## ggpoly2sf <- function(poly, coords = c("long", "lat"),
 ##                       id = "group", region = "region", crs = 4326) {
 ##     sf::st_as_sf(poly, coords = coords, crs = crs) %>%

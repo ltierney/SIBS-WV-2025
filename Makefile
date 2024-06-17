@@ -2,10 +2,11 @@
 
 RMDHTML ::= $(patsubst %.Rmd, %.html, $(wildcard *.Rmd))
 RMDR ::= $(patsubst %.Rmd, %.R, $(wildcard *.Rmd))
-CLASSDIR = linux.stat.uiowa.edu:.public-html/SIBS-R/SIBS-WV-2023
+CLASSDIR = linux.stat.uiowa.edu:.public-html/SIBS-R/SIBS-WV-2024
 
 all: $(RMDHTML) $(RMDR)
 	cd slides; $(MAKE)
+	cd ICON; $(MAKE)
 
 web: all
 	rsync -avz --chmod=a+r,Da+x . $(CLASSDIR)/

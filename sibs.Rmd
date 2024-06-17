@@ -2,7 +2,7 @@
 title: "Basic Data Wrangling and Data Visualization in R"
 author: "Luke Tierney"
 institute: "University of Iowa"
-date: "29 June, 2023"
+date: "27 June, 2024"
 output:
   html_document:
     toc: yes
@@ -62,23 +62,23 @@ In this class I will
   and visualize data in R.
 
 Materials for this class are available on GitHub at
-<https://github.com/ltierney/SIBS-WV-2023.git>.
+<https://github.com/ltierney/SIBS-WV-2024.git>.
 
 * You can access it as an RStudio project by following the menu selection
   **File > New Project > Version Control > Git** and specifying this URL.
 
 * You can use the `git` command line client with
     ```shell
-git clone https://github.com/ltierney/SIBS-WV-2023.git
+git clone https://github.com/ltierney/SIBS-WV-2024.git
     ```
 
 Materials are also available at
-<https://www.stat.uiowa.edu/~luke/SIBS-R/SIBS-WV-2023/>.
+<https://www.stat.uiowa.edu/~luke/SIBS-R/SIBS-WV-2024/>.
 
 Materials for our _Data Visualization and Data
 Technologies_ course are available at
 
-<http://www.stat.uiowa.edu/~luke/classes/STAT4580-2023/>
+<http://www.stat.uiowa.edu/~luke/classes/STAT4580-2024/>
 
 
 ## Tools
@@ -1873,7 +1873,7 @@ The slides/notes were created with
 fully reproducible documents.
 
 Materials for this class are available on GitHub at
-<https://github.com/ltierney/SIBS-WV-2023.git>.
+<https://github.com/ltierney/SIBS-WV-2024.git>.
 
 [GitHub](https://github.com) is a social coding platform built around
 the [Git](https://git-scm.com/) version control system.
