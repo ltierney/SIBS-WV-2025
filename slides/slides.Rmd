@@ -108,7 +108,7 @@ Some tools I will be using:
 
 --
 
-* The [RStudio](https://www.rstudion.com) IDE.
+* The [RStudio](https://posit.co/download/rstudio-desktop/) IDE.
 
 --
 
@@ -138,9 +138,9 @@ Useful references:
 
 --
 
-> Hadley Wickham and Garrett Grolemund (2016), [_R for Data
-> Science_](http://r4ds.had.co.nz/), O'Reilly.
-> ([Second edition in progress.](http://r4ds.hadley.nz/))
+> Hadley Wickham, Mine Çetinkaya-Rundel, and Garrett Grolemund (2023),
+> [_R for Data Science (2nd Edition)_](https://r4ds.hadley.nz/),
+> O'Reilly.
 
 --
 
@@ -772,18 +772,18 @@ The functions `summarize`, `group_by`, and `mutate` are from the
 ---
 
 .pull-left[
-This computation can also be written using the _forward pipe operator_ `%>%`:
+This computation can also be written using the _forward pipe operator_ `|>`:
 {{content}}
 ]
 --
 
 ```{r}
 sgd <-
-    group_by(geyser, type) %>%
+    group_by(geyser, type) |>
     summarize(mean = mean(duration),
               sd = sd(duration),
-              n = n()) %>%
-    ungroup() %>%
+              n = n()) |>
+    ungroup() |>
     mutate(prop = n / sum(n))
 sgd
 ```
@@ -803,7 +803,7 @@ the function called on the right.
 
 {{content}}
 --
-In R 4.1.0 and later versions you can also use the base R pipe operator `|>`.
+You can also use the older `%>%` pipe operator from the `magrittr` package.
 </div>
 <!-- foobar - don't ask -->
 
@@ -849,12 +849,12 @@ Summaries that omit values equal to 2 or 4 minutes can be computed as
 
 ```{r}
 sgd2 <-
-    filter(geyser, duration != 2, duration != 4) %>%
-    group_by(type) %>%
+    filter(geyser, duration != 2, duration != 4) |>
+    group_by(type) |>
     summarize(mean = mean(duration),
               sd = sd(duration),
-              n = n()) %>%
-    ungroup() %>%
+              n = n()) |>
+    ungroup() |>
     mutate(prop = n / sum(n))
 sgd2
 ```
@@ -1061,8 +1061,8 @@ A _dot plot_ of average yields for each site and year:
 .pull-left[
 ```{r barley-avg-dot, echo = FALSE, message = FALSE, fig.width = 7}
 barley_site_year <-
-    group_by(barley, site, year) %>%
-    summarize(yield = mean(yield)) %>%
+    group_by(barley, site, year) |>
+    summarize(yield = mean(yield)) |>
     ungroup()
 
 ggplot(barley_site_year) +
@@ -1086,8 +1086,8 @@ a _dumbbell chart_:
 .pull-left[
 ```{r barley-avg-dot-2, echo = FALSE, message = FALSE, fig.width = 7}
 barley_site_year <-
-    group_by(barley, site, year) %>%
-    summarize(yield = mean(yield)) %>%
+    group_by(barley, site, year) |>
+    summarize(yield = mean(yield)) |>
     ungroup()
 
 ggplot(barley_site_year) +
@@ -1206,8 +1206,8 @@ Looking at the distribution of eye color:
 .pull-left[
 ```{r eye-bar, echo = FALSE}
 eye <-
-    group_by(HairEyeDF, Eye) %>%
-    summarize(Freq = sum(Freq)) %>%
+    group_by(HairEyeDF, Eye) |>
+    summarize(Freq = sum(Freq)) |>
     ungroup()
 
 ggplot(eye) +
@@ -1230,8 +1230,8 @@ position can help:
 .pull-left[
 ```{r eye-bar-2, echo = FALSE}
 eye <-
-    group_by(HairEyeDF, Eye) %>%
-    summarize(Freq = sum(Freq)) %>%
+    group_by(HairEyeDF, Eye) |>
+    summarize(Freq = sum(Freq)) |>
     ungroup()
 
 ggplot(eye) +
@@ -1379,8 +1379,8 @@ Looking at the proportions within hair color and sex:
 .hide-code[
 ```{r, fig.width = 14, fig.height = 6}
 eye_hairsex <-
-    group_by(HairEyeDF, Hair, Sex) %>%
-    mutate(Prop = Freq / sum(Freq)) %>%
+    group_by(HairEyeDF, Hair, Sex) |>
+    mutate(Prop = Freq / sum(Freq)) |>
     ungroup()
 
 p1 <- ggplot(eye_hairsex) +
@@ -2254,7 +2254,7 @@ lab <- lapply(paste0(md$cname, "<BR>",
                      "Pop: ", scales::comma(md$population,
                                             accuracy = 1)),
               htmltools::HTML)
-leaflet(sf::st_transform(md, 4326)) %>%
+leaflet(sf::st_transform(md, 4326)) |>
     addPolygons(weight = 2,
                 color = "grey",
                 fillColor = ~ pal(rate1K),
@@ -2262,7 +2262,7 @@ leaflet(sf::st_transform(md, 4326)) %>%
                 highlightOptions = highlightOptions(color = "white",
                                                     weight = 2,
                                                     bringToFront = TRUE),
-                label = lab) %>%
+                label = lab) |>
     addLegend(pal = pal, values = ~ rate1K, opacity = 1)
 ```
 ]
@@ -2354,7 +2354,7 @@ lausUS <- mutate(lausUS, UnempRate = as.numeric(UnempRate))
 Check for missing values:
 
 ```{r}
-select_if(lausUS, anyNA) %>% names()
+select_if(lausUS, anyNA) |> names()
 ```
 
 --
@@ -2362,8 +2362,8 @@ select_if(lausUS, anyNA) %>% names()
 The state code is missing for the District of Columbia:
 
 ```{r}
-select(lausUS, cname, scode) %>%
-    filter(is.na(scode)) %>%
+select(lausUS, cname, scode) |>
+    filter(is.na(scode)) |>
     unique()
 ```
 --
@@ -2375,8 +2375,8 @@ Missing values for `UnempRate` are all for Puerto Rico and September
 March and April 2020 numbers were not available for Puerto Rico:
 
 ```{r}
-select(lausUS, scode, Period, UnempRate) %>%
-    filter(is.na(UnempRate)) %>%
+select(lausUS, scode, Period, UnempRate) |>
+    filter(is.na(UnempRate)) |>
     unique()
 ```
 
@@ -2401,10 +2401,10 @@ A plot shows a large spike in April 2020:
 
 .hide-code[
 ```{r, fig.width = 10}
-group_by(lausUS, Period) %>%
+group_by(lausUS, Period) |>
     summarize(Unemployed = sum(Unemployed, na.rm = TRUE),
               LaborForce = sum(LaborForce, na.rm = TRUE),
-              UnempRate = 100 * (Unemployed / LaborForce)) %>%
+              UnempRate = 100 * (Unemployed / LaborForce)) |>
     ggplot(aes(Period, UnempRate, group = 1)) +
     geom_line()
 ```
@@ -2442,7 +2442,7 @@ Here is one approach:
 ```{r}
 counties_sf <- sf::st_as_sf(maps::map("county", plot = FALSE, fill = TRUE))
 county.fips <-
-    mutate(maps::county.fips, polyname = sub(":.*", "", polyname)) %>%
+    mutate(maps::county.fips, polyname = sub(":.*", "", polyname)) |>
     unique()
 counties_sf <- left_join(counties_sf, county.fips, c("ID" = "polyname"))
 states_sf <- sf::st_as_sf(maps::map("state", plot = FALSE, fill = TRUE))
@@ -2453,10 +2453,10 @@ states_sf <- sf::st_as_sf(maps::map("state", plot = FALSE, fill = TRUE))
 Some summaries over the period can be computed as
 
 ```{r}
-summaryUS <- group_by(lausUS, County, State, fips) %>%
+summaryUS <- group_by(lausUS, County, State, fips) |>
     summarize(avg_unemp = mean(UnempRate, na.rm = TRUE),
               max_unemp = max(UnempRate, na.rm = TRUE),
-              apr_unemp = UnempRate[Period == "Apr-20"]) %>%
+              apr_unemp = UnempRate[Period == "Apr-20"]) |>
     ungroup()
 head(summaryUS)
 ```
@@ -2467,7 +2467,7 @@ A choropleth map of the April 2020 unemployment rates:
 
 .hide-code[
 ```{r, fig.width = 9, fig.height = 6}
-left_join(counties_sf, summaryUS, "fips") %>%
+left_join(counties_sf, summaryUS, "fips") |>
     ggplot() +
     geom_sf(aes(fill = apr_unemp)) +
     scale_fill_viridis(name = "Rate", na.value = "red") +
@@ -2514,7 +2514,7 @@ With the updated data the map is now complete:
 
 .hide-code[
 ```{r, fig.width = 9, fig.height = 6}
-left_join(counties_sf, summaryUS, "fips") %>%
+left_join(counties_sf, summaryUS, "fips") |>
     ggplot() +
     geom_sf(aes(fill = apr_unemp)) +
     scale_fill_viridis(name = "Rate", na.value = "red") +
@@ -2526,22 +2526,22 @@ left_join(counties_sf, summaryUS, "fips") %>%
 ```{r, echo = FALSE, eval = FALSE}
 ggpoly2sf <- function(poly, coords = c("long", "lat"),
                       id = "group", region = "region", crs = 4326) {
-    sf::st_as_sf(poly, coords = coords, crs = crs) %>%
-    group_by(!! as.name(id), !! as.name(region)) %>%
-    summarize(do_union = FALSE) %>%
-    sf::st_cast("POLYGON") %>%
-    ungroup() %>%
-    group_by(!! as.name(region)) %>%
-    summarize(do_union = FALSE) %>%
+    sf::st_as_sf(poly, coords = coords, crs = crs) |>
+    group_by(!! as.name(id), !! as.name(region)) |>
+    summarize(do_union = FALSE) |>
+    sf::st_cast("POLYGON") |>
+    ungroup() |>
+    group_by(!! as.name(region)) |>
+    summarize(do_union = FALSE) |>
     ungroup()
 }
 m_sf <- ggpoly2sf(socviz::county_map, c("long", "lat"), "group", "id")
 m_sf <- mutate(m_sf, fips = as.numeric(id))
 m_sf <- mutate(m_sf, fips = replace(fips, fips == 46113, 46102))
 ggplot(m_sf) + geom_sf()
-au <- group_by(lausUS, fips) %>%
+au <- group_by(lausUS, fips) |>
     summarize(avg_ur = mean(UnempRate, na.rm = TRUE))
-mu <- group_by(lausUS, fips) %>%
+mu <- group_by(lausUS, fips) |>
     summarize(max_ur = max(UnempRate, na.rm = TRUE))
 da <- left_join(m_sf, au, "fips")
 dm <- left_join(m_sf, mu, "fips")
@@ -2646,7 +2646,7 @@ Convert to long format:
 
 ```{r}
 tgcm <-
-    pivot_longer(gcm, -1, names_to = "year", values_to = "u5mort") %>%
+    pivot_longer(gcm, -1, names_to = "year", values_to = "u5mort") |>
     mutate(year = as.numeric(year))
 head(tgcm, 3)
 ```
@@ -2681,7 +2681,7 @@ countries <- c("United States",
                "Germany",
                "China",
                "Egypt")
-filter(tgcm, country %in% countries) %>%
+filter(tgcm, country %in% countries) |>
     ggplot() +
     geom_line(aes(x = year,
                   y = u5mort,
@@ -2700,13 +2700,13 @@ Examining the missing values:
 .pull-left[
 ```{r u5-3, eval = FALSE}
 tgcm_miss <-
-    group_by(tgcm, country) %>%
-    summarize(anyNA = anyNA(u5mort)) %>%
-    filter(anyNA) %>%
+    group_by(tgcm, country) |>
+    summarize(anyNA = anyNA(u5mort)) |>
+    filter(anyNA) |>
     pull(country)
 
 p <- filter(tgcm,
-            country %in% tgcm_miss) %>%
+            country %in% tgcm_miss) |>
     ggplot(aes(x = year,
                y = u5mort,
                group = country)) +
