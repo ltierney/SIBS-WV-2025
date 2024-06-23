@@ -62,14 +62,14 @@ In this class I will
   and visualize data in R.
 
 Materials for this class are available on GitHub at
-<https://github.com/ltierney/SIBS-WV-2024.git>.
+<https://github.com/ltierney/SIBS-WV-2024>.
 
 * You can access it as an RStudio project by following the menu selection
   **File > New Project > Version Control > Git** and specifying this URL.
 
 * You can use the `git` command line client with
     ```shell
-git clone https://github.com/ltierney/SIBS-WV-2024.git
+git clone https://github.com/ltierney/SIBS-WV-2024
     ```
 
 Materials are also available at
@@ -78,14 +78,14 @@ Materials are also available at
 Materials for our _Data Visualization and Data
 Technologies_ course are available at
 
-<http://www.stat.uiowa.edu/~luke/classes/STAT4580-2024/>
+<https://www.stat.uiowa.edu/~luke/classes/STAT4580-2024/>
 
 
 ## Tools
 
 Some tools I will be using:
 
-* The [RStudio](https://www.rstudion.com) IDE.
+* The [RStudio](https://posit.co/download/rstudio-desktop/) IDE.
 
 * Many features from the basic [R](https://www.r-project.org) distribution.
 
@@ -105,19 +105,19 @@ library(tidyverse)
 
 Useful references:
 
-> Hadley Wickham and Garrett Grolemund (2016), [_R for Data
-> Science_](http://r4ds.had.co.nz/), O'Reilly.
-> ([Second edition in progress.](http://r4ds.hadley.nz/))
+> Hadley Wickham, Mine Çetinkaya-Rundel, and Garrett Grolemund (2023),
+> [_R for Data Science (2nd Edition)_](https://r4ds.hadley.nz/),
+> O'Reilly.
 
 > Claus O. Wilke (2019), [_Fundamentals of Data
->  Visualization_](https://serialmentor.com/dataviz/), O'Reilly.
+>  Visualization_](https://clauswilke.com/dataviz/), O'Reilly.
 
 > Kieran Healy (2018) [_Data Visualization: A practical
-> introduction_](http://socviz.co/), Princeton
+> introduction_](https://socviz.co/), Princeton
 
 > Rafael A. Irizarry (2019), [Introduction to Data Science: _Data
 > Analysis and Prediction Algorithms with
-> R_](https://rafalab.github.io/dsbook/), Chapman & Hall/CRC. ([Book
+> R_](https://rafalab.dfci.harvard.edu/dsbook/), Chapman & Hall/CRC. ([Book
 > source on GitHub](https://github.com/rafalab/dsbook))
 
 ```{r, include = FALSE}
@@ -482,15 +482,15 @@ The functions `summarize`, `group_by`, and `mutate` are from the
 </div>
 <!-- foobar - don't ask -->
 
-This computation can also be written using the _forward pipe operator_ `%>%`:
+This computation can also be written using the _forward pipe operator_ `|>`:
 
 ```{r}
 sgd <-
-    group_by(geyser, type) %>%
+    group_by(geyser, type) |>
     summarize(mean = mean(duration),
               sd = sd(duration),
-              n = n()) %>%
-    ungroup() %>%
+              n = n()) |>
+    ungroup() |>
     mutate(prop = n / sum(n))
 sgd
 ```
@@ -501,7 +501,7 @@ The pipe operator allows a sequence of operations to be chained together.
 The left-hand result is passed implicitly as the first argument to
 the function called on the right.
 
-In R 4.1.0 and later versions you can also use the base R pipe operator `|>`.
+You can also use the older `%>%` pipe operator from the `magrittr` package.
 </div>
 <!-- foobar - don't ask -->
 
@@ -533,12 +533,12 @@ Summaries that omit values equal to 2 or 4 minutes can be computed as
 
 ```{r}
 sgd2 <-
-    filter(geyser, duration != 2, duration != 4) %>%
-    group_by(type) %>%
+    filter(geyser, duration != 2, duration != 4) |>
+    group_by(type) |>
     summarize(mean = mean(duration),
               sd = sd(duration),
-              n = n()) %>%
-    ungroup() %>%
+              n = n()) |>
+    ungroup() |>
     mutate(prop = n / sum(n))
 sgd2
 ```
@@ -690,8 +690,8 @@ A _dot plot_ of average yields for each site and year:
 
 ```{r barley-avg-dot, echo = FALSE, message = FALSE, fig.width = 7}
 barley_site_year <-
-    group_by(barley, site, year) %>%
-    summarize(yield = mean(yield)) %>%
+    group_by(barley, site, year) |>
+    summarize(yield = mean(yield)) |>
     ungroup()
 
 ggplot(barley_site_year) +
@@ -708,8 +708,8 @@ a _dumbbell chart_:
 
 ```{r barley-avg-dot-2, echo = FALSE, message = FALSE, fig.width = 7}
 barley_site_year <-
-    group_by(barley, site, year) %>%
-    summarize(yield = mean(yield)) %>%
+    group_by(barley, site, year) |>
+    summarize(yield = mean(yield)) |>
     ungroup()
 
 ggplot(barley_site_year) +
@@ -792,8 +792,8 @@ Looking at the distribution of eye color:
 
 ```{r eye-bar, echo = FALSE}
 eye <-
-    group_by(HairEyeDF, Eye) %>%
-    summarize(Freq = sum(Freq)) %>%
+    group_by(HairEyeDF, Eye) |>
+    summarize(Freq = sum(Freq)) |>
     ungroup()
 
 ggplot(eye) +
@@ -809,8 +809,8 @@ position can help:
 
 ```{r eye-bar-2, echo = FALSE}
 eye <-
-    group_by(HairEyeDF, Eye) %>%
-    summarize(Freq = sum(Freq)) %>%
+    group_by(HairEyeDF, Eye) |>
+    summarize(Freq = sum(Freq)) |>
     ungroup()
 
 ggplot(eye) +
@@ -908,8 +908,8 @@ Looking at the proportions within hair color and sex:
 
 ```{r, fig.width = 14, fig.height = 6, class.source = "fold-hide"}
 eye_hairsex <-
-    group_by(HairEyeDF, Hair, Sex) %>%
-    mutate(Prop = Freq / sum(Freq)) %>%
+    group_by(HairEyeDF, Hair, Sex) |>
+    mutate(Prop = Freq / sum(Freq)) |>
     ungroup()
 
 p1 <- ggplot(eye_hairsex) +
@@ -1050,7 +1050,7 @@ These ideas closely mirror the structure of the _grammar of graphics_
 as implemented in `ggplot`.
 
 > Munzner, T. (2014), [_Visualization Analysis and
->  Design_](http://www.cs.ubc.ca/~tmm/vadbook/), CRC Press.
+>  Design_](https://www.cs.ubc.ca/~tmm/vadbook/), CRC Press.
 
 > Wilkinson, L. (2005), _The Grammar of Graphics_, 2nd ed, Springer.
 
@@ -1122,14 +1122,13 @@ Groups of colors that work well together are called _palettes_.
 
 Some tools for selecting palettes include:
 
-* [ColorBrewer](http://colorbrewer2.org); available in the
+* [ColorBrewer](https://colorbrewer2.org); available in the
   `RColorBrewer` package.
 
-* [HCL Wizard](http://hclwizard.org/); also available as `hclwizard`
+* [HCL Wizard](https://hclwizard.org/); also available as `hclwizard`
   in the `colorspace` package.
 
-A note on [rainbow colors](
-https://eeecon.uibk.ac.at/~zeileis/news/endrainbow/).
+A note on [rainbow colors](https://www.zeileis.org/news/endrainbow/).
 
 
 # A Grammar of Data Manipulation
@@ -1312,7 +1311,7 @@ anim_save("foo.gif", animate(pa, fps = 10, nframes = 100))
 
 ## Cancer Map
 
-The website <http://www.cancer-rates.info/ia> provides data on
+The website <https://www.cancer-rates.info/ia> provides data on
 cancer incidence for a number of different cancers in Iowa.
 
 <!-- # nolint start -->
@@ -1462,7 +1461,7 @@ ggplot(md) +
 ```{r cancer-map-2, echo = FALSE, fig.width = 8, message = FALSE}
 ```
 
-A simple interactive version using [`plotly`](https://plot.ly/r/):
+A simple interactive version using [`plotly`](https://plotly.com/r/):
 
 ```{r cancer-map-plotly, eval = FALSE}
 mdl <- mutate(md,
@@ -1487,7 +1486,7 @@ plotly::ggplotly(p, tooltip = "text")
 The [`leaflet`](https://rstudio.github.io/leaflet/) package supports
 more sophisticated interactive maps:
 
-<!-- http://rstudio.github.io/leaflet/legends.html-->
+<!-- https://rstudio.github.io/leaflet/legends.html-->
 ```{r, fig.height = 6.5, fig.width = 9, class.source = "fold-hide"}
 library(leaflet)
 pal <- colorNumeric(palette = "viridis", domain = md$rate1K)
@@ -1496,7 +1495,7 @@ lab <- lapply(paste0(md$cname, "<BR>",
                      "Pop: ", scales::comma(md$population,
                                             accuracy = 1)),
               htmltools::HTML)
-leaflet(sf::st_transform(md, 4326)) %>%
+leaflet(sf::st_transform(md, 4326)) |>
     addPolygons(weight = 2,
                 color = "grey",
                 fillColor = ~ pal(rate1K),
@@ -1504,7 +1503,7 @@ leaflet(sf::st_transform(md, 4326)) %>%
                 highlightOptions = highlightOptions(color = "white",
                                                     weight = 2,
                                                     bringToFront = TRUE),
-                label = lab) %>%
+                label = lab) |>
     addLegend(pal = pal, values = ~ rate1K, opacity = 1)
 ```
 
@@ -1517,7 +1516,7 @@ monthly unemployment data for a 14-month window.
 
 The file for February 2020 through March 2021 is available is
 available at
-<http://www.stat.uiowa.edu/~luke/data/laus/laucntycur14-2020.txt> and
+<https://www.stat.uiowa.edu/~luke/data/laus/laucntycur14-2020.txt> and
 in the project data folder.
 
 <div class = "note">
@@ -1572,14 +1571,14 @@ lausUS <- mutate(lausUS, UnempRate = as.numeric(UnempRate))
 Check for missing values:
 
 ```{r}
-select_if(lausUS, anyNA) %>% names()
+select_if(lausUS, anyNA) |> names()
 ```
 
 The state code is missing for the District of Columbia:
 
 ```{r}
-select(lausUS, cname, scode) %>%
-    filter(is.na(scode)) %>%
+select(lausUS, cname, scode) |>
+    filter(is.na(scode)) |>
     unique()
 ```
 
@@ -1590,8 +1589,8 @@ Missing values for `UnempRate` are all for Puerto Rico and September
 March and April 2020 numbers were not available for Puerto Rico:
 
 ```{r}
-select(lausUS, scode, Period, UnempRate) %>%
-    filter(is.na(UnempRate)) %>%
+select(lausUS, scode, Period, UnempRate) |>
+    filter(is.na(UnempRate)) |>
     unique()
 ```
 
@@ -1611,10 +1610,10 @@ COVID-19 pandemic.
 A plot shows a large spike in April 2020:
 
 ```{r, fig.width = 10, class.source = "fold-hide"}
-group_by(lausUS, Period) %>%
+group_by(lausUS, Period) |>
     summarize(Unemployed = sum(Unemployed, na.rm = TRUE),
               LaborForce = sum(LaborForce, na.rm = TRUE),
-              UnempRate = 100 * (Unemployed / LaborForce)) %>%
+              UnempRate = 100 * (Unemployed / LaborForce)) |>
     ggplot(aes(Period, UnempRate, group = 1)) +
     geom_line()
 ```
@@ -1642,7 +1641,7 @@ Here is one approach:
 ```{r}
 counties_sf <- sf::st_as_sf(maps::map("county", plot = FALSE, fill = TRUE))
 county.fips <-
-    mutate(maps::county.fips, polyname = sub(":.*", "", polyname)) %>%
+    mutate(maps::county.fips, polyname = sub(":.*", "", polyname)) |>
     unique()
 counties_sf <- left_join(counties_sf, county.fips, c("ID" = "polyname"))
 states_sf <- sf::st_as_sf(maps::map("state", plot = FALSE, fill = TRUE))
@@ -1651,10 +1650,10 @@ states_sf <- sf::st_as_sf(maps::map("state", plot = FALSE, fill = TRUE))
 Some summaries over the period can be computed as
 
 ```{r}
-summaryUS <- group_by(lausUS, County, State, fips) %>%
+summaryUS <- group_by(lausUS, County, State, fips) |>
     summarize(avg_unemp = mean(UnempRate, na.rm = TRUE),
               max_unemp = max(UnempRate, na.rm = TRUE),
-              apr_unemp = UnempRate[Period == "Apr-20"]) %>%
+              apr_unemp = UnempRate[Period == "Apr-20"]) |>
     ungroup()
 head(summaryUS)
 ```
@@ -1662,7 +1661,7 @@ head(summaryUS)
 A choropleth map of the April 2020 unemployment rates:
 
 ```{r, fig.width = 9, fig.height = 6, class.source = "fold-hide"}
-left_join(counties_sf, summaryUS, "fips") %>%
+left_join(counties_sf, summaryUS, "fips") |>
     ggplot() +
     geom_sf(aes(fill = apr_unemp)) +
     scale_fill_viridis(name = "Rate", na.value = "red") +
@@ -1697,7 +1696,7 @@ counties_sf <- mutate(counties_sf,
 With the updated data the map is now complete:
 
 ```{r, fig.width = 9, fig.height = 6, class.source = "fold-hide"}
-left_join(counties_sf, summaryUS, "fips") %>%
+left_join(counties_sf, summaryUS, "fips") |>
     ggplot() +
     geom_sf(aes(fill = apr_unemp)) +
     scale_fill_viridis(name = "Rate", na.value = "red") +
@@ -1708,22 +1707,22 @@ left_join(counties_sf, summaryUS, "fips") %>%
 ```{r, echo = FALSE, eval = FALSE}
 ggpoly2sf <- function(poly, coords = c("long", "lat"),
                       id = "group", region = "region", crs = 4326) {
-    sf::st_as_sf(poly, coords = coords, crs = crs) %>%
-    group_by(!! as.name(id), !! as.name(region)) %>%
-    summarize(do_union = FALSE) %>%
-    sf::st_cast("POLYGON") %>%
-    ungroup() %>%
-    group_by(!! as.name(region)) %>%
-    summarize(do_union = FALSE) %>%
+    sf::st_as_sf(poly, coords = coords, crs = crs) |>
+    group_by(!! as.name(id), !! as.name(region)) |>
+    summarize(do_union = FALSE) |>
+    sf::st_cast("POLYGON") |>
+    ungroup() |>
+    group_by(!! as.name(region)) |>
+    summarize(do_union = FALSE) |>
     ungroup()
 }
 m_sf <- ggpoly2sf(socviz::county_map, c("long", "lat"), "group", "id")
 m_sf <- mutate(m_sf, fips = as.numeric(id))
 m_sf <- mutate(m_sf, fips = replace(fips, fips == 46113, 46102))
 ggplot(m_sf) + geom_sf()
-au <- group_by(lausUS, fips) %>%
+au <- group_by(lausUS, fips) |>
     summarize(avg_ur = mean(UnempRate, na.rm = TRUE))
-mu <- group_by(lausUS, fips) %>%
+mu <- group_by(lausUS, fips) |>
     summarize(max_ur = max(UnempRate, na.rm = TRUE))
 da <- left_join(m_sf, au, "fips")
 dm <- left_join(m_sf, mu, "fips")
@@ -1742,14 +1741,14 @@ ggplot(left_join(m_sf, filter(lausUS, Period == "Apr-20"), "fips"),
 ## Gapminder Childhood Mortality Data
 
 The `gapminder` package provides a subset of the data from the
-[Gapminder](http://www.gapminder.org/) web site.
+[Gapminder](https://www.gapminder.org/) web site.
 
-Additional data sets are [available](http://www.gapminder.org/data/).
+Additional data sets are [available](https://www.gapminder.org/data/).
 
 * A data set on childhood mortality is available locally as a [csv
-  file](http://homepage.stat.uiowa.edu/~luke/data/gapminder-under5mortality.csv)
+  file](https://homepage.stat.uiowa.edu/~luke/data/gapminder-under5mortality.csv)
   or an [Excel
-  file](http://homepage.stat.uiowa.edu/~luke/data/gapminder-under5mortality.xlsx).
+  file](https://homepage.stat.uiowa.edu/~luke/data/gapminder-under5mortality.xlsx).
 
 * The Excel file is also available in the project data folder.
 
@@ -1798,7 +1797,7 @@ Convert to long format:
 
 ```{r}
 tgcm <-
-    pivot_longer(gcm, -1, names_to = "year", values_to = "u5mort") %>%
+    pivot_longer(gcm, -1, names_to = "year", values_to = "u5mort") |>
     mutate(year = as.numeric(year))
 head(tgcm, 3)
 ```
@@ -1824,7 +1823,7 @@ countries <- c("United States",
                "Germany",
                "China",
                "Egypt")
-filter(tgcm, country %in% countries) %>%
+filter(tgcm, country %in% countries) |>
     ggplot() +
     geom_line(aes(x = year,
                   y = u5mort,
@@ -1837,13 +1836,13 @@ Examining the missing values:
 
 ```{r u5-3, eval = FALSE}
 tgcm_miss <-
-    group_by(tgcm, country) %>%
-    summarize(anyNA = anyNA(u5mort)) %>%
-    filter(anyNA) %>%
+    group_by(tgcm, country) |>
+    summarize(anyNA = anyNA(u5mort)) |>
+    filter(anyNA) |>
     pull(country)
 
 p <- filter(tgcm,
-            country %in% tgcm_miss) %>%
+            country %in% tgcm_miss) |>
     ggplot(aes(x = year,
                y = u5mort,
                group = country)) +
@@ -1873,7 +1872,7 @@ The slides/notes were created with
 fully reproducible documents.
 
 Materials for this class are available on GitHub at
-<https://github.com/ltierney/SIBS-WV-2024.git>.
+<https://github.com/ltierney/SIBS-WV-2024>.
 
 [GitHub](https://github.com) is a social coding platform built around
 the [Git](https://git-scm.com/) version control system.

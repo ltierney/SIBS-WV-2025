@@ -73,7 +73,7 @@ In this class I will
 --
 
 Materials for this class are available on GitHub at
-<https://github.com/ltierney/SIBS-WV-2024.git>.
+<https://github.com/ltierney/SIBS-WV-2024>.
 
 --
 
@@ -84,7 +84,7 @@ Materials for this class are available on GitHub at
 
 * You can use the `git` command line client with
     ```shell
-git clone https://github.com/ltierney/SIBS-WV-2024.git
+git clone https://github.com/ltierney/SIBS-WV-2024
     ```
 
 --
@@ -97,7 +97,7 @@ Materials are also available at
 Materials for our _Data Visualization and Data
 Technologies_ course are available at
 
-<http://www.stat.uiowa.edu/~luke/classes/STAT4580-2024/>
+<https://www.stat.uiowa.edu/~luke/classes/STAT4580-2024/>
 
 
 ---
@@ -145,18 +145,18 @@ Useful references:
 --
 
 > Claus O. Wilke (2019), [_Fundamentals of Data
->  Visualization_](https://serialmentor.com/dataviz/), O'Reilly.
+>  Visualization_](https://clauswilke.com/dataviz/), O'Reilly.
 
 --
 
 > Kieran Healy (2018) [_Data Visualization: A practical
-> introduction_](http://socviz.co/), Princeton
+> introduction_](https://socviz.co/), Princeton
 
 --
 
 > Rafael A. Irizarry (2019), [Introduction to Data Science: _Data
 > Analysis and Prediction Algorithms with
-> R_](https://rafalab.github.io/dsbook/), Chapman & Hall/CRC. ([Book
+> R_](https://rafalab.dfci.harvard.edu/dsbook/), Chapman & Hall/CRC. ([Book
 > source on GitHub](https://github.com/rafalab/dsbook))
 
 --
@@ -1590,7 +1590,7 @@ as implemented in `ggplot`.
 --
 
 > Munzner, T. (2014), [_Visualization Analysis and
->  Design_](http://www.cs.ubc.ca/~tmm/vadbook/), CRC Press.
+>  Design_](https://www.cs.ubc.ca/~tmm/vadbook/), CRC Press.
 
 > Wilkinson, L. (2005), _The Grammar of Graphics_, 2nd ed, Springer.
 
@@ -1713,18 +1713,17 @@ Some tools for selecting palettes include:
 
 --
 
-* [ColorBrewer](http://colorbrewer2.org); available in the
+* [ColorBrewer](https://colorbrewer2.org); available in the
   `RColorBrewer` package.
 
 --
 
-* [HCL Wizard](http://hclwizard.org/); also available as `hclwizard`
+* [HCL Wizard](https://hclwizard.org/); also available as `hclwizard`
   in the `colorspace` package.
 
 --
 
-A note on [rainbow colors](
-https://eeecon.uibk.ac.at/~zeileis/news/endrainbow/).
+A note on [rainbow colors](https://www.zeileis.org/news/endrainbow/).
 
 ---
 layout: false
@@ -1996,7 +1995,7 @@ layout: true
 ## Cancer Map
 ---
 
-The website <http://www.cancer-rates.info/ia> provides data on
+The website <https://www.cancer-rates.info/ia> provides data on
 cancer incidence for a number of different cancers in Iowa.
 
 --
@@ -2213,7 +2212,7 @@ ggplot(md) +
 
 ---
 
-A simple interactive version using [`plotly`](https://plot.ly/r/):
+A simple interactive version using [`plotly`](https://plotly.com/r/):
 
 .pull-left[
 ```{r cancer-map-plotly, eval = FALSE}
@@ -2244,7 +2243,7 @@ plotly::ggplotly(p, tooltip = "text")
 The [`leaflet`](https://rstudio.github.io/leaflet/) package supports
 more sophisticated interactive maps:
 
-<!-- http://rstudio.github.io/leaflet/legends.html-->
+<!-- https://rstudio.github.io/leaflet/legends.html-->
 .hide-code[
 ```{r, fig.height = 6.5, fig.width = 9}
 library(leaflet)
@@ -2281,7 +2280,7 @@ monthly unemployment data for a 14-month window.
 
 The file for February 2020 through March 2021 is available is
 available at
-<http://www.stat.uiowa.edu/~luke/data/laus/laucntycur14-2020.txt> and
+<https://www.stat.uiowa.edu/~luke/data/laus/laucntycur14-2020.txt> and
 in the project data folder.
 
 --
@@ -2562,18 +2561,18 @@ layout: true
 ---
 
 The `gapminder` package provides a subset of the data from the
-[Gapminder](http://www.gapminder.org/) web site.
+[Gapminder](https://www.gapminder.org/) web site.
 
 --
 
-Additional data sets are [available](http://www.gapminder.org/data/).
+Additional data sets are [available](https://www.gapminder.org/data/).
 
 --
 
 * A data set on childhood mortality is available locally as a [csv
-  file](http://homepage.stat.uiowa.edu/~luke/data/gapminder-under5mortality.csv)
+  file](https://homepage.stat.uiowa.edu/~luke/data/gapminder-under5mortality.csv)
   or an [Excel
-  file](http://homepage.stat.uiowa.edu/~luke/data/gapminder-under5mortality.xlsx).
+  file](https://homepage.stat.uiowa.edu/~luke/data/gapminder-under5mortality.xlsx).
 
 --
 
@@ -2753,7 +2752,7 @@ fully reproducible documents.
 --
 
 Materials for this class are available on GitHub at
-<https://github.com/ltierney/SIBS-WV-2024.git>.
+<https://github.com/ltierney/SIBS-WV-2024>.
 
 --
 

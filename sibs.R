@@ -191,11 +191,11 @@ sgd <- summarize(group_by(geyser, type),
 
 ## -----------------------------------------------------------------------------
 sgd <-
-    group_by(geyser, type) %>%
+    group_by(geyser, type) |>
     summarize(mean = mean(duration),
               sd = sd(duration),
-              n = n()) %>%
-    ungroup() %>%
+              n = n()) |>
+    ungroup() |>
     mutate(prop = n / sum(n))
 sgd
 
@@ -227,12 +227,12 @@ p
 
 ## -----------------------------------------------------------------------------
 sgd2 <-
-    filter(geyser, duration != 2, duration != 4) %>%
-    group_by(type) %>%
+    filter(geyser, duration != 2, duration != 4) |>
+    group_by(type) |>
     summarize(mean = mean(duration),
               sd = sd(duration),
-              n = n()) %>%
-    ungroup() %>%
+              n = n()) |>
+    ungroup() |>
     mutate(prop = n / sum(n))
 sgd2
 
@@ -394,8 +394,8 @@ ggplot(barley) +
 
 ## ----barley-avg-dot, echo = FALSE, message = FALSE, fig.width = 7-------------
 barley_site_year <-
-    group_by(barley, site, year) %>%
-    summarize(yield = mean(yield)) %>%
+    group_by(barley, site, year) |>
+    summarize(yield = mean(yield)) |>
     ungroup()
 
 ggplot(barley_site_year) +
@@ -406,8 +406,8 @@ ggplot(barley_site_year) +
 
 ## ----barley-avg-dot, eval = FALSE---------------------------------------------
 ## barley_site_year <-
-##     group_by(barley, site, year) %>%
-##     summarize(yield = mean(yield)) %>%
+##     group_by(barley, site, year) |>
+##     summarize(yield = mean(yield)) |>
 ##     ungroup()
 ## 
 ## ggplot(barley_site_year) +
@@ -419,8 +419,8 @@ ggplot(barley_site_year) +
 
 ## ----barley-avg-dot-2, echo = FALSE, message = FALSE, fig.width = 7-----------
 barley_site_year <-
-    group_by(barley, site, year) %>%
-    summarize(yield = mean(yield)) %>%
+    group_by(barley, site, year) |>
+    summarize(yield = mean(yield)) |>
     ungroup()
 
 ggplot(barley_site_year) +
@@ -436,8 +436,8 @@ ggplot(barley_site_year) +
 
 ## ----barley-avg-dot-2, eval = FALSE-------------------------------------------
 ## barley_site_year <-
-##     group_by(barley, site, year) %>%
-##     summarize(yield = mean(yield)) %>%
+##     group_by(barley, site, year) |>
+##     summarize(yield = mean(yield)) |>
 ##     ungroup()
 ## 
 ## ggplot(barley_site_year) +
@@ -496,8 +496,8 @@ head(HairEyeDF)
 
 ## ----eye-bar, echo = FALSE----------------------------------------------------
 eye <-
-    group_by(HairEyeDF, Eye) %>%
-    summarize(Freq = sum(Freq)) %>%
+    group_by(HairEyeDF, Eye) |>
+    summarize(Freq = sum(Freq)) |>
     ungroup()
 
 ggplot(eye) +
@@ -507,8 +507,8 @@ ggplot(eye) +
 
 ## ----eye-bar, eval = FALSE----------------------------------------------------
 ## eye <-
-##     group_by(HairEyeDF, Eye) %>%
-##     summarize(Freq = sum(Freq)) %>%
+##     group_by(HairEyeDF, Eye) |>
+##     summarize(Freq = sum(Freq)) |>
 ##     ungroup()
 ## 
 ## ggplot(eye) +
@@ -519,8 +519,8 @@ ggplot(eye) +
 
 ## ----eye-bar-2, echo = FALSE--------------------------------------------------
 eye <-
-    group_by(HairEyeDF, Eye) %>%
-    summarize(Freq = sum(Freq)) %>%
+    group_by(HairEyeDF, Eye) |>
+    summarize(Freq = sum(Freq)) |>
     ungroup()
 
 ggplot(eye) +
@@ -531,8 +531,8 @@ ggplot(eye) +
 
 ## ----eye-bar-2, eval = FALSE--------------------------------------------------
 ## eye <-
-##     group_by(HairEyeDF, Eye) %>%
-##     summarize(Freq = sum(Freq)) %>%
+##     group_by(HairEyeDF, Eye) |>
+##     summarize(Freq = sum(Freq)) |>
 ##     ungroup()
 ## 
 ## ggplot(eye) +
@@ -622,8 +622,8 @@ cowplot::plot_grid(pb, pp)
 
 ## ----fig.width = 14, fig.height = 6, class.source = "fold-hide"---------------
 eye_hairsex <-
-    group_by(HairEyeDF, Hair, Sex) %>%
-    mutate(Prop = Freq / sum(Freq)) %>%
+    group_by(HairEyeDF, Hair, Sex) |>
+    mutate(Prop = Freq / sum(Freq)) |>
     ungroup()
 
 p1 <- ggplot(eye_hairsex) +
@@ -902,7 +902,7 @@ lab <- lapply(paste0(md$cname, "<BR>",
                      "Pop: ", scales::comma(md$population,
                                             accuracy = 1)),
               htmltools::HTML)
-leaflet(sf::st_transform(md, 4326)) %>%
+leaflet(sf::st_transform(md, 4326)) |>
     addPolygons(weight = 2,
                 color = "grey",
                 fillColor = ~ pal(rate1K),
@@ -910,7 +910,7 @@ leaflet(sf::st_transform(md, 4326)) %>%
                 highlightOptions = highlightOptions(color = "white",
                                                     weight = 2,
                                                     bringToFront = TRUE),
-                label = lab) %>%
+                label = lab) |>
     addLegend(pal = pal, values = ~ rate1K, opacity = 1)
 
 
@@ -942,18 +942,18 @@ lausUS <- mutate(lausUS, UnempRate = as.numeric(UnempRate))
 
 
 ## -----------------------------------------------------------------------------
-select_if(lausUS, anyNA) %>% names()
+select_if(lausUS, anyNA) |> names()
 
 
 ## -----------------------------------------------------------------------------
-select(lausUS, cname, scode) %>%
-    filter(is.na(scode)) %>%
+select(lausUS, cname, scode) |>
+    filter(is.na(scode)) |>
     unique()
 
 
 ## -----------------------------------------------------------------------------
-select(lausUS, scode, Period, UnempRate) %>%
-    filter(is.na(UnempRate)) %>%
+select(lausUS, scode, Period, UnempRate) |>
+    filter(is.na(UnempRate)) |>
     unique()
 
 
@@ -965,10 +965,10 @@ lausUS <- mutate(lausUS,
 
 
 ## ----fig.width = 10, class.source = "fold-hide"-------------------------------
-group_by(lausUS, Period) %>%
+group_by(lausUS, Period) |>
     summarize(Unemployed = sum(Unemployed, na.rm = TRUE),
               LaborForce = sum(LaborForce, na.rm = TRUE),
-              UnempRate = 100 * (Unemployed / LaborForce)) %>%
+              UnempRate = 100 * (Unemployed / LaborForce)) |>
     ggplot(aes(Period, UnempRate, group = 1)) +
     geom_line()
 
@@ -980,23 +980,23 @@ lausUS <- mutate(lausUS, fips = State * 1000 + County)
 ## -----------------------------------------------------------------------------
 counties_sf <- sf::st_as_sf(maps::map("county", plot = FALSE, fill = TRUE))
 county.fips <-
-    mutate(maps::county.fips, polyname = sub(":.*", "", polyname)) %>%
+    mutate(maps::county.fips, polyname = sub(":.*", "", polyname)) |>
     unique()
 counties_sf <- left_join(counties_sf, county.fips, c("ID" = "polyname"))
 states_sf <- sf::st_as_sf(maps::map("state", plot = FALSE, fill = TRUE))
 
 
 ## -----------------------------------------------------------------------------
-summaryUS <- group_by(lausUS, County, State, fips) %>%
+summaryUS <- group_by(lausUS, County, State, fips) |>
     summarize(avg_unemp = mean(UnempRate, na.rm = TRUE),
               max_unemp = max(UnempRate, na.rm = TRUE),
-              apr_unemp = UnempRate[Period == "Apr-20"]) %>%
+              apr_unemp = UnempRate[Period == "Apr-20"]) |>
     ungroup()
 head(summaryUS)
 
 
 ## ----fig.width = 9, fig.height = 6, class.source = "fold-hide"----------------
-left_join(counties_sf, summaryUS, "fips") %>%
+left_join(counties_sf, summaryUS, "fips") |>
     ggplot() +
     geom_sf(aes(fill = apr_unemp)) +
     scale_fill_viridis(name = "Rate", na.value = "red") +
@@ -1019,7 +1019,7 @@ counties_sf <- mutate(counties_sf,
 
 
 ## ----fig.width = 9, fig.height = 6, class.source = "fold-hide"----------------
-left_join(counties_sf, summaryUS, "fips") %>%
+left_join(counties_sf, summaryUS, "fips") |>
     ggplot() +
     geom_sf(aes(fill = apr_unemp)) +
     scale_fill_viridis(name = "Rate", na.value = "red") +
@@ -1030,22 +1030,22 @@ left_join(counties_sf, summaryUS, "fips") %>%
 ## ----echo = FALSE, eval = FALSE-----------------------------------------------
 ## ggpoly2sf <- function(poly, coords = c("long", "lat"),
 ##                       id = "group", region = "region", crs = 4326) {
-##     sf::st_as_sf(poly, coords = coords, crs = crs) %>%
-##     group_by(!! as.name(id), !! as.name(region)) %>%
-##     summarize(do_union = FALSE) %>%
-##     sf::st_cast("POLYGON") %>%
-##     ungroup() %>%
-##     group_by(!! as.name(region)) %>%
-##     summarize(do_union = FALSE) %>%
+##     sf::st_as_sf(poly, coords = coords, crs = crs) |>
+##     group_by(!! as.name(id), !! as.name(region)) |>
+##     summarize(do_union = FALSE) |>
+##     sf::st_cast("POLYGON") |>
+##     ungroup() |>
+##     group_by(!! as.name(region)) |>
+##     summarize(do_union = FALSE) |>
 ##     ungroup()
 ## }
 ## m_sf <- ggpoly2sf(socviz::county_map, c("long", "lat"), "group", "id")
 ## m_sf <- mutate(m_sf, fips = as.numeric(id))
 ## m_sf <- mutate(m_sf, fips = replace(fips, fips == 46113, 46102))
 ## ggplot(m_sf) + geom_sf()
-## au <- group_by(lausUS, fips) %>%
+## au <- group_by(lausUS, fips) |>
 ##     summarize(avg_ur = mean(UnempRate, na.rm = TRUE))
-## mu <- group_by(lausUS, fips) %>%
+## mu <- group_by(lausUS, fips) |>
 ##     summarize(max_ur = max(UnempRate, na.rm = TRUE))
 ## da <- left_join(m_sf, au, "fips")
 ## dm <- left_join(m_sf, mu, "fips")
@@ -1076,7 +1076,7 @@ names(gcm)[1] <- "country"
 
 ## -----------------------------------------------------------------------------
 tgcm <-
-    pivot_longer(gcm, -1, names_to = "year", values_to = "u5mort") %>%
+    pivot_longer(gcm, -1, names_to = "year", values_to = "u5mort") |>
     mutate(year = as.numeric(year))
 head(tgcm, 3)
 
@@ -1104,7 +1104,7 @@ plotly::ggplotly(p)
 ##                "Germany",
 ##                "China",
 ##                "Egypt")
-## filter(tgcm, country %in% countries) %>%
+## filter(tgcm, country %in% countries) |>
 ##     ggplot() +
 ##     geom_line(aes(x = year,
 ##                   y = u5mort,
@@ -1116,7 +1116,7 @@ countries <- c("United States",
                "Germany",
                "China",
                "Egypt")
-filter(tgcm, country %in% countries) %>%
+filter(tgcm, country %in% countries) |>
     ggplot() +
     geom_line(aes(x = year,
                   y = u5mort,
@@ -1125,13 +1125,13 @@ filter(tgcm, country %in% countries) %>%
 
 ## ----u5-3, eval = FALSE-------------------------------------------------------
 ## tgcm_miss <-
-##     group_by(tgcm, country) %>%
-##     summarize(anyNA = anyNA(u5mort)) %>%
-##     filter(anyNA) %>%
+##     group_by(tgcm, country) |>
+##     summarize(anyNA = anyNA(u5mort)) |>
+##     filter(anyNA) |>
 ##     pull(country)
 ## 
 ## p <- filter(tgcm,
-##             country %in% tgcm_miss) %>%
+##             country %in% tgcm_miss) |>
 ##     ggplot(aes(x = year,
 ##                y = u5mort,
 ##                group = country)) +
@@ -1141,13 +1141,13 @@ filter(tgcm, country %in% countries) %>%
 
 ## ----u5-3, echo = FALSE, fig.height = 6, fig.width = 7------------------------
 tgcm_miss <-
-    group_by(tgcm, country) %>%
-    summarize(anyNA = anyNA(u5mort)) %>%
-    filter(anyNA) %>%
+    group_by(tgcm, country) |>
+    summarize(anyNA = anyNA(u5mort)) |>
+    filter(anyNA) |>
     pull(country)
 
 p <- filter(tgcm,
-            country %in% tgcm_miss) %>%
+            country %in% tgcm_miss) |>
     ggplot(aes(x = year,
                y = u5mort,
                group = country)) +
