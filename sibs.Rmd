@@ -1271,11 +1271,12 @@ p + geom_point(aes(xlong, ylat),
 Using color to show when the wind turbines were  built:
 
 ```{r wt-IA-color, eval = FALSE}
-year_brk <- c(0, 2005, 2010, 2015, 2020)
+year_brk <- c(0, 2005, 2010, 2015, 2020, Inf)
 year_lab <- c("before 2005",
               "2005-2009",
               "2010-2014",
-              "2015-2020")
+              "2015-2020",
+              "2021 and later")
 wt_IA <-
     mutate(wt_IA,
            year = cut(p_year,
@@ -1381,7 +1382,7 @@ count(d, count == 0)
 ```{r}
 any(d$count == 0, na.rm = TRUE)
 ```
-It _might_ be reasonable to assume these values were zeros, so replace
+It _might_ be reasonable to assume these `~` values were zeros, so replace
 them with zeros:
 ```{r}
 d <- replace_na(d, list(count = 0))

@@ -709,11 +709,12 @@ p + geom_point(aes(xlong, ylat),
 
 
 ## ----wt-IA-color, eval = FALSE------------------------------------------------
-## year_brk <- c(0, 2005, 2010, 2015, 2020)
+## year_brk <- c(0, 2005, 2010, 2015, 2020, Inf)
 ## year_lab <- c("before 2005",
 ##               "2005-2009",
 ##               "2010-2014",
-##               "2015-2020")
+##               "2015-2020",
+##               "2021 and later")
 ## wt_IA <-
 ##     mutate(wt_IA,
 ##            year = cut(p_year,
@@ -727,11 +728,12 @@ p + geom_point(aes(xlong, ylat),
 ##                size = 3)
 
 ## ----wt-IA-color, echo = FALSE, fig.width = 8---------------------------------
-year_brk <- c(0, 2005, 2010, 2015, 2020)
+year_brk <- c(0, 2005, 2010, 2015, 2020, Inf)
 year_lab <- c("before 2005",
               "2005-2009",
               "2010-2014",
-              "2015-2020")
+              "2015-2020",
+              "2021 and later")
 wt_IA <-
     mutate(wt_IA,
            year = cut(p_year,
