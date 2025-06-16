@@ -122,11 +122,11 @@ ggplot(geyser) +
                    fill = "grey")
 
 ## ----geyser-hist, eval = FALSE------------------------------------------------
-## ggplot(geyser) +
-##     geom_histogram(aes(x = duration),
-##                    bins = 15,
-##                    color = "black",
-##                    fill = "grey")
+# ggplot(geyser) +
+#     geom_histogram(aes(x = duration),
+#                    bins = 15,
+#                    color = "black",
+#                    fill = "grey")
 
 
 ## ----geyser-scatter, echo = FALSE---------------------------------------------
@@ -135,9 +135,9 @@ ggplot(geyser) +
                    y = waiting))
 
 ## ----geyser-scatter, eval = FALSE---------------------------------------------
-## ggplot(geyser) +
-##     geom_point(aes(x = lag(duration),
-##                    y = waiting))
+# ggplot(geyser) +
+#     geom_point(aes(x = lag(duration),
+#                    y = waiting))
 
 
 ## ----geyser-hist-narrow, echo = FALSE-----------------------------------------
@@ -150,13 +150,13 @@ p <- ggplot(geyser) +
 p
 
 ## ----geyser-hist-narrow, eval = FALSE-----------------------------------------
-## p <- ggplot(geyser) +
-##     geom_histogram(aes(x = duration,
-##                        y = stat(density)),
-##                    fill = "grey",
-##                    color = "black",
-##                    binwidth = 0.1)
-## p
+# p <- ggplot(geyser) +
+#     geom_histogram(aes(x = duration,
+#                        y = stat(density)),
+#                    fill = "grey",
+#                    color = "black",
+#                    binwidth = 0.1)
+# p
 
 
 ## -----------------------------------------------------------------------------
@@ -213,16 +213,16 @@ p <- p +
 p
 
 ## ----geyser-hist-dens, eval = FALSE-------------------------------------------
-## f1 <- function(x)
-##     sgd$prop[1] *
-##         dnorm(x, sgd$mean[1], sgd$sd[1])
-## f2 <- function(x)
-##     sgd$prop[2] *
-##         dnorm(x, sgd$mean[2], sgd$sd[2])
-## p <- p +
-##     stat_function(color = "red", fun = f1) +
-##     stat_function(color = "blue", fun = f2)
-## p
+# f1 <- function(x)
+#     sgd$prop[1] *
+#         dnorm(x, sgd$mean[1], sgd$sd[1])
+# f2 <- function(x)
+#     sgd$prop[2] *
+#         dnorm(x, sgd$mean[2], sgd$sd[2])
+# p <- p +
+#     stat_function(color = "red", fun = f1) +
+#     stat_function(color = "blue", fun = f2)
+# p
 
 
 ## -----------------------------------------------------------------------------
@@ -254,51 +254,51 @@ p <- p +
 p
 
 ## ----geyser-hist-dens-2, eval = FALSE-----------------------------------------
-## f1_2 <- function(x)
-##     sgd2$prop[1] *
-##         dnorm(x, sgd2$mean[1], sgd2$sd[1])
-## f2_2 <- function(x)
-##     sgd2$prop[2] *
-##         dnorm(x, sgd2$mean[2], sgd2$sd[2])
-## p <- p +
-##     stat_function(color = "red",
-##                   linetype = 2,
-##                   fun = f1_2) +
-##     stat_function(color = "blue",
-##                   linetype = 2,
-##                   fun = f2_2)
-## p
+# f1_2 <- function(x)
+#     sgd2$prop[1] *
+#         dnorm(x, sgd2$mean[1], sgd2$sd[1])
+# f2_2 <- function(x)
+#     sgd2$prop[2] *
+#         dnorm(x, sgd2$mean[2], sgd2$sd[2])
+# p <- p +
+#     stat_function(color = "red",
+#                   linetype = 2,
+#                   fun = f1_2) +
+#     stat_function(color = "blue",
+#                   linetype = 2,
+#                   fun = f2_2)
+# p
 
 
 ## ----eval = FALSE, echo = FALSE-----------------------------------------------
-## ## Fancier version that gets a color legend.
-## ## Could also get a line type legend.
-## p <- ggplot(geyser) +
-##     geom_histogram(aes(x = duration, y = stat(density)),
-##                    fill = "grey", color = "black", bins = 50)
-## p <- p +
-##     stat_function(aes(color = type),
-##                   data = filter(sgd, type == "long"),
-##                   fun = function(x)
-##                           sgd$prop[1] * dnorm(x, sgd$mean[1], sgd$sd[1])) +
-##     stat_function(aes(color = type),
-##                   data = filter(sgd, type == "short"),
-##                   fun = function(x)
-##                           sgd$prop[2] * dnorm(x, sgd$mean[2], sgd$sd[2]))
-## p
-## 
-## p <- p +
-##      stat_function(aes(color = type),
-##                   data = filter(sgd2, type == "long"),
-##                   linetype = 2,
-##                   fun = function(x)
-##                           sgd2$prop[1] * dnorm(x, sgd2$mean[1], sgd2$sd[1])) +
-##     stat_function(aes(color = type),
-##                   data = filter(sgd2, type == "short"),
-##                   linetype = 2,
-##                   fun = function(x)
-##                           sgd2$prop[2] * dnorm(x, sgd2$mean[2], sgd2$sd[2]))
-## p
+# ## Fancier version that gets a color legend.
+# ## Could also get a line type legend.
+# p <- ggplot(geyser) +
+#     geom_histogram(aes(x = duration, y = stat(density)),
+#                    fill = "grey", color = "black", bins = 50)
+# p <- p +
+#     stat_function(aes(color = type),
+#                   data = filter(sgd, type == "long"),
+#                   fun = function(x)
+#                           sgd$prop[1] * dnorm(x, sgd$mean[1], sgd$sd[1])) +
+#     stat_function(aes(color = type),
+#                   data = filter(sgd, type == "short"),
+#                   fun = function(x)
+#                           sgd$prop[2] * dnorm(x, sgd$mean[2], sgd$sd[2]))
+# p
+# 
+# p <- p +
+#      stat_function(aes(color = type),
+#                   data = filter(sgd2, type == "long"),
+#                   linetype = 2,
+#                   fun = function(x)
+#                           sgd2$prop[1] * dnorm(x, sgd2$mean[1], sgd2$sd[1])) +
+#     stat_function(aes(color = type),
+#                   data = filter(sgd2, type == "short"),
+#                   linetype = 2,
+#                   fun = function(x)
+#                           sgd2$prop[2] * dnorm(x, sgd2$mean[2], sgd2$sd[2]))
+# p
 
 
 ## -----------------------------------------------------------------------------
@@ -328,11 +328,11 @@ ggplot(barley) +
                    shape = site))
 
 ## ----barley-color-sym, eval = FALSE-------------------------------------------
-## ggplot(barley) +
-##     geom_point(aes(x = yield,
-##                    y = variety,
-##                    color = year,
-##                    shape = site))
+# ggplot(barley) +
+#     geom_point(aes(x = yield,
+#                    y = variety,
+#                    color = year,
+#                    shape = site))
 
 
 ## ----barley-color-sym-2, echo = FALSE, fig.width = 7--------------------------
@@ -344,12 +344,12 @@ ggplot(barley) +
                size = 2.5)
 
 ## ----barley-color-sym-2, eval = FALSE-----------------------------------------
-## ggplot(barley) +
-##     geom_point(aes(x = yield,
-##                    y = variety,
-##                    color = year,
-##                    shape = site),
-##                size = 2.5)
+# ggplot(barley) +
+#     geom_point(aes(x = yield,
+#                    y = variety,
+#                    color = year,
+#                    shape = site),
+#                size = 2.5)
 
 
 ## ----barley-color-sym-3, echo = FALSE, fig.width = 7--------------------------
@@ -365,24 +365,24 @@ ggplot(barley) +
                        width = 0))
 
 ## ----barley-color-sym-3, eval = FALSE-----------------------------------------
-## ggplot(barley) +
-##     geom_point(aes(x = yield,
-##                    y = variety,
-##                    color = year,
-##                    shape = site),
-##                size = 2.5,
-##                position =
-##                    position_jitter(
-##                        height = 0.15,
-##                        width = 0))
+# ggplot(barley) +
+#     geom_point(aes(x = yield,
+#                    y = variety,
+#                    color = year,
+#                    shape = site),
+#                size = 2.5,
+#                position =
+#                    position_jitter(
+#                        height = 0.15,
+#                        width = 0))
 
 
 ## ----barley-facet, eval = FALSE-----------------------------------------------
-## ggplot(barley) +
-##     geom_point(aes(x = yield,
-##                    y = variety,
-##                    color = year)) +
-##     facet_wrap(~site, ncol = 2)
+# ggplot(barley) +
+#     geom_point(aes(x = yield,
+#                    y = variety,
+#                    color = year)) +
+#     facet_wrap(~site, ncol = 2)
 
 ## ----barley-facet, echo = FALSE, fig.width = 7, fig.height = 7----------------
 ggplot(barley) +
@@ -405,16 +405,16 @@ ggplot(barley_site_year) +
                size = 3)
 
 ## ----barley-avg-dot, eval = FALSE---------------------------------------------
-## barley_site_year <-
-##     group_by(barley, site, year) |>
-##     summarize(yield = mean(yield)) |>
-##     ungroup()
-## 
-## ggplot(barley_site_year) +
-##     geom_point(aes(y = site,
-##                    x = yield,
-##                    color = year),
-##                size = 3)
+# barley_site_year <-
+#     group_by(barley, site, year) |>
+#     summarize(yield = mean(yield)) |>
+#     ungroup()
+# 
+# ggplot(barley_site_year) +
+#     geom_point(aes(y = site,
+#                    x = yield,
+#                    color = year),
+#                size = 3)
 
 
 ## ----barley-avg-dot-2, echo = FALSE, message = FALSE, fig.width = 7-----------
@@ -435,21 +435,21 @@ ggplot(barley_site_year) +
                size = 4)
 
 ## ----barley-avg-dot-2, eval = FALSE-------------------------------------------
-## barley_site_year <-
-##     group_by(barley, site, year) |>
-##     summarize(yield = mean(yield)) |>
-##     ungroup()
-## 
-## ggplot(barley_site_year) +
-##     geom_line(aes(y = site,
-##                   x = yield,
-##                   group = site),
-##               color = "darkgrey",
-##               size = 2) +
-##     geom_point(aes(y = site,
-##                    x = yield,
-##                    color = year),
-##                size = 4)
+# barley_site_year <-
+#     group_by(barley, site, year) |>
+#     summarize(yield = mean(yield)) |>
+#     ungroup()
+# 
+# ggplot(barley_site_year) +
+#     geom_line(aes(y = site,
+#                   x = yield,
+#                   group = site),
+#               color = "darkgrey",
+#               size = 2) +
+#     geom_point(aes(y = site,
+#                    x = yield,
+#                    color = year),
+#                size = 4)
 
 
 ## ----class.source = "fold-hide"-----------------------------------------------
@@ -480,13 +480,13 @@ ggplot(barley_site_year) +
              width = .4)
 
 ## ----barley-avg-bar, eval = FALSE---------------------------------------------
-## ggplot(barley_site_year) +
-##     geom_col(aes(x = yield,
-##                  y = site,
-##                  fill = year),
-##              size = 3,
-##              position = "dodge",
-##              width = .4)
+# ggplot(barley_site_year) +
+#     geom_col(aes(x = yield,
+#                  y = site,
+#                  fill = year),
+#              size = 3,
+#              position = "dodge",
+#              width = .4)
 
 
 ## -----------------------------------------------------------------------------
@@ -506,15 +506,15 @@ ggplot(eye) +
              position = "dodge")
 
 ## ----eye-bar, eval = FALSE----------------------------------------------------
-## eye <-
-##     group_by(HairEyeDF, Eye) |>
-##     summarize(Freq = sum(Freq)) |>
-##     ungroup()
-## 
-## ggplot(eye) +
-##     geom_col(aes(x = Eye,
-##                  y = Freq),
-##              position = "dodge")
+# eye <-
+#     group_by(HairEyeDF, Eye) |>
+#     summarize(Freq = sum(Freq)) |>
+#     ungroup()
+# 
+# ggplot(eye) +
+#     geom_col(aes(x = Eye,
+#                  y = Freq),
+#              position = "dodge")
 
 
 ## ----eye-bar-2, echo = FALSE--------------------------------------------------
@@ -530,16 +530,16 @@ ggplot(eye) +
              position = "dodge")
 
 ## ----eye-bar-2, eval = FALSE--------------------------------------------------
-## eye <-
-##     group_by(HairEyeDF, Eye) |>
-##     summarize(Freq = sum(Freq)) |>
-##     ungroup()
-## 
-## ggplot(eye) +
-##     geom_col(aes(x = Eye,
-##                  y = Freq,
-##                  fill = Eye),
-##              position = "dodge")
+# eye <-
+#     group_by(HairEyeDF, Eye) |>
+#     summarize(Freq = sum(Freq)) |>
+#     ungroup()
+# 
+# ggplot(eye) +
+#     geom_col(aes(x = Eye,
+#                  y = Freq,
+#                  fill = Eye),
+#              position = "dodge")
 
 
 ## ----eye-bar-3, echo = FALSE--------------------------------------------------
@@ -563,24 +563,24 @@ pb <- ggplot(eye) +
 pb
 
 ## ----eye-bar-3, eval = FALSE--------------------------------------------------
-## hazel_rgb <-
-##     col2rgb("brown") * 0.75 + col2rgb("green") * 0.25
-## hazel <-
-##     do.call(rgb, as.list(hazel_rgb / 255))
-## 
-## cols <-
-##     c(Blue = colorspace::lighten(colorspace::desaturate("blue", 0.3), 0.3),
-##       Green = colorspace::lighten("forestgreen", 0.1),
-##       Brown = colorspace::lighten("brown", 0.0001), ## 0.3?
-##       Hazel = colorspace::lighten(hazel, 0.3))
-## 
-## pb <- ggplot(eye) +
-##     geom_col(aes(x = Eye,
-##                  y = Freq,
-##                  fill = Eye),
-##              position = "dodge") +
-##     scale_fill_manual(values = cols)
-## pb
+# hazel_rgb <-
+#     col2rgb("brown") * 0.75 + col2rgb("green") * 0.25
+# hazel <-
+#     do.call(rgb, as.list(hazel_rgb / 255))
+# 
+# cols <-
+#     c(Blue = colorspace::lighten(colorspace::desaturate("blue", 0.3), 0.3),
+#       Green = colorspace::lighten("forestgreen", 0.1),
+#       Brown = colorspace::lighten("brown", 0.0001), ## 0.3?
+#       Hazel = colorspace::lighten(hazel, 0.3))
+# 
+# pb <- ggplot(eye) +
+#     geom_col(aes(x = Eye,
+#                  y = Freq,
+#                  fill = Eye),
+#              position = "dodge") +
+#     scale_fill_manual(values = cols)
+# pb
 
 
 ## ----eye-bar-stacked, echo = FALSE--------------------------------------------
@@ -593,27 +593,27 @@ psb <- ggplot(eye) +
 psb
 
 ## ----eye-bar-stacked, eval = FALSE--------------------------------------------
-## psb <- ggplot(eye) +
-##     geom_col(aes(x = "",
-##                  y = Freq,
-##                  fill = Eye),
-##              color = "lightgrey") +
-##     scale_fill_manual(values = cols)
-## psb
+# psb <- ggplot(eye) +
+#     geom_col(aes(x = "",
+#                  y = Freq,
+#                  fill = Eye),
+#              color = "lightgrey") +
+#     scale_fill_manual(values = cols)
+# psb
 
 
 ## ----eye-pie, echo = FALSE----------------------------------------------------
 (pp <- psb + coord_polar("y"))
 
 ## ----eye-pie, eval = FALSE----------------------------------------------------
-## (pp <- psb + coord_polar("y"))
+# (pp <- psb + coord_polar("y"))
 
 
 ## ----eye-pie-2, echo = FALSE--------------------------------------------------
 (pp <- pp + theme_void())
 
 ## ----eye-pie-2, eval = FALSE--------------------------------------------------
-## (pp <- pp + theme_void())
+# (pp <- pp + theme_void())
 
 
 ## ----echo = FALSE, fig.height = 4, fig.width = 8------------------------------
@@ -676,15 +676,15 @@ wt_IA <- mutate(wt_IA, p_year = replace(p_year, p_year < 0, NA))
 
 
 ## ----iowa_sf_map, eval = FALSE------------------------------------------------
-## iowa_sf <-
-##     sf::st_as_sf(maps::map("county", "iowa",
-##                            plot = FALSE,
-##                            fill = TRUE))
-## 
-## p <- ggplot() +
-##     geom_sf(data = iowa_sf) +
-##     ggthemes::theme_map()
-## p
+# iowa_sf <-
+#     sf::st_as_sf(maps::map("county", "iowa",
+#                            plot = FALSE,
+#                            fill = TRUE))
+# 
+# p <- ggplot() +
+#     geom_sf(data = iowa_sf) +
+#     ggthemes::theme_map()
+# p
 
 
 ## ----iowa_sf_map, echo = FALSE, fig.width = 8---------------------------------
@@ -700,8 +700,8 @@ p
 
 
 ## ----wt-IA-all, eval = FALSE--------------------------------------------------
-## p + geom_point(aes(xlong, ylat),
-##                data = wt_IA)
+# p + geom_point(aes(xlong, ylat),
+#                data = wt_IA)
 
 ## ----wt-IA-all, echo = FALSE, fig.width = 8-----------------------------------
 p + geom_point(aes(xlong, ylat),
@@ -709,23 +709,23 @@ p + geom_point(aes(xlong, ylat),
 
 
 ## ----wt-IA-color, eval = FALSE------------------------------------------------
-## year_brk <- c(0, 2005, 2010, 2015, 2020, Inf)
-## year_lab <- c("before 2005",
-##               "2005-2009",
-##               "2010-2014",
-##               "2015-2020",
-##               "2021 and later")
-## wt_IA <-
-##     mutate(wt_IA,
-##            year = cut(p_year,
-##                       breaks = year_brk,
-##                       labels = year_lab,
-##                       right = FALSE))
-## p + geom_point(aes(xlong,
-##                    ylat,
-##                    color = year),
-##                data = wt_IA,
-##                size = 3)
+# year_brk <- c(0, 2005, 2010, 2015, 2020, Inf)
+# year_lab <- c("before 2005",
+#               "2005-2009",
+#               "2010-2014",
+#               "2015-2020",
+#               "2021 and later")
+# wt_IA <-
+#     mutate(wt_IA,
+#            year = cut(p_year,
+#                       breaks = year_brk,
+#                       labels = year_lab,
+#                       right = FALSE))
+# p + geom_point(aes(xlong,
+#                    ylat,
+#                    color = year),
+#                data = wt_IA,
+#                size = 3)
 
 ## ----wt-IA-color, echo = FALSE, fig.width = 8---------------------------------
 year_brk <- c(0, 2005, 2010, 2015, 2020, Inf)
@@ -748,20 +748,20 @@ p + geom_point(aes(xlong,
 
 
 ## ----eval = FALSE, echo = FALSE-----------------------------------------------
-## library(tidyverse)
-## p <- ggplot() + geom_sf(data = iowa_sf) + ggthemes::theme_map()
-## p + geom_point(aes(xlong, ylat), data = wt_IA)
-## 
-## wt_IA_sf <- sf::st_as_sf(wt_IA, coords = c("xlong", "ylat"), crs = 4326)
-## 
-## p + geom_sf(data = filter(wt_IA_sf, year <= 2020))
-## 
-## library(gganimate)
-## pa <- p + geom_sf(data = wt_IA_sf) +
-##     transition_manual(year, cumulative = TRUE) +
-##     labs(title = "Wind turbines in Iowa",
-##          subtitle = "Year = {current_frame}")
-## anim_save("foo.gif", animate(pa, fps = 10, nframes = 100))
+# library(tidyverse)
+# p <- ggplot() + geom_sf(data = iowa_sf) + ggthemes::theme_map()
+# p + geom_point(aes(xlong, ylat), data = wt_IA)
+# 
+# wt_IA_sf <- sf::st_as_sf(wt_IA, coords = c("xlong", "ylat"), crs = 4326)
+# 
+# p + geom_sf(data = filter(wt_IA_sf, year <= 2020))
+# 
+# library(gganimate)
+# pa <- p + geom_sf(data = wt_IA_sf) +
+#     transition_manual(year, cumulative = TRUE) +
+#     labs(title = "Wind turbines in Iowa",
+#          subtitle = "Year = {current_frame}")
+# anim_save("foo.gif", animate(pa, fps = 10, nframes = 100))
 
 
 ## ----include = FALSE----------------------------------------------------------
@@ -832,8 +832,8 @@ head(md)
 
 
 ## ----cancer-map-1, eval = FALSE-----------------------------------------------
-## ggplot(md) +
-##     geom_sf(aes(fill = rate1K))
+# ggplot(md) +
+#     geom_sf(aes(fill = rate1K))
 
 ## ----cancer-map-1, echo = FALSE, fig.width = 8--------------------------------
 ggplot(md) +
@@ -841,14 +841,14 @@ ggplot(md) +
 
 
 ## ----cancer-map-2, eval = FALSE-----------------------------------------------
-## library(ggthemes)
-## library(viridis)
-## ggplot(md) +
-##     geom_sf(aes(fill = rate1K),
-##             color = "grey") +
-##     scale_fill_viridis(
-##         name = "Rate per 1000") +
-##     theme_map()
+# library(ggthemes)
+# library(viridis)
+# ggplot(md) +
+#     geom_sf(aes(fill = rate1K),
+#             color = "grey") +
+#     scale_fill_viridis(
+#         name = "Rate per 1000") +
+#     theme_map()
 
 
 ## ----cancer-map-2, echo = FALSE, fig.width = 8, message = FALSE---------------
@@ -863,20 +863,20 @@ ggplot(md) +
 
 
 ## ----cancer-map-plotly, eval = FALSE------------------------------------------
-## mdl <- mutate(md,
-##               label = paste(cname,
-##                             round(rate1K, 1),
-##                             population,
-##                             sep = "\n"))
-## p <- ggplot(mdl) +
-##     geom_sf(aes(fill = rate1K,
-##                 text = label),
-##             color = "grey") +
-##     scale_fill_viridis(
-##         name = "Rate per 1000") +
-##     theme_map()
-## 
-## plotly::ggplotly(p, tooltip = "text")
+# mdl <- mutate(md,
+#               label = paste(cname,
+#                             round(rate1K, 1),
+#                             population,
+#                             sep = "\n"))
+# p <- ggplot(mdl) +
+#     geom_sf(aes(fill = rate1K,
+#                 text = label),
+#             color = "grey") +
+#     scale_fill_viridis(
+#         name = "Rate per 1000") +
+#     theme_map()
+# 
+# plotly::ggplotly(p, tooltip = "text")
 
 
 ## ----cancer-map-plotly, echo = FALSE, fig.width = 8---------------------------
@@ -1011,8 +1011,8 @@ anti_join(counties_sf, summaryUS, "fips")
 
 
 ## ----eval = FALSE, echo = FALSE-----------------------------------------------
-## ## old version
-## counties_sf <- mutate(counties_sf, fips = replace(fips, fips == 46113, 46102))
+# ## old version
+# counties_sf <- mutate(counties_sf, fips = replace(fips, fips == 46113, 46102))
 
 
 ## -----------------------------------------------------------------------------
@@ -1030,37 +1030,37 @@ left_join(counties_sf, summaryUS, "fips") |>
 
 
 ## ----echo = FALSE, eval = FALSE-----------------------------------------------
-## ggpoly2sf <- function(poly, coords = c("long", "lat"),
-##                       id = "group", region = "region", crs = 4326) {
-##     sf::st_as_sf(poly, coords = coords, crs = crs) |>
-##     group_by(!! as.name(id), !! as.name(region)) |>
-##     summarize(do_union = FALSE) |>
-##     sf::st_cast("POLYGON") |>
-##     ungroup() |>
-##     group_by(!! as.name(region)) |>
-##     summarize(do_union = FALSE) |>
-##     ungroup()
-## }
-## m_sf <- ggpoly2sf(socviz::county_map, c("long", "lat"), "group", "id")
-## m_sf <- mutate(m_sf, fips = as.numeric(id))
-## m_sf <- mutate(m_sf, fips = replace(fips, fips == 46113, 46102))
-## ggplot(m_sf) + geom_sf()
-## au <- group_by(lausUS, fips) |>
-##     summarize(avg_ur = mean(UnempRate, na.rm = TRUE))
-## mu <- group_by(lausUS, fips) |>
-##     summarize(max_ur = max(UnempRate, na.rm = TRUE))
-## da <- left_join(m_sf, au, "fips")
-## dm <- left_join(m_sf, mu, "fips")
-## ggplot(da, aes(fill = avg_ur)) +
-##     geom_sf(size = 0.1) +
-##     scale_fill_viridis(name = "Rate", na.value = "red")
-## ggplot(dm, aes(fill = max_ur)) +
-##     geom_sf(size = 0.1) +
-##     scale_fill_viridis(name = "Rate", na.value = "red")
-## ggplot(left_join(m_sf, filter(lausUS, Period == "Apr-20"), "fips"),
-##        aes(fill = UnempRate)) +
-##     geom_sf(size = 0.1) +
-##     scale_fill_viridis(name = "Rate", na.value = "red")
+# ggpoly2sf <- function(poly, coords = c("long", "lat"),
+#                       id = "group", region = "region", crs = 4326) {
+#     sf::st_as_sf(poly, coords = coords, crs = crs) |>
+#     group_by(!! as.name(id), !! as.name(region)) |>
+#     summarize(do_union = FALSE) |>
+#     sf::st_cast("POLYGON") |>
+#     ungroup() |>
+#     group_by(!! as.name(region)) |>
+#     summarize(do_union = FALSE) |>
+#     ungroup()
+# }
+# m_sf <- ggpoly2sf(socviz::county_map, c("long", "lat"), "group", "id")
+# m_sf <- mutate(m_sf, fips = as.numeric(id))
+# m_sf <- mutate(m_sf, fips = replace(fips, fips == 46113, 46102))
+# ggplot(m_sf) + geom_sf()
+# au <- group_by(lausUS, fips) |>
+#     summarize(avg_ur = mean(UnempRate, na.rm = TRUE))
+# mu <- group_by(lausUS, fips) |>
+#     summarize(max_ur = max(UnempRate, na.rm = TRUE))
+# da <- left_join(m_sf, au, "fips")
+# dm <- left_join(m_sf, mu, "fips")
+# ggplot(da, aes(fill = avg_ur)) +
+#     geom_sf(size = 0.1) +
+#     scale_fill_viridis(name = "Rate", na.value = "red")
+# ggplot(dm, aes(fill = max_ur)) +
+#     geom_sf(size = 0.1) +
+#     scale_fill_viridis(name = "Rate", na.value = "red")
+# ggplot(left_join(m_sf, filter(lausUS, Period == "Apr-20"), "fips"),
+#        aes(fill = UnempRate)) +
+#     geom_sf(size = 0.1) +
+#     scale_fill_viridis(name = "Rate", na.value = "red")
 
 
 ## -----------------------------------------------------------------------------
@@ -1084,12 +1084,12 @@ head(tgcm, 3)
 
 
 ## ----u5-1, eval = FALSE-------------------------------------------------------
-## p <- ggplot(tgcm) +
-##     geom_line(aes(year,
-##                   u5mort,
-##                   group = country),
-##               alpha = 0.3)
-## plotly::ggplotly(p)
+# p <- ggplot(tgcm) +
+#     geom_line(aes(year,
+#                   u5mort,
+#                   group = country),
+#               alpha = 0.3)
+# plotly::ggplotly(p)
 
 ## ----u5-1, echo = FALSE, fig.height = 6, fig.width = 8------------------------
 p <- ggplot(tgcm) +
@@ -1101,16 +1101,16 @@ plotly::ggplotly(p)
 
 
 ## ----u5-2, eval = FALSE-------------------------------------------------------
-## countries <- c("United States",
-##                "United Kingdom",
-##                "Germany",
-##                "China",
-##                "Egypt")
-## filter(tgcm, country %in% countries) |>
-##     ggplot() +
-##     geom_line(aes(x = year,
-##                   y = u5mort,
-##                   color = country))
+# countries <- c("United States",
+#                "United Kingdom",
+#                "Germany",
+#                "China",
+#                "Egypt")
+# filter(tgcm, country %in% countries) |>
+#     ggplot() +
+#     geom_line(aes(x = year,
+#                   y = u5mort,
+#                   color = country))
 
 ## ----u5-2, echo = FALSE, fig.height = 6, fig.width = 8------------------------
 countries <- c("United States",
@@ -1126,20 +1126,20 @@ filter(tgcm, country %in% countries) |>
 
 
 ## ----u5-3, eval = FALSE-------------------------------------------------------
-## tgcm_miss <-
-##     group_by(tgcm, country) |>
-##     summarize(anyNA = anyNA(u5mort)) |>
-##     filter(anyNA) |>
-##     pull(country)
-## 
-## p <- filter(tgcm,
-##             country %in% tgcm_miss) |>
-##     ggplot(aes(x = year,
-##                y = u5mort,
-##                group = country)) +
-##     geom_line(na.rm = TRUE) +
-##     xlim(c(1940, 2020))
-## plotly::ggplotly(p)
+# tgcm_miss <-
+#     group_by(tgcm, country) |>
+#     summarize(anyNA = anyNA(u5mort)) |>
+#     filter(anyNA) |>
+#     pull(country)
+# 
+# p <- filter(tgcm,
+#             country %in% tgcm_miss) |>
+#     ggplot(aes(x = year,
+#                y = u5mort,
+#                group = country)) +
+#     geom_line(na.rm = TRUE) +
+#     xlim(c(1940, 2020))
+# plotly::ggplotly(p)
 
 ## ----u5-3, echo = FALSE, fig.height = 6, fig.width = 7------------------------
 tgcm_miss <-
