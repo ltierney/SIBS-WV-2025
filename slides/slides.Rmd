@@ -481,11 +481,11 @@ Making your work reproducible:
 
 --
 
-* Save you work in a text file or notebook.
+* Save your work in a text file or notebook.
 
 --
 
-* Track changes to your files with a version control system like
+* Track changes to your files with a _version control system_ like
   [`git`](https://git-scm.com/).
 
 --
