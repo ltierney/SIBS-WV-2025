@@ -298,9 +298,9 @@ your work reproducible.
 
 Making your work reproducible:
 
-* Save you work in a text file or notebook.
+* Save your work in a text file or notebook.
 
-* Track changes to your files with a version control system like
+* Track changes to your files with a _version control system_ like
   [`git`](https://git-scm.com/).
 
 * Use a system like [Rmarkdown](https://rmarkdown.rstudio.com) to
@@ -1639,13 +1639,13 @@ number of different formats.
 
 Here is one approach:
 
-```{r}
-counties_sf <- sf::st_as_sf(maps::map("county", plot = FALSE, fill = TRUE))
-county.fips <-
-    mutate(maps::county.fips, polyname = sub(":.*", "", polyname)) |>
-    unique()
-counties_sf <- left_join(counties_sf, county.fips, c("ID" = "polyname"))
-states_sf <- sf::st_as_sf(maps::map("state", plot = FALSE, fill = TRUE))
+```{r, results = "hide"}
+counties_sf <- tigris::counties(resolution = "20m", cb = TRUE,
+                                year = 2010) |>
+    tigris::shift_geometry() |>
+    mutate(fips = 1000 * as.numeric(STATE) + as.numeric(COUNTY))
+states_sf <- tigris::states(resolution = "20m", cb = TRUE) |>
+    tigris::shift_geometry()
 ```
 
 Some summaries over the period can be computed as
@@ -1673,7 +1673,11 @@ left_join(counties_sf, summaryUS, "fips") |>
 Using a very visible color for missing data is useful, at least during
 exploration.
 
-`anti_join` can show the county geometry that does not have an entry
+The missing values for Puerto Rico were expected.
+
+The others are due to mis-matches in the merge.
+
+`anti_join` can show the county geometries that do not have an entry
 in the unemployment data:
 
 ```{r}
@@ -1682,19 +1686,20 @@ anti_join(counties_sf, summaryUS, "fips")
 
 Shannon County, SD (FIPS 46113), was renamed to [Oglala Lakota County](https://en.wikipedia.org/wiki/Oglala_Lakota_County,_South_Dakota) in June 2015 and given a new FIPS code, 46102.
 
-The geometry data table needs to be updated:
+A similar change happened in Alaska: Wade Hampton Census Area, was
+renamed as Kusilvak Census Area and the county code changed from 270
+to 158
 
-```{r, eval = FALSE, echo = FALSE}
-## old version
-counties_sf <- mutate(counties_sf, fips = replace(fips, fips == 46113, 46102))
-```
+A quick fix:
 
 ```{r}
 counties_sf <- mutate(counties_sf,
-                      fips = replace(fips, grepl("oglala", ID), 46102))
+                      fips = replace(fips, fips == 46113, 46102))
+counties_sf <- mutate(counties_sf,
+                      fips = replace(fips, fips == 2270, 2158))
 ```
 
-With the updated data the map is now complete:
+With the updated data:
 
 ```{r, fig.width = 9, fig.height = 6, class.source = "fold-hide"}
 left_join(counties_sf, summaryUS, "fips") |>

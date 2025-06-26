@@ -979,13 +979,13 @@ group_by(lausUS, Period) |>
 lausUS <- mutate(lausUS, fips = State * 1000 + County)
 
 
-## -----------------------------------------------------------------------------
-counties_sf <- sf::st_as_sf(maps::map("county", plot = FALSE, fill = TRUE))
-county.fips <-
-    mutate(maps::county.fips, polyname = sub(":.*", "", polyname)) |>
-    unique()
-counties_sf <- left_join(counties_sf, county.fips, c("ID" = "polyname"))
-states_sf <- sf::st_as_sf(maps::map("state", plot = FALSE, fill = TRUE))
+## ----results = "hide"---------------------------------------------------------
+counties_sf <- tigris::counties(resolution = "20m", cb = TRUE,
+                                year = 2010) |>
+    tigris::shift_geometry() |>
+    mutate(fips = 1000 * as.numeric(STATE) + as.numeric(COUNTY))
+states_sf <- tigris::states(resolution = "20m", cb = TRUE) |>
+    tigris::shift_geometry()
 
 
 ## -----------------------------------------------------------------------------
@@ -1010,14 +1010,11 @@ left_join(counties_sf, summaryUS, "fips") |>
 anti_join(counties_sf, summaryUS, "fips")
 
 
-## ----eval = FALSE, echo = FALSE-----------------------------------------------
-# ## old version
-# counties_sf <- mutate(counties_sf, fips = replace(fips, fips == 46113, 46102))
-
-
 ## -----------------------------------------------------------------------------
 counties_sf <- mutate(counties_sf,
-                      fips = replace(fips, grepl("oglala", ID), 46102))
+                      fips = replace(fips, fips == 46113, 46102))
+counties_sf <- mutate(counties_sf,
+                      fips = replace(fips, fips == 2270, 2158))
 
 
 ## ----fig.width = 9, fig.height = 6, class.source = "fold-hide"----------------
